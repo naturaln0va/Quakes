@@ -14,7 +14,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
-        window.rootViewController = ViewController()
+        window.rootViewController = RecentViewController()
         window.makeKeyAndVisible()
         
         self.window = window
