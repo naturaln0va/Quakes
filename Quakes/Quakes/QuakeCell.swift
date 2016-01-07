@@ -11,6 +11,7 @@ class QuakeCell: UITableViewCell
     @IBOutlet var cityLabel: UILabel!
     @IBOutlet var additionalInfoLabel: UILabel!
     @IBOutlet var timestampLabel: UILabel!
+    @IBOutlet var colorView: UIView!
     
     func configure(quake: Quake) {
         timestampLabel.text = relativeStringForDate(quake.timestamp)
@@ -18,7 +19,19 @@ class QuakeCell: UITableViewCell
         
         additionalInfoLabel.text = quake.name
         
-        cityLabel.text = quake.coordinate.formatedString()
+        cityLabel.text = quake.name?.componentsSeparatedByString(" of ").last!
+        
+        if quake.magnitude >= 4.0 {
+            colorView.backgroundColor = UIColor(red: 0.667,  green: 0.224,  blue: 0.224, alpha: 1.0)
+        }
+        else if quake.magnitude >= 3.0 {
+            colorView.backgroundColor = UIColor(red: 0.799,  green: 0.486,  blue: 0.163, alpha: 1.0)
+        }
+        else {
+            colorView.backgroundColor = UIColor(red: 0.180,  green: 0.533,  blue: 0.180, alpha: 1.0)
+        }
+        
+        colorView.layer.cornerRadius = 6.0
     }
     
 }

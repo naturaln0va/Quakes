@@ -14,7 +14,7 @@ private let kQueryMethodName = "query"
 private let kCountMethodName = "count"
 
 private let kResponseDataKeyPath = "response.data"
-private let DEBUG_REQUESTS = true
+private let DEBUG_REQUESTS = false
 
 class NetworkClient
 {

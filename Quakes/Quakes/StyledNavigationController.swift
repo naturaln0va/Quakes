@@ -17,7 +17,7 @@ class StyledNavigationController: UINavigationController
         
         navigationBar.titleTextAttributes = [
             NSForegroundColorAttributeName: StyleController.contrastColor,
-            NSFontAttributeName: UIFont.systemFontOfSize(17, weight: UIFontWeightMedium)
+            NSFontAttributeName: UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
         ]
     }
     

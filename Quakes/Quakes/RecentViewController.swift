@@ -23,12 +23,21 @@ class RecentViewController: UIViewController
         manager.desiredAccuracy = kCLLocationAccuracyKilometer
         return manager
     }()
-    private lazy var refreshControl: UIRefreshControl = {
-        let refresher = UIRefreshControl()
-        refresher.backgroundColor = UIColor.clearColor()
-        refresher.addTarget(self, action: "handleRefresh", forControlEvents: .ValueChanged)
-        return refresher
+    private lazy var titleViewButton: UIButton = {
+        let button = UIButton(type: .Custom)
+        
+        button.backgroundColor = UIColor(white: 0.0, alpha: 0.25)
+        button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
+        button.setTitleColor(StyleController.contrastColor, forState: .Normal)
+        button.addTarget(self, action: "titleButtonPressed", forControlEvents: .TouchUpInside)
+        button.setTitle("Locating...", forState: .Normal)
+        button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+        button.layer.cornerRadius = 4.0
+        button.sizeToFit()
+        
+        return button
     }()
+    let refreshControl = UIRefreshControl()
     var currentLocation: CLLocation?
     var currentAddress: CLPlacemark?
     let geocoder = CLGeocoder()
@@ -40,6 +49,8 @@ class RecentViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.titleView = titleViewButton
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.estimatedRowHeight = QuakeCell.cellHeight
@@ -47,8 +58,8 @@ class RecentViewController: UIViewController
         tableView.registerNib(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
         
         refreshControl.tintColor = StyleController.contrastColor
-        tableView.addSubview(refreshControl)
-        refreshControl.beginRefreshing()
+        refreshControl.backgroundColor = StyleController.mainAppColor
+        refreshControl.addTarget(self, action: "handleRefresh", forControlEvents: .ValueChanged)
         
         fetchedResultsController.delegate = self
         preformFetch()
@@ -74,8 +85,16 @@ class RecentViewController: UIViewController
         }
     }
     
+    func titleButtonPressed() {
+        print("Title button was pressed")
+    }
+    
     func handleRefresh()
     {
+        if !refreshControl.refreshing {
+            refreshControl.beginRefreshing()
+        }
+        
         if let location = currentLocation {
             NetworkClient.sharedClient.getNearbyRecentQuakes(location.coordinate.latitude, longitude: location.coordinate.longitude, radius: 150.0) { quakes, error in
                 if let quakes = quakes where error == nil {
@@ -120,23 +139,21 @@ extension RecentViewController: CLLocationManagerDelegate
 //                    }
 //                }
 //            )
-            NetworkClient.sharedClient.getNearbyRecentQuakes(lastLocation.coordinate.latitude, longitude: lastLocation.coordinate.longitude, radius: 150.0) { quakes, error in
-                if let quakes = quakes where error == nil {
-                    for quake in quakes {
-                        PersistentController.sharedController.saveQuake(quake)
-                    }
-                    self.tableView.reloadData()
-                    if self.refreshControl.refreshing {
-                        self.refreshControl.endRefreshing()
-                    }
-                }
-            }
             
             geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in 
                 if let placemark = place where error == nil && placemark.count > 0 {
                     self.currentAddress = placemark[0]
-                    self.title = "Near \(placemark[0].cityStateString())"
+                    self.titleViewButton.setTitle("Near \(placemark[0].cityStateString())", forState: .Normal)
+                    self.titleViewButton.sizeToFit()
                 }
+                else {
+                    self.title = lastLocation.coordinate.formatedString()
+                }
+                
+                if self.refreshControl.superview == nil {
+                    self.tableView.addSubview(self.refreshControl)
+                }
+                self.handleRefresh()
             }
             
             currentLocation = lastLocation
