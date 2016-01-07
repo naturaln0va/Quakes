@@ -1,7 +1,7 @@
 
 import Foundation
 
-typealias QuakesCompletionBlock = (quakes: [Quake]?, error: NSError?) -> Void
+typealias QuakesCompletionBlock = (quakes: [ParsedQuake]?, error: NSError?) -> Void
 typealias CountCompletionBlock = (count: Int?, error: NSError?) -> Void
 
 let kNoResponseError = NSError(domain: "io.ackermann.NetworkClient", code: 10000, userInfo: [NSLocalizedDescriptionKey: "No response from server"])
@@ -14,7 +14,7 @@ private let kQueryMethodName = "query"
 private let kCountMethodName = "count"
 
 private let kResponseDataKeyPath = "response.data"
-private let DEBUG_REQUESTS = false
+private let DEBUG_REQUESTS = true
 
 class NetworkClient
 {
@@ -60,11 +60,17 @@ class NetworkClient
         return urlString
     }
     
-    func getRecentQuakes(completion: QuakesCompletionBlock) {
+    func getNearbyRecentQuakes(latitude: Double, longitude: Double, radius: Double, completion: QuakesCompletionBlock) {
         dispatch_async(allRequestsQueue) {
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
+            let params = [
+                (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
+                (ParamTypes.LocationLatitude.rawValue, "\(latitude)"),
+                (ParamTypes.LocationLongitude.rawValue, "\(longitude)"),
+                (ParamTypes.LocationMaxRadiusKM.rawValue, "\(radius)")
+            ]
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: params))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
-                var quakes: [Quake]?
+                var quakes: [ParsedQuake]?
                 var resultError = error
                 
                 defer {
@@ -90,19 +96,19 @@ class NetworkClient
                     return
                 }
                 
-                print("Sent: \(request.URL)\nReceived: \(dict)")
-                
                 guard let responseDict = dict else {
                     resultError = kInvalidDataError
                     return
                 }
                 
-                guard let _ = (responseDict as AnyObject).valueForKeyPath("response.data.versions") as? [Dictionary<String, AnyObject>] else {
+                guard let quakesDicts = responseDict["features"] as? [[String: AnyObject]] else {
                     resultError = kInvalidDataError
                     return
                 }
                 
-                if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \n\n\(responseDict)") }
+                if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
+                
+                quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
                 
             }.resume()
         }

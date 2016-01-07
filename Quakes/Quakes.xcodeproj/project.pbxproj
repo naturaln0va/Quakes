@@ -8,30 +8,48 @@
 
 /* Begin PBXBuildFile section */
 		483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */; };
+		69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */; };
+		69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F211C3DDC9900D9D3BF /* QuakeCell.swift */; };
+		69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69150F221C3DDC9900D9D3BF /* QuakeCell.xib */; };
+		69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F261C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift */; };
+		69150F291C3DE60600D9D3BF /* String+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F281C3DE60600D9D3BF /* String+Additions.swift */; };
 		699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */; };
 		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
 		699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA60E1C3C55E10094F48A /* Fetchable.swift */; };
 		699CA6141C3C5D6F0094F48A /* RecentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6121C3C5D6F0094F48A /* RecentViewController.swift */; };
 		699CA6151C3C5D6F0094F48A /* RecentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 699CA6131C3C5D6F0094F48A /* RecentViewController.xib */; };
+		699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */; };
+		699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF01C3D69A00049C7F4 /* StyleController.swift */; };
+		699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */; };
 		69B30FE31C3B051600241D79 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FE21C3B051600241D79 /* WindowController.swift */; };
 		69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69B30FE91C3B051600241D79 /* Assets.xcassets */; };
 		69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69B30FEB1C3B051600241D79 /* LaunchScreen.storyboard */; };
 		69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */; };
+		69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D235361C3D75E100C9AA50 /* ParsedQuake.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Additions.swift"; sourceTree = "<group>"; };
+		69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
+		69150F211C3DDC9900D9D3BF /* QuakeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuakeCell.swift; sourceTree = "<group>"; };
+		69150F221C3DDC9900D9D3BF /* QuakeCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakeCell.xib; sourceTree = "<group>"; };
+		69150F261C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+Additions.swift"; sourceTree = "<group>"; };
+		69150F281C3DE60600D9D3BF /* String+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Additions.swift"; sourceTree = "<group>"; };
 		699CA6051C3C52980094F48A /* Quakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Quakes.xcdatamodel; sourceTree = "<group>"; };
 		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
 		699CA60E1C3C55E10094F48A /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		699CA6121C3C5D6F0094F48A /* RecentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentViewController.swift; sourceTree = "<group>"; };
 		699CA6131C3C5D6F0094F48A /* RecentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecentViewController.xib; sourceTree = "<group>"; };
+		699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyledNavigationController.swift; sourceTree = "<group>"; };
+		699E4EF01C3D69A00049C7F4 /* StyleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleController.swift; sourceTree = "<group>"; };
+		699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Additions.swift"; sourceTree = "<group>"; };
 		69B30FDF1C3B051600241D79 /* Quakes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quakes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		69B30FE21C3B051600241D79 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		69B30FE91C3B051600241D79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		69B30FEC1C3B051600241D79 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		69B30FEE1C3B051600241D79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
+		69D235361C3D75E100C9AA50 /* ParsedQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedQuake.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,8 +67,20 @@
 			isa = PBXGroup;
 			children = (
 				483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */,
+				699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */,
+				69150F261C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift */,
+				69150F281C3DE60600D9D3BF /* String+Additions.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		69150F251C3DDC9D00D9D3BF /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				69150F211C3DDC9900D9D3BF /* QuakeCell.swift */,
+				69150F221C3DDC9900D9D3BF /* QuakeCell.xib */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 		699CA6071C3C529F0094F48A /* Model */ = {
@@ -59,6 +89,7 @@
 				699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */,
 				699CA6091C3C543F0094F48A /* Quake.swift */,
 				699CA60E1C3C55E10094F48A /* Fetchable.swift */,
+				69D235361C3D75E100C9AA50 /* ParsedQuake.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -82,6 +113,7 @@
 		69B30FE11C3B051600241D79 /* Quakes */ = {
 			isa = PBXGroup;
 			children = (
+				69150F251C3DDC9D00D9D3BF /* Cells */,
 				69B30FF81C3B121C00241D79 /* Controllers */,
 				483D1B151C3C806E003A5970 /* Extensions */,
 				699CA6071C3C529F0094F48A /* Model */,
@@ -114,6 +146,8 @@
 			isa = PBXGroup;
 			children = (
 				69B30FE21C3B051600241D79 /* WindowController.swift */,
+				699E4EF01C3D69A00049C7F4 /* StyleController.swift */,
+				69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -123,6 +157,7 @@
 			children = (
 				699CA6121C3C5D6F0094F48A /* RecentViewController.swift */,
 				699CA6131C3C5D6F0094F48A /* RecentViewController.xib */,
+				699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -186,6 +221,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				699CA6151C3C5D6F0094F48A /* RecentViewController.xib in Resources */,
+				69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */,
 				69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */,
 				69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */,
 			);
@@ -198,13 +234,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
+				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
 				699CA60B1C3C543F0094F48A /* Quake.swift in Sources */,
+				69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */,
+				69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */,
 				699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */,
+				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* RecentViewController.swift in Sources */,
 				69B30FE31C3B051600241D79 /* WindowController.swift in Sources */,
 				483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */,
+				69150F291C3DE60600D9D3BF /* String+Additions.swift in Sources */,
+				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift in Sources */,
 				69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */,
+				699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
