@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */; };
+		48B01C591C41665A00838433 /* OptionSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C571C41665A00838433 /* OptionSelectionViewController.swift */; };
+		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
+		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
+		48C7131A1C4090C600196225 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C713191C4090C600196225 /* SettingsController.swift */; };
+		48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EEE8DB1C40A3000032EF39 /* DetailViewController.swift */; };
 		69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */; };
 		69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F211C3DDC9900D9D3BF /* QuakeCell.swift */; };
 		69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69150F221C3DDC9900D9D3BF /* QuakeCell.xib */; };
@@ -17,7 +22,6 @@
 		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
 		699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA60E1C3C55E10094F48A /* Fetchable.swift */; };
 		699CA6141C3C5D6F0094F48A /* RecentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6121C3C5D6F0094F48A /* RecentViewController.swift */; };
-		699CA6151C3C5D6F0094F48A /* RecentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 699CA6131C3C5D6F0094F48A /* RecentViewController.xib */; };
 		699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */; };
 		699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF01C3D69A00049C7F4 /* StyleController.swift */; };
 		699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */; };
@@ -30,6 +34,11 @@
 
 /* Begin PBXFileReference section */
 		483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Additions.swift"; sourceTree = "<group>"; };
+		48B01C571C41665A00838433 /* OptionSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionSelectionViewController.swift; sourceTree = "<group>"; };
+		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
+		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
+		48C713191C4090C600196225 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		48EEE8DB1C40A3000032EF39 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
 		69150F211C3DDC9900D9D3BF /* QuakeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuakeCell.swift; sourceTree = "<group>"; };
 		69150F221C3DDC9900D9D3BF /* QuakeCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakeCell.xib; sourceTree = "<group>"; };
@@ -39,7 +48,6 @@
 		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
 		699CA60E1C3C55E10094F48A /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		699CA6121C3C5D6F0094F48A /* RecentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentViewController.swift; sourceTree = "<group>"; };
-		699CA6131C3C5D6F0094F48A /* RecentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecentViewController.xib; sourceTree = "<group>"; };
 		699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyledNavigationController.swift; sourceTree = "<group>"; };
 		699E4EF01C3D69A00049C7F4 /* StyleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleController.swift; sourceTree = "<group>"; };
 		699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Additions.swift"; sourceTree = "<group>"; };
@@ -148,6 +156,7 @@
 				69B30FE21C3B051600241D79 /* WindowController.swift */,
 				699E4EF01C3D69A00049C7F4 /* StyleController.swift */,
 				69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */,
+				48C713191C4090C600196225 /* SettingsController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -155,8 +164,11 @@
 		69B30FF91C3B122300241D79 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				48EEE8DB1C40A3000032EF39 /* DetailViewController.swift */,
+				48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */,
+				48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */,
+				48B01C571C41665A00838433 /* OptionSelectionViewController.swift */,
 				699CA6121C3C5D6F0094F48A /* RecentViewController.swift */,
-				699CA6131C3C5D6F0094F48A /* RecentViewController.xib */,
 				699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */,
 			);
 			name = ViewControllers;
@@ -172,6 +184,7 @@
 				69B30FDB1C3B051600241D79 /* Sources */,
 				69B30FDC1C3B051600241D79 /* Frameworks */,
 				69B30FDD1C3B051600241D79 /* Resources */,
+				48B01C5F1C41949A00838433 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -220,14 +233,30 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				699CA6151C3C5D6F0094F48A /* RecentViewController.xib in Resources */,
 				69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */,
 				69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */,
+				48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */,
 				69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		48B01C5F1C41949A00838433 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env ruby";
+			shellScript = "git = `sh /etc/profile; which git`.chomp\napp_build = `#{git} rev-list HEAD --count`.chomp.to_i\n`/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion #{app_build}\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"`\nputs \"Updated #{ENV['TARGET_BUILD_DIR']}/#{ENV['INFOPLIST_PATH']}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		69B30FDB1C3B051600241D79 /* Sources */ = {
@@ -235,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
+				48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
 				699CA60B1C3C543F0094F48A /* Quake.swift in Sources */,
@@ -242,12 +272,15 @@
 				69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */,
 				699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */,
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
+				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* RecentViewController.swift in Sources */,
 				69B30FE31C3B051600241D79 /* WindowController.swift in Sources */,
+				48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */,
 				483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */,
 				69150F291C3DE60600D9D3BF /* String+Additions.swift in Sources */,
 				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift in Sources */,
 				69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */,
+				48B01C591C41665A00838433 /* OptionSelectionViewController.swift in Sources */,
 				699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

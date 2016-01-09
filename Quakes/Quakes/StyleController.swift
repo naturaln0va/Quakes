@@ -5,7 +5,8 @@ import UIKit
 struct StyleController
 {
     
-    static let mainAppColor = UIColor(red: 0.435,  green: 0.635,  blue: 0.529, alpha: 1.0)
+    static let backgroundColor = UIColor(red: 0.196,  green: 0.376,  blue: 0.588, alpha: 1.0)
+    static let mainAppColor = UIColor(red: 0.235,  green: 0.439,  blue: 0.678, alpha: 1.0)
     static let contrastColor = UIColor.whiteColor()
     
 }

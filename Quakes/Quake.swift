@@ -2,10 +2,10 @@
 import Foundation
 import CoreData
 import CoreLocation
+import MapKit
 
 
-class Quake: NSManagedObject
-{
+class Quake: NSManagedObject {
     
     // MARK: Formatters
     static let timestampFormatter: NSDateFormatter = {
@@ -46,9 +46,9 @@ class Quake: NSManagedObject
     
     // MARK: - Properties
     @NSManaged var depth: Double
-    @NSManaged var weblink: String?
+    @NSManaged var weblink: String
     @NSManaged var timestamp: NSDate
-    @NSManaged var name: String?
+    @NSManaged var name: String
     @NSManaged var magnitude: Double
     @NSManaged var longitude: Double
     @NSManaged var latitude: Double
@@ -64,8 +64,7 @@ class Quake: NSManagedObject
     
 }
 
-extension Quake: Fetchable
-{
+extension Quake: Fetchable {
     
     typealias FetchableType = Quake
     
@@ -74,4 +73,15 @@ extension Quake: Fetchable
         return "Quake"
     }
     
+}
+
+extension Quake: MKAnnotation {
+    
+    var title: String? {
+        return name
+    }
+    
+    var subtitle: String? {
+        return location.coordinate.formatedString()
+    }
 }

@@ -46,11 +46,7 @@ class PersistentController
         }
     }()
     
-    // MARK: - Quake Management
-    func deleteQuake(quakeToDelete: Quake)
-    {
-        moc.deleteObject(quakeToDelete)
-        
+    func attemptSave() {
         if moc.hasChanges {
             moc.performBlockAndWait { [unowned self] in
                 do {
@@ -64,42 +60,53 @@ class PersistentController
         }
     }
     
-    func saveQuake(parsedQuake: ParsedQuake)
-    {
-        do {
-            if let _ = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", parsedQuake.identifier), sortedBy: nil, ascending: false) {
-                return
-            }
+    // MARK: - Quake Management
+    func deleteAllQuakes() {
+        guard let allQuakes = try? Quake.objectsInContext(moc) else {
+            print("Failed to fetch all the quakes to delete")
+            return
         }
         
-        catch {
-            print("Failed to get a single object from the managed context.")
+        for quake in allQuakes {
+            moc.deleteObject(quake)
         }
         
-        guard let dataToSave = NSEntityDescription.insertNewObjectForEntityForName(Quake.entityName(), inManagedObjectContext: moc) as? Quake else {
-            fatalError("Expected to insert and entity of type 'Quake'.")
-        }
+        attemptSave()
+    }
+    
+    func deleteQuake(quakeToDelete: Quake) {
+        moc.deleteObject(quakeToDelete)
         
-        dataToSave.timestamp = parsedQuake.date
-        dataToSave.depth = parsedQuake.depth
-        dataToSave.weblink = parsedQuake.link
-        dataToSave.name = parsedQuake.name
-        dataToSave.magnitude = parsedQuake.magnitude
-        dataToSave.latitude = parsedQuake.latitude
-        dataToSave.longitude = parsedQuake.longitude
-        dataToSave.identifier = parsedQuake.identifier
-        
-        if moc.hasChanges {
-            moc.performBlockAndWait { [unowned self] in
-                do {
-                    try self.moc.save()
-                }
-                    
-                catch {
-                    fatalError("Error saving quake: \(error)")
+        attemptSave()
+    }
+    
+    func saveQuakes(parsedQuake: [ParsedQuake]) {
+        for quake in parsedQuake {
+            do {
+                if let _ = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", quake.identifier), sortedBy: nil, ascending: false) {
+                    return
                 }
             }
+                
+            catch {
+                print("Failed to get a single object from the managed context.")
+            }
+            
+            guard let dataToSave = NSEntityDescription.insertNewObjectForEntityForName(Quake.entityName(), inManagedObjectContext: moc) as? Quake else {
+                fatalError("Expected to insert and entity of type 'Quake'.")
+            }
+            
+            dataToSave.timestamp = quake.date
+            dataToSave.depth = quake.depth
+            dataToSave.weblink = quake.link
+            dataToSave.name = quake.name
+            dataToSave.magnitude = quake.magnitude
+            dataToSave.latitude = quake.latitude
+            dataToSave.longitude = quake.longitude
+            dataToSave.identifier = quake.identifier
         }
+        
+        attemptSave()
     }
     
 }
