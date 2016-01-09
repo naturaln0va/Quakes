@@ -7,6 +7,8 @@ import CoreLocation
 class RecentViewController: UIViewController
 {
     
+    private static let cachedPlacemarkKey = "cachedPlace"
+    
     @IBOutlet var tableView: UITableView!
     
     private lazy var fetchedResultsController: NSFetchedResultsController = {
@@ -38,8 +40,30 @@ class RecentViewController: UIViewController
         return button
     }()
     let refreshControl = UIRefreshControl()
-    var currentLocation: CLLocation?
-    var currentAddress: CLPlacemark?
+    var currentLocation: CLLocation? {
+        didSet {
+            refreshControl.enabled = currentLocation != nil
+        }
+    }
+    
+    let defaults = NSUserDefaults.standardUserDefaults()
+    var cachedAddress: CLPlacemark? {
+        get {
+            if let data = defaults.objectForKey(RecentViewController.cachedPlacemarkKey) as? NSData,
+                let place = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? CLPlacemark {
+                return place
+            }
+            else {
+                return nil
+            }
+        }
+        set {
+            if let newPlace = newValue {
+                NSUserDefaults.standardUserDefaults().setObject(NSKeyedArchiver.archivedDataWithRootObject(newPlace), forKey: RecentViewController.cachedPlacemarkKey)
+            }
+        }
+    }
+
     let geocoder = CLGeocoder()
 
     deinit {
@@ -57,9 +81,11 @@ class RecentViewController: UIViewController
         tableView.backgroundColor = StyleController.mainAppColor
         tableView.registerNib(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
         
+        refreshControl.enabled = false
         refreshControl.tintColor = StyleController.contrastColor
         refreshControl.backgroundColor = StyleController.mainAppColor
-        refreshControl.addTarget(self, action: "handleRefresh", forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: "fetchQuakes", forControlEvents: .ValueChanged)
+        tableView.addSubview(refreshControl)
         
         fetchedResultsController.delegate = self
         preformFetch()
@@ -89,12 +115,8 @@ class RecentViewController: UIViewController
         print("Title button was pressed")
     }
     
-    func handleRefresh()
+    func fetchQuakes()
     {
-        if !refreshControl.refreshing {
-            refreshControl.beginRefreshing()
-        }
-        
         if let location = currentLocation {
             NetworkClient.sharedClient.getNearbyRecentQuakes(location.coordinate.latitude, longitude: location.coordinate.longitude, radius: 150.0) { quakes, error in
                 if let quakes = quakes where error == nil {
@@ -130,30 +152,41 @@ extension RecentViewController: CLLocationManagerDelegate
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let lastLocation = locations.last {
-//            NetworkClient.sharedClient.getNearbyCount(
-//                lastLocation.coordinate.latitude,
-//                longitude: lastLocation.coordinate.longitude,
-//                radius: 450.0,
-//                completion: { count, error in
-//                    if let _ = count where error == nil {
-//                    }
-//                }
-//            )
-            
-            geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in 
-                if let placemark = place where error == nil && placemark.count > 0 {
-                    self.currentAddress = placemark[0]
-                    self.titleViewButton.setTitle("Near \(placemark[0].cityStateString())", forState: .Normal)
-                    self.titleViewButton.sizeToFit()
+            if let cachedAddress = cachedAddress, let cachedLocation = cachedAddress.location where lastLocation.distanceFromLocation(cachedLocation) > 2500 {
+                geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
+                    if let placemark = place where error == nil && placemark.count > 0 {
+                        self.cachedAddress = placemark[0]
+                        self.titleViewButton.setTitle("Near \(placemark[0].cityStateString())", forState: .Normal)
+                        self.titleViewButton.sizeToFit()
+                    }
+                    else {
+                        self.title = lastLocation.coordinate.formatedString()
+                    }
+                    
+                    self.fetchQuakes()
+                }
+            }
+            else {
+                if let cachedAddress = cachedAddress {
+                    titleViewButton.setTitle("Near \(cachedAddress.cityStateString())", forState: .Normal)
+                    titleViewButton.sizeToFit()
+                    fetchQuakes()
                 }
                 else {
-                    self.title = lastLocation.coordinate.formatedString()
+                    geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
+                        if let placemark = place?.first where error == nil {
+                            self.cachedAddress = placemark
+                            self.titleViewButton.setTitle("Near \(placemark.cityStateString())", forState: .Normal)
+                            self.titleViewButton.sizeToFit()
+                        }
+                        else {
+                            self.title = lastLocation.coordinate.formatedString()
+                        }
+                        
+                        self.fetchQuakes()
+                    }
+
                 }
-                
-                if self.refreshControl.superview == nil {
-                    self.tableView.addSubview(self.refreshControl)
-                }
-                self.handleRefresh()
             }
             
             currentLocation = lastLocation
@@ -241,18 +274,7 @@ extension RecentViewController: UITableViewDataSource, UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-//        searchController.searchBar.resignFirstResponder()
-//        
-//        if filteredLocations != nil {
-//            let detailVC = LocationDetailViewController()
-//            detailVC.locationToDisplay = filteredLocations![indexPath.row]
-//            navigationController?.pushViewController(detailVC, animated: true)
-//        }
-//        else if let location = self.fetchedResultsController.objectAtIndexPath(indexPath) as? Location {
-//            let detailVC = LocationDetailViewController()
-//            detailVC.locationToDisplay = location
-//            navigationController?.pushViewController(detailVC, animated: true)
-//        }
+        
     }
     
     // MARK: - UITableViewDataSource
