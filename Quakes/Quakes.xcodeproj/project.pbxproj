@@ -207,6 +207,7 @@
 				TargetAttributes = {
 					69B30FDE1C3B051600241D79 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = WK4Y48HVH2;
 					};
 				};
 			};
@@ -384,10 +385,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Quakes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.Quakes;
+				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -396,10 +398,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Quakes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.Quakes;
+				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
