@@ -84,7 +84,7 @@ class PersistentController
         for quake in parsedQuake {
             do {
                 if let _ = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", quake.identifier), sortedBy: nil, ascending: false) {
-                    return
+                    continue
                 }
             }
                 

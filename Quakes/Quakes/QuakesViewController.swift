@@ -4,7 +4,7 @@ import CoreData
 import CoreLocation
 
 
-class RecentViewController: UITableViewController
+class QuakesViewController: UITableViewController
 {
     
     private lazy var fetchedResultsController: NSFetchedResultsController = {
@@ -16,10 +16,10 @@ class RecentViewController: UITableViewController
         return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: moc, sectionNameKeyPath: nil, cacheName: "quakes")
     }()
     
-    private lazy var titleViewButton: UIButton = {
+    lazy var titleViewButton: UIButton = {
         let button = UIButton(type: .Custom)
         
-        button.backgroundColor = UIColor(white: 0.0, alpha: 0.25)
+        button.backgroundColor = StyleController.darkerMainAppColor
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
         button.setTitleColor(StyleController.contrastColor, forState: .Normal)
         button.addTarget(self, action: "titleButtonPressed", forControlEvents: .TouchUpInside)
@@ -33,6 +33,7 @@ class RecentViewController: UITableViewController
     private let locationManager = CLLocationManager()
     private let defaults = NSUserDefaults.standardUserDefaults()
     private let geocoder = CLGeocoder()
+    private var transitionAnimator: TextBarAnimator?
 
     var currentLocation: CLLocation?
 
@@ -79,10 +80,20 @@ class RecentViewController: UITableViewController
         titleViewButton.sizeToFit()
     }
     
+    private func presentFinder() {
+        titleViewButton.hidden = true
+        transitionAnimator = TextBarAnimator(duration: 0.345, presentingViewController: true, originatingFrame: titleViewButton.frame, completion: {
+            self.titleViewButton.hidden = false
+        })
+        
+        let finderVC = LocationFinderViewController()
+        finderVC.delegate = self
+        finderVC.transitioningDelegate = self
+        presentViewController(finderVC, animated: true, completion: nil)
+    }
+    
     func titleButtonPressed() {
-        let selectionVC = OptionSelectionViewController()
-        selectionVC.delegate = self
-        presentViewController(StyledNavigationController(rootViewController: selectionVC), animated: true, completion: nil)
+        presentFinder()
     }
     
     func fetchQuakes() {
@@ -140,10 +151,7 @@ class RecentViewController: UITableViewController
                         locationManager.requestWhenInUseAuthorization()
                     default:
                         SettingsController.sharedContoller.lastLocationOption = nil
-                        
-                        let selectionVC = OptionSelectionViewController()
-                        selectionVC.delegate = self
-                        presentViewController(StyledNavigationController(rootViewController: selectionVC), animated: true, completion: nil)
+                        presentFinder()
                         break
                     }
                 }
@@ -232,7 +240,7 @@ class RecentViewController: UITableViewController
     
 }
 
-extension RecentViewController: CLLocationManagerDelegate
+extension QuakesViewController: CLLocationManagerDelegate
 {
     // MARK: - Location Manager Delegate
     func startLocationManager() {
@@ -253,10 +261,7 @@ extension RecentViewController: CLLocationManagerDelegate
         else if status == .Denied {
             stopLocationManager()
             SettingsController.sharedContoller.lastLocationOption = nil
-            
-            let selectionVC = OptionSelectionViewController()
-            selectionVC.delegate = self
-            presentViewController(StyledNavigationController(rootViewController: selectionVC), animated: true, completion: nil)
+            presentFinder()
         }
     }
     
@@ -314,7 +319,7 @@ extension RecentViewController: CLLocationManagerDelegate
     
 }
 
-extension RecentViewController: NSFetchedResultsControllerDelegate
+extension QuakesViewController: NSFetchedResultsControllerDelegate
 {
     
     // MARK: - NSFetchedResultsController Delegate
@@ -352,11 +357,11 @@ extension RecentViewController: NSFetchedResultsControllerDelegate
     
 }
 
-extension RecentViewController: OptionSelectionViewControllerDelegate
+extension QuakesViewController: LocationFinderViewControllerDelegate
 {
     
     // MARK: - LocationSelectionViewController Delegate
-    func optionSelectionViewControllerDidSelectPlace(placemark: CLPlacemark) {
+    func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark) {
         SettingsController.sharedContoller.lastSearchedPlace = placemark
         SettingsController.sharedContoller.lastLocationOption = nil
         
@@ -365,7 +370,7 @@ extension RecentViewController: OptionSelectionViewControllerDelegate
         fetchQuakes()
     }
     
-    func optionSelectionViewControllerDidSelectOption(option: LocationOption) {
+    func locationFinderViewControllerDidSelectOption(option: LocationOption) {
         SettingsController.sharedContoller.lastLocationOption = option.rawValue
         SettingsController.sharedContoller.lastSearchedPlace = nil
         
@@ -374,4 +379,17 @@ extension RecentViewController: OptionSelectionViewControllerDelegate
         fetchQuakes()
     }
     
+}
+
+extension QuakesViewController: UIViewControllerTransitioningDelegate
+{
+    // MARK: - UIViewControllerTransitioning Delegate
+    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return transitionAnimator
+    }
+    
+    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transitionAnimator?.presenting = false
+        return transitionAnimator
+    }
 }

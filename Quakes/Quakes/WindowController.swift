@@ -14,7 +14,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
-        window.rootViewController = StyledNavigationController(rootViewController: RecentViewController())
+        window.rootViewController = StyledNavigationController(rootViewController: QuakesViewController())
         window.makeKeyAndVisible()
         
         self.window = window
