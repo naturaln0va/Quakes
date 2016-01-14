@@ -32,19 +32,16 @@ class DetailViewController: UITableViewController {
         title = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "shareButtonPressed")
         
-        switch CLLocationManager.authorizationStatus() {
-        case .AuthorizedWhenInUse:
-            if CLLocationManager.locationServicesEnabled() {
-                mapView.delegate = self
-                mapView.removeAnnotation(quakeToDisplay)
-                mapView.addAnnotation(quakeToDisplay)
-                tableView.tableHeaderView = mapView
-                mapView.setRegion(MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1 / 111, longitudeDelta: 1 / 111)), animated: false)
-            }
-            break
-        default:
-            break
+        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
+            mapView.delegate = self
         }
+        
+        mapView.removeAnnotation(quakeToDisplay)
+        mapView.addAnnotation(quakeToDisplay)
+        tableView.tableHeaderView = mapView
+        
+        let regionForQuake = MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
+        mapView.setRegion(mapView.regionThatFits(regionForQuake), animated: false)
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -145,12 +142,15 @@ extension DetailViewController: MKMapViewDelegate {
                 where lastLocation.distanceFromLocation(currentUserLocation) > 25.0 else {
                     return
             }
-        }
-        
-        let indexPathToUpdate = NSIndexPath(forRow: 5, inSection: 0)
-        if let userLocation = userLocation.location {
-            distanceStringForCell = Quake.distanceFormatter.stringFromMeters(userLocation.distanceFromLocation(quakeToDisplay.location))
-            tableView.reloadRowsAtIndexPaths([indexPathToUpdate], withRowAnimation: .Automatic)
+            
+            if currentUserLocation.distanceFromLocation(quakeToDisplay.location) > 2500 {
+                let indexPathToUpdate = NSIndexPath(forRow: 5, inSection: 0)
+                if let userLocation = userLocation.location {
+                    distanceStringForCell = Quake.distanceFormatter.stringFromMeters(userLocation.distanceFromLocation(quakeToDisplay.location))
+                    tableView.reloadRowsAtIndexPaths([indexPathToUpdate], withRowAnimation: .Automatic)
+                }
+                return
+            }
         }
         
         let center = CLLocationCoordinate2D(
@@ -161,8 +161,11 @@ extension DetailViewController: MKMapViewDelegate {
             latitudeDelta: max(1 / 55, abs(userLocation.coordinate.latitude - quakeToDisplay.coordinate.latitude) * 2.5),
             longitudeDelta: max(1 / 55, abs(userLocation.coordinate.longitude - quakeToDisplay.coordinate.longitude) * 2.5)
         )
-        let region = MKCoordinateRegionMake(center, span)
-        mapView.setRegion(mapView.regionThatFits(region), animated: true)
+        
+        if CLLocationCoordinate2DIsValid(center) {
+            let region = MKCoordinateRegionMake(center, span)
+            mapView.setRegion(mapView.regionThatFits(region), animated: true)
+        }
         
         lastUserLocation = userLocation.location
     }

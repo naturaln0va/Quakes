@@ -102,7 +102,7 @@ class QuakesViewController: UITableViewController
         }
         
         if let lastPlace = SettingsController.sharedContoller.lastSearchedPlace {
-            setTitleButtonText("Near \(lastPlace.cityStateString())")
+            setTitleButtonText("\(lastPlace.cityStateString())")
 
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedContoller.searchRadius) { quakes, error in
@@ -123,7 +123,7 @@ class QuakesViewController: UITableViewController
             switch option {
             case LocationOption.Nearby.rawValue:
                 if let current = currentLocation {
-                    setTitleButtonText("Near \(SettingsController.sharedContoller.cachedAddress!.cityStateString())")
+                    setTitleButtonText("\(SettingsController.sharedContoller.cachedAddress!.cityStateString())")
                     
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                     NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate, radius: SettingsController.sharedContoller.searchRadius) { quakes, error in
@@ -275,7 +275,7 @@ extension QuakesViewController: CLLocationManagerDelegate
                     geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] places, error in
                         if let placemark = places?.first where error == nil {
                             SettingsController.sharedContoller.cachedAddress = placemark
-                            self.setTitleButtonText("Near \(placemark.cityStateString())")
+                            self.setTitleButtonText("\(placemark.cityStateString())")
                         }
                         else {
                             self.title = lastLocation.coordinate.formatedString()
@@ -286,7 +286,7 @@ extension QuakesViewController: CLLocationManagerDelegate
             }
             else {
                 if let cachedAddress = SettingsController.sharedContoller.cachedAddress {
-                    titleViewButton.setTitle("Near \(cachedAddress.cityStateString())", forState: .Normal)
+                    titleViewButton.setTitle("\(cachedAddress.cityStateString())", forState: .Normal)
                     titleViewButton.sizeToFit()
                     fetchQuakes()
                 }
@@ -295,7 +295,7 @@ extension QuakesViewController: CLLocationManagerDelegate
                     geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
                         if let placemark = place?.first where error == nil {
                             SettingsController.sharedContoller.cachedAddress = placemark
-                            self.setTitleButtonText("Near \(placemark.cityStateString())")
+                            self.setTitleButtonText("\(placemark.cityStateString())")
                         }
                         else {
                             self.title = lastLocation.coordinate.formatedString()

@@ -14,7 +14,7 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
     init(duration: Double, presentingViewController presenting: Bool, originatingFrame frame: CGRect, completion: DismisalBlock) {
         self.duration = duration
         self.presenting = presenting
-        self.originFrame = frame
+        self.originFrame = CGRect(x: frame.origin.x, y: 26, width: frame.width, height: frame.height)
         self.dismissCompletionBlock = completion
         super.init()
     }
@@ -68,7 +68,7 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             })
         }
         else {
-            let finalFrame = CGRect(x: originFrame.origin.x, y: 20, width: originFrame.width, height: originFrame.height)
+            let finalFrame = CGRect(x: originFrame.origin.x, y: 26, width: originFrame.width, height: originFrame.height)
             
             guard let toVC = toViewControler else {
                 print("the to view controller was nil.")
