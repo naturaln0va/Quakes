@@ -29,6 +29,10 @@ class DetailViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        NetworkClient.sharedClient.getDetailForQuakeWithURL(urlForDetail: NSURL(string: quakeToDisplay.detailURL)!) { quakes, error in
+//            
+//        }
+        
         title = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "shareButtonPressed")
         

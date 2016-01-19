@@ -34,6 +34,7 @@ class QuakesViewController: UITableViewController
     private let defaults = NSUserDefaults.standardUserDefaults()
     private let geocoder = CLGeocoder()
     private var transitionAnimator: TextBarAnimator?
+    private var mapViewController: MapViewController?
 
     var currentLocation: CLLocation?
 
@@ -45,6 +46,14 @@ class QuakesViewController: UITableViewController
         super.viewDidLoad()
         
         navigationItem.titleView = titleViewButton
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "world-bar-icon"),
+            landscapeImagePhone: nil,
+            style: .Plain,
+            target: self,
+            action: "showMap"
+        )
+        navigationItem.rightBarButtonItem?.enabled = false
         
         tableView = UITableView(frame: view.bounds, style: .Grouped)
         tableView.estimatedRowHeight = QuakeCell.cellHeight
@@ -68,10 +77,14 @@ class QuakesViewController: UITableViewController
         
         do {
             try fetchedResultsController.performFetch()
+            if navigationItem.rightBarButtonItem?.enabled == false {
+                navigationItem.rightBarButtonItem?.enabled = true
+            }
         }
             
         catch {
             print("Error fetching for the results controller: \(error)")
+            navigationItem.rightBarButtonItem?.enabled = false
         }
     }
     
@@ -92,8 +105,49 @@ class QuakesViewController: UITableViewController
         presentViewController(finderVC, animated: true, completion: nil)
     }
     
+    // MARK: - Actions
     func titleButtonPressed() {
         presentFinder()
+    }
+    
+    func showMap() {
+        if let quakes = fetchedResultsController.fetchedObjects as? [Quake] {
+            let mapVC = MapViewController(quakes: quakes)
+            mapViewController = mapVC
+            
+            mapVC.view.frame = CGRect(x: 0.0, y: -CGRectGetHeight(view.bounds), width: CGRectGetWidth(view.bounds), height: CGRectGetHeight(view.bounds))
+            view.addSubview(mapVC.view)
+            
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+                image: UIImage(named: "pressed-world-bar-icon"),
+                landscapeImagePhone: nil,
+                style: .Plain,
+                target: self,
+                action: "hideMap"
+            )
+            
+            UIView.animateWithDuration(0.345) {
+                mapVC.view.frame = self.view.bounds
+            }
+        }
+    }
+    
+    func hideMap() {
+        if let mapVC = mapViewController {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+                image: UIImage(named: "world-bar-icon"),
+                landscapeImagePhone: nil,
+                style: .Plain,
+                target: self,
+                action: "showMap"
+            )
+            
+            UIView.animateWithDuration(0.345, animations: {
+                mapVC.view.frame.origin.y = -CGRectGetHeight(self.view.bounds)
+            }, completion: { _ in
+                mapVC.view.removeFromSuperview()
+            })
+        }
     }
     
     func fetchQuakes() {
@@ -160,7 +214,7 @@ class QuakesViewController: UITableViewController
                 setTitleButtonText("Worldwide Earthquakes")
                 
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                NetworkClient.sharedClient.getRecentWorldQuakes { quakes, error in
+                NetworkClient.sharedClient.getRecentWorldQuakes(shouldLimit: true) { quakes, error in
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     
                     if let quakes = quakes where error == nil {
@@ -353,6 +407,11 @@ extension QuakesViewController: NSFetchedResultsControllerDelegate
     func controllerDidChangeContent(controller: NSFetchedResultsController)
     {
         tableView.endUpdates()
+        
+        if let mapVC = self.mapViewController, let quakes = self.fetchedResultsController.fetchedObjects as? [Quake] {
+            mapVC.quakesToDisplay = quakes
+            mapVC.refreshMapWithQuakesWithUserLocation()
+        }
     }
     
 }

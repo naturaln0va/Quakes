@@ -5,10 +5,9 @@ struct ParsedQuake
 {
     
     // MARK: Properties.
-    
     let date: NSDate
     
-    let identifier, name, link: String
+    let identifier, name, link, detailURL: String
     
     let depth, latitude, longitude, magnitude: Double
 
@@ -23,6 +22,8 @@ struct ParsedQuake
         link = properties["url"] as? String ?? ""
         
         magnitude = properties["mag"] as? Double ?? 0.0
+        
+        detailURL = properties["detail"] as? String ?? ""
         
         if let offset = properties["time"] as? Double {
             date = NSDate(timeIntervalSince1970: offset / 1000)

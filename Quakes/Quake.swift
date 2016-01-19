@@ -53,6 +53,7 @@ class Quake: NSManagedObject {
     @NSManaged var longitude: Double
     @NSManaged var latitude: Double
     @NSManaged var identifier: String
+    @NSManaged var detailURL: String
     
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -82,6 +83,17 @@ extension Quake: MKAnnotation {
     }
     
     var subtitle: String? {
-        return location.coordinate.formatedString()
+        let formatter = NSNumberFormatter()
+        
+        formatter.numberStyle = .DecimalStyle
+        formatter.maximumFractionDigits = 1
+        formatter.minimumFractionDigits = 1
+        
+        let timestampFormatter = NSDateFormatter()
+        
+        timestampFormatter.dateStyle = .MediumStyle
+        timestampFormatter.timeStyle = .MediumStyle
+
+        return formatter.stringFromNumber(magnitude)! + ", at " + timestampFormatter.stringFromDate(timestamp)
     }
 }

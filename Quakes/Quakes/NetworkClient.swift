@@ -42,7 +42,7 @@ class NetworkClient
         case Limit = "limit"
     }
     
-    static func urlStringFromHostWithMethod(method: String, parameters: [(String, String)]?) -> String
+    static func urlStringFromHostWithMethod(shouldLimit limit: Bool, method: String, parameters: [(String, String)]?) -> String
     {
         var urlString = kUSGSAPIHost
         
@@ -60,9 +60,57 @@ class NetworkClient
             urlString += paramString
         }
         
-        urlString += "&\(ParamTypes.Limit.rawValue)=\(125)"
+        if limit { urlString += "&\(ParamTypes.Limit.rawValue)=\(300)" }
         
         return urlString
+    }
+    
+    func getDetailForQuakeWithURL(urlForDetail url: NSURL, completion: QuakesCompletionBlock) {
+        dispatch_async(allRequestsQueue) {
+            NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
+                var quakes: [ParsedQuake]?
+                var resultError = error
+                
+                defer {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        completion(quakes: quakes, error: error)
+                    }
+                }
+                
+                guard error == nil else { return }
+                
+                guard let data = data else {
+                    resultError = kNoResponseError
+                    return
+                }
+                
+                var dict: Dictionary<String, AnyObject>?
+                
+                do {
+                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? Dictionary<String, AnyObject>
+                } catch {
+                    if DEBUG_REQUESTS { print("Error parsing JSON") }
+                    resultError = kJSONParseError
+                    return
+                }
+                
+                guard let responseDict = dict else {
+                    resultError = kInvalidDataError
+                    return
+                }
+                
+                print("Sent: \(response?.URL)\nReceived: \(responseDict)")
+                
+                guard let quakesDicts = responseDict["features"] as? [[String: AnyObject]] else {
+                    resultError = kInvalidDataError
+                    return
+                }
+                
+                if DEBUG_REQUESTS { print("Sent: \(response?.URL)\nReceived: \(responseDict)") }
+                
+                quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
+            }.resume()
+        }
     }
     
     func getRecentQuakesByLocation(coordinate: CLLocationCoordinate2D, radius: Double, completion: QuakesCompletionBlock) {
@@ -73,7 +121,7 @@ class NetworkClient
                 (ParamTypes.LocationLongitude.rawValue, "\(coordinate.longitude)"),
                 (ParamTypes.LocationMaxRadiusKM.rawValue, "\(radius)")
             ]
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: params))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: params))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
                 var resultError = error
@@ -114,7 +162,6 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
-                
             }.resume()
         }
     }
@@ -125,7 +172,7 @@ class NetworkClient
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
                 (ParamTypes.MagnitudeMin.rawValue, "\(3.8)")
             ]
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: params))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: params))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
                 var resultError = error
@@ -166,14 +213,13 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
-                
             }.resume()
         }
     }
     
-    func getRecentWorldQuakes(completion: QuakesCompletionBlock) {
+    func getRecentWorldQuakes(shouldLimit limit: Bool, completion: QuakesCompletionBlock) {
         dispatch_async(allRequestsQueue) {
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: limit, method: kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
                 var resultError = error
@@ -214,7 +260,6 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
-                
             }.resume()
         }
     }
@@ -227,7 +272,7 @@ class NetworkClient
                 (ParamTypes.LocationLongitude.rawValue, "\(longitude)"),
                 (ParamTypes.LocationMaxRadiusKM.rawValue, "\(radius)")
             ]
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kCountMethodName, parameters: params))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kCountMethodName, parameters: params))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var count: Int?
                 var resultError = error

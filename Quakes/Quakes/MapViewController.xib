@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MapViewController" customModule="Quakes" customModuleProvider="target">
+            <connections>
+                <outlet property="locateButton" destination="HBP-Ei-0OC" id="E47-2v-G0a"/>
+                <outlet property="mapView" destination="dnz-J2-buz" id="jMh-fs-vUk"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnz-J2-buz">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                </mapView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HBP-Ei-0OC">
+                    <rect key="frame" x="32" y="600" width="35" height="35"/>
+                    <state key="normal" image="locate-map-button"/>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="dnz-J2-buz" secondAttribute="bottom" id="9aq-V0-RmO"/>
+                <constraint firstItem="dnz-J2-buz" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="NMC-P3-Rsr"/>
+                <constraint firstItem="HBP-Ei-0OC" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="32" id="NpF-u3-34I"/>
+                <constraint firstAttribute="trailing" secondItem="dnz-J2-buz" secondAttribute="trailing" id="p6m-h5-SzX"/>
+                <constraint firstItem="dnz-J2-buz" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="sTN-1h-ab8"/>
+                <constraint firstAttribute="bottom" secondItem="HBP-Ei-0OC" secondAttribute="bottom" constant="32" id="yGB-dI-dMg"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="locate-map-button" width="35" height="35"/>
+    </resources>
+</document>

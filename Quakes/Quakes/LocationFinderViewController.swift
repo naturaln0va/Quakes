@@ -18,15 +18,12 @@ class LocationFinderViewController: UIViewController
 
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var filterSegment: UISegmentedControl!
-    @IBOutlet weak var cancelButtonBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var filterViewBottomConstraint: NSLayoutConstraint!
     
     var delegate: LocationFinderViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = "Enter a Location"
-        view.backgroundColor = StyleController.backgroundColor
         
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
@@ -50,17 +47,6 @@ class LocationFinderViewController: UIViewController
                 print("Unknown option from the SettingsController.")
             }
         }
-        
-//        let identifer = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
-//        let build = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"] as! String
-//        
-//        let appVersionAndBuildStringLabel = UILabel()
-//        appVersionAndBuildStringLabel.textColor = UIColor(white: 0.0, alpha: 0.5)
-//        appVersionAndBuildStringLabel.text = "Quakes v\(identifer).\(build)"
-//        appVersionAndBuildStringLabel.textAlignment = .Center
-//        appVersionAndBuildStringLabel.sizeToFit()
-//        appVersionAndBuildStringLabel.center = CGPoint(x: view.center.x, y: CGRectGetHeight(view.bounds) - (CGRectGetHeight(appVersionAndBuildStringLabel.frame) * 3.2))
-//        tableView.addSubview(appVersionAndBuildStringLabel)
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -85,18 +71,20 @@ class LocationFinderViewController: UIViewController
         let userInfo = notification.userInfo!
         let keyboardHeight = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue().height
         
-        cancelButtonBottomConstraint.constant = keyboardHeight
+        filterViewBottomConstraint.constant = keyboardHeight
         
-        UIView.animateWithDuration((userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue) {
+        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        UIView.animateWithDuration(duration) {
             self.view.layoutIfNeeded()
         }
     }
     
     func keyboardWillHide(notification: NSNotification) {
         let userInfo = notification.userInfo!
-        cancelButtonBottomConstraint.constant = 0.0
+        filterViewBottomConstraint.constant = 0.0
         
-        UIView.animateWithDuration((userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue) {
+        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        UIView.animateWithDuration(duration) {
             self.view.layoutIfNeeded()
         }
     }
@@ -187,12 +175,6 @@ extension LocationFinderViewController: UITextFieldDelegate
         else {
             return false
         }
-    }
-    
-    func textFieldDidBeginEditing(textField: UITextField) {
-//        if searchHelperLabel.text != searchPromptMessage {
-//            searchHelperLabel.text = searchPromptMessage
-//        }
     }
     
 }

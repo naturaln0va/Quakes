@@ -54,7 +54,7 @@ class PersistentController
                 }
                     
                 catch {
-                    fatalError("Error deleting quake: \(error)")
+                    fatalError("\nError saving the managed object context: \(error)\n\n")
                 }
             }
         }
@@ -104,6 +104,7 @@ class PersistentController
             dataToSave.latitude = quake.latitude
             dataToSave.longitude = quake.longitude
             dataToSave.identifier = quake.identifier
+            dataToSave.detailURL = quake.detailURL
         }
         
         attemptSave()
