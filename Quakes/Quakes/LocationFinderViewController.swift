@@ -20,10 +20,14 @@ class LocationFinderViewController: UIViewController
     @IBOutlet weak var filterSegment: UISegmentedControl!
     @IBOutlet weak var filterViewBottomConstraint: NSLayoutConstraint!
     
+    let manager = CLLocationManager()
     var delegate: LocationFinderViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = StyleController.backgroundColor
+        searchTextField.backgroundColor = StyleController.darkerMainAppColor
         
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
@@ -58,7 +62,7 @@ class LocationFinderViewController: UIViewController
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+        return .Default
     }
     
     private func dismiss() {
@@ -101,26 +105,33 @@ class LocationFinderViewController: UIViewController
             case .AuthorizedWhenInUse:
                 if CLLocationManager.locationServicesEnabled() {
                     delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
-                    dismiss()
                 }
                 else {
                     errorMessage = "Location services are turned off"
                 }
+                break
+            case .NotDetermined:
+                manager.delegate = self
+                manager.requestWhenInUseAuthorization()
                 break
             default:
                 errorMessage = "Location access is denied"
                 break
             }
             
-            let alertView = UIAlertController(title: "Location Error", message: errorMessage, preferredStyle: .Alert)
-            
-            alertView.addAction(UIAlertAction(title: "Open Settings", style: .Default, handler: { action in
-                UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-            }))
-            
-            alertView.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-            
-            presentViewController(alertView, animated: true, completion: nil)
+            if errorMessage.characters.count > 0 {
+                sender.selectedSegmentIndex = -1
+
+                let alertView = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .Alert)
+                
+                alertView.addAction(UIAlertAction(title: "Open Settings", style: .Default, handler: { action in
+                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                }))
+                
+                alertView.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                
+                presentViewController(alertView, animated: true, completion: nil)
+            }
         }
         else if sender.selectedSegmentIndex == 1 {
             delegate?.locationFinderViewControllerDidSelectOption(.World)
@@ -128,8 +139,6 @@ class LocationFinderViewController: UIViewController
         else if sender.selectedSegmentIndex == 2 {
             delegate?.locationFinderViewControllerDidSelectOption(.Major)
         }
-        
-        dismiss()
     }
     
     func searchForAddressWithText(searchText: String) {
@@ -149,7 +158,6 @@ class LocationFinderViewController: UIViewController
                 if let _ = place.location {
                     SettingsController.sharedContoller.lastSearchedPlace = place
                     self.delegate?.locationFinderViewControllerDidSelectPlace(place)
-                    self.dismiss()
                 }
                 else {
                     //self.searchHelperLabel.text = self.searchErrorMessage + " \(searchText)"
@@ -161,6 +169,17 @@ class LocationFinderViewController: UIViewController
         }
     }
 
+}
+
+extension LocationFinderViewController: CLLocationManagerDelegate
+{
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .AuthorizedWhenInUse {
+            delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
+        }
+    }
+    
 }
 
 extension LocationFinderViewController: UITextFieldDelegate

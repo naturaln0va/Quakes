@@ -8,11 +8,12 @@ class DetailViewController: UITableViewController {
 
     private lazy var mapView: MKMapView = {
         let map = MKMapView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: 220.0))
-        map.showsUserLocation = true
         map.userInteractionEnabled = false
+        map.delegate = self
         return map
     }()
     
+    let manager = CLLocationManager()
     var quakeToDisplay: Quake!
     var lastUserLocation: CLLocation?
     var distanceStringForCell: String?
@@ -29,15 +30,19 @@ class DetailViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        NetworkClient.sharedClient.getDetailForQuakeWithURL(urlForDetail: NSURL(string: quakeToDisplay.detailURL)!) { quakes, error in
-//            
-//        }
+        NetworkClient.sharedClient.getDetailForQuakeWithURL(urlForDetail: NSURL(string: quakeToDisplay.detailURL)!) { quakes, error in
+            
+        }
         
         title = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "shareButtonPressed")
         
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
-            mapView.delegate = self
+            mapView.showsUserLocation = true
+        }
+        else if CLLocationManager.authorizationStatus() == .NotDetermined {
+            manager.delegate = self
+            manager.requestWhenInUseAuthorization()
         }
         
         mapView.removeAnnotation(quakeToDisplay)
@@ -54,17 +59,46 @@ class DetailViewController: UITableViewController {
     
     internal func shareButtonPressed() {
         guard let url = NSURL(string: quakeToDisplay.weblink) else { return }
+        let options = MKMapSnapshotOptions()
+        options.region = MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1 / 2, longitudeDelta: 1 / 2))
+        options.size = mapView.frame.size
+        options.scale = UIScreen.mainScreen().scale
+        options.mapType = .Hybrid
         
-        let prompt = "A \(Quake.magnitudeFormatter.stringFromNumber(quakeToDisplay.magnitude)!) magnitude earthquake happened \(relativeStringForDate(quakeToDisplay.timestamp)) ago near \(quakeToDisplay.name.componentsSeparatedByString(" of ").last!)."
-        let items = [prompt, url, quakeToDisplay.location]
-        
-        dispatch_async(dispatch_get_main_queue()) {
-            self.presentViewController(UIActivityViewController(
-                activityItems: items,
-                applicationActivities: nil),
-                animated: true,
-                completion: nil
-            )
+        MKMapSnapshotter(options: options).startWithCompletionHandler { snapshot, error in
+            
+            let prompt = "A \(Quake.magnitudeFormatter.stringFromNumber(self.quakeToDisplay.magnitude)!) magnitude earthquake happened \(relativeStringForDate(self.quakeToDisplay.timestamp)) ago near \(self.quakeToDisplay.name.componentsSeparatedByString(" of ").last!)."
+            var items = [prompt, url, self.quakeToDisplay.location]
+            
+            if let shot = snapshot where error == nil {
+                let pin = MKPinAnnotationView(annotation: nil, reuseIdentifier: nil)
+                let image = shot.image
+                
+                UIGraphicsBeginImageContextWithOptions(image.size, true, image.scale)
+                image.drawAtPoint(CGPoint.zero)
+                
+                let visibleRect = CGRect(origin: CGPoint.zero, size: image.size)
+                var point = shot.pointForCoordinate(self.quakeToDisplay.coordinate)
+                if visibleRect.contains(point) {
+                    point.x = point.x + pin.centerOffset.x - (pin.bounds.size.width / 2)
+                    point.y = point.y + pin.centerOffset.y - (pin.bounds.size.height / 2)
+                    pin.image?.drawAtPoint(point)
+                }
+                
+                let compositeImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                
+                items.append(compositeImage)
+            }
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                self.presentViewController(UIActivityViewController(
+                    activityItems: items,
+                    applicationActivities: nil),
+                    animated: true,
+                    completion: nil
+                )
+            }
         }
     }
     
@@ -137,41 +171,43 @@ class DetailViewController: UITableViewController {
 
 }
 
+extension DetailViewController: CLLocationManagerDelegate
+{
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .AuthorizedWhenInUse {
+            mapView.showsUserLocation = true
+        }
+    }
+    
+}
+
 extension DetailViewController: MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation)
     {
-        if let lastLocation = lastUserLocation {
-            guard let currentUserLocation = userLocation.location
-                where lastLocation.distanceFromLocation(currentUserLocation) > 25.0 else {
-                    return
-            }
-            
-            if currentUserLocation.distanceFromLocation(quakeToDisplay.location) > 2500 {
-                let indexPathToUpdate = NSIndexPath(forRow: 5, inSection: 0)
-                if let userLocation = userLocation.location {
-                    distanceStringForCell = Quake.distanceFormatter.stringFromMeters(userLocation.distanceFromLocation(quakeToDisplay.location))
-                    tableView.reloadRowsAtIndexPaths([indexPathToUpdate], withRowAnimation: .Automatic)
-                }
-                return
-            }
+        guard let userLocation = userLocation.location where userLocation.horizontalAccuracy > 0 else {
+            return
         }
         
-        let center = CLLocationCoordinate2D(
-            latitude: userLocation.coordinate.latitude - (userLocation.coordinate.latitude - quakeToDisplay.coordinate.latitude) / 2,
-            longitude: userLocation.coordinate.longitude - (userLocation.coordinate.longitude - quakeToDisplay.coordinate.longitude) / 2
-        )
-        let span = MKCoordinateSpan(
-            latitudeDelta: max(1 / 55, abs(userLocation.coordinate.latitude - quakeToDisplay.coordinate.latitude) * 2.5),
-            longitudeDelta: max(1 / 55, abs(userLocation.coordinate.longitude - quakeToDisplay.coordinate.longitude) * 2.5)
-        )
-        
-        if CLLocationCoordinate2DIsValid(center) {
-            let region = MKCoordinateRegionMake(center, span)
-            mapView.setRegion(mapView.regionThatFits(region), animated: true)
+        if let lastLocation = lastUserLocation where lastLocation.distanceFromLocation(userLocation) > 25.0 {
+            return
         }
         
-        lastUserLocation = userLocation.location
+        if userLocation.distanceFromLocation(quakeToDisplay.location) > 2250.0 {
+            return
+        }
+        
+        distanceStringForCell = Quake.distanceFormatter.stringFromMeters(userLocation.distanceFromLocation(quakeToDisplay.location))
+        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 5, inSection: 0)], withRowAnimation: .Automatic)
+        
+        let userMapPoint = MKMapPointForCoordinate(userLocation.coordinate)
+        let quakeMapPoint = MKMapPointForCoordinate(quakeToDisplay.coordinate)
+        
+        let mapRect = MKMapRectMake(min(userMapPoint.x, quakeMapPoint.x), min(userMapPoint.y, quakeMapPoint.y), abs(userMapPoint.x - quakeMapPoint.x), abs(userMapPoint.y - quakeMapPoint.y))
+        mapView.setVisibleMapRect(mapRect, edgePadding: UIEdgeInsets(top: 55, left: 27, bottom: 55, right: 27), animated: true)
+        
+        lastUserLocation = userLocation
     }
 
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
@@ -188,15 +224,15 @@ extension DetailViewController: MKMapViewDelegate {
             annotationView.enabled = true
             annotationView.animatesDrop = false
             
-            var colorForPin = UIColor(red: 0.180,  green: 0.533,  blue: 0.180, alpha: 1.0)
+            var colorForPin = StyleController.greenQuakeColor
             if quakeToDisplay.magnitude >= 4.0 {
-                colorForPin = UIColor(red: 0.667,  green: 0.224,  blue: 0.224, alpha: 1.0)
+                colorForPin = StyleController.redQuakeColor
             }
             else if quakeToDisplay.magnitude >= 3.0 {
-                colorForPin = UIColor(red: 0.799,  green: 0.486,  blue: 0.163, alpha: 1.0)
+                colorForPin = StyleController.orangeQuakeColor
             }
             else {
-                colorForPin = UIColor(red: 0.180,  green: 0.533,  blue: 0.180, alpha: 1.0)
+                colorForPin = StyleController.greenQuakeColor
             }
             
             annotationView.pinTintColor = colorForPin

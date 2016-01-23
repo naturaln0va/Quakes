@@ -9,50 +9,79 @@ class MapViewController: UIViewController
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var locateButton: UIButton!
     
-    var quakesToDisplay: [Quake]!
+    var quakesToDisplay: [Quake]?
     var shouldContinueUpdatingUserLocation = true
-    
-    init(quakes: [Quake]) {
-        quakesToDisplay = quakes
-        super.init(nibName: String(MapViewController), bundle: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    let manager = CLLocationManager()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        print("ann: \(quakesToDisplay)")
-        
+        mapView.showsScale = true
         mapView.showsCompass = true
         mapView.delegate = self
+        
+        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
+            mapView.showsUserLocation = true
+        }
+        else if CLLocationManager.authorizationStatus() == .NotDetermined {
+            manager.delegate = self
+            manager.requestWhenInUseAuthorization()
+        }
+        
+        locateButton.addTarget(self, action: "recenterMapButtonPressed", forControlEvents: .TouchUpInside)
     }
     
-    func refreshMapWithQuakesWithUserLocation() {
-        mapView.removeAnnotations(mapView.annotations)
-        let deltaDegreeSpan: Double = 1 / 55.5
+    override func viewWillAppear(animated: Bool)
+    {
+        super.viewWillAppear(animated)
         
-        if SettingsController.sharedContoller.lastLocationOption == LocationOption.Nearby.rawValue {
-            var locations = quakesToDisplay.map { $0.location }
+        fetchQuakesAndDisplay()
+    }
+    
+    func fetchQuakesAndDisplay()
+    {
+        do {
+            quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
             
-            if let userLocation = mapView.userLocation.location {
+            if let quakes = quakesToDisplay {
+                refreshMapWithQuakes(quakes, animated: false)
+            }
+        }
+        catch {
+            print("Error loading quakes from persistent store \(error)")
+        }
+    }
+    
+    func recenterMapButtonPressed() {
+        if let quakes = quakesToDisplay {
+            refreshMapWithQuakes(quakes, animated: true)
+        }
+    }
+    
+    func refreshMapWithQuakes(quakes: [Quake], animated: Bool) {
+        if let quakesBeingDisplayed = mapView.annotations as? [Quake] where quakesBeingDisplayed != quakes {
+            mapView.removeAnnotations(quakesBeingDisplayed)
+            mapView.addAnnotations(quakes)
+        }
+        else if mapView.annotations.count == 0 {
+            mapView.addAnnotations(quakes)
+        }
+        
+        if SettingsController.sharedContoller.lastLocationOption == LocationOption.Nearby.rawValue || SettingsController.sharedContoller.lastSearchedPlace != nil {
+            var locations = quakes.map { $0.location }
+            
+            if let userLocation = mapView.userLocation.location where SettingsController.sharedContoller.lastLocationOption == LocationOption.Nearby.rawValue {
                 locations.append(userLocation)
             }
             
-            var center = CLLocationCoordinate2D()
-            var span = MKCoordinateSpan()
+            var mapRect = MKMapRect()
             if locations.count == 1 {
-                center = CLLocationCoordinate2D(
+                let center = CLLocationCoordinate2D(
                     latitude: mapView.userLocation.location!.coordinate.latitude,
                     longitude: mapView.userLocation.location!.coordinate.longitude
                 )
-                span = MKCoordinateSpan(
-                    latitudeDelta: deltaDegreeSpan,
-                    longitudeDelta: deltaDegreeSpan
-                )
+                mapRect = MKMapRect(origin: MKMapPoint(x: center.latitude, y: center.longitude), size: MKMapSize(width: 650, height: 650))
             }
             else {
                 var topLeftCoord = CLLocationCoordinate2D(
@@ -83,40 +112,43 @@ class MapViewController: UIViewController
                     )
                 }
                 
-                center = CLLocationCoordinate2D(
-                    latitude: topLeftCoord.latitude - (topLeftCoord.latitude - bottomRightCoord.latitude) / 2,
-                    longitude: topLeftCoord.longitude - (topLeftCoord.longitude - bottomRightCoord.longitude) / 2
-                )
-                span = MKCoordinateSpan(
-                    latitudeDelta: abs(topLeftCoord.latitude - bottomRightCoord.latitude) * 1.35,
-                    longitudeDelta: abs(topLeftCoord.longitude - bottomRightCoord.longitude) * 1.35
+                let topLeftPoint = MKMapPointForCoordinate(topLeftCoord)
+                let bottomRightPoint = MKMapPointForCoordinate(bottomRightCoord)
+                
+                mapRect = MKMapRectMake(
+                    min(topLeftPoint.x, bottomRightPoint.x),
+                    min(topLeftPoint.y, bottomRightPoint.y),
+                    abs(topLeftPoint.x - bottomRightPoint.x),
+                    abs(topLeftPoint.y - bottomRightPoint.y)
                 )
             }
             
-            let fittedRegion = mapView.regionThatFits(MKCoordinateRegionMake(center, span))
-            
-            mapView.setRegion(fittedRegion, animated: false)
+            let fittedRect = mapView.mapRectThatFits(mapRect, edgePadding: UIEdgeInsets(top: 55, left: 27, bottom: 55, right: 27))
+            mapView.setVisibleMapRect(fittedRect, animated: animated)
         }
         else {
-            var regionForQuake = MKCoordinateRegion()
-            if let latestQuake = quakesToDisplay.sort({ $0.timestamp.timeIntervalSince1970 > $1.timestamp.timeIntervalSince1970 }).first {
-                regionForQuake = MKCoordinateRegion(
-                    center: latestQuake.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 1 / 2, longitudeDelta: 1 / 2)
+            var mapRect = MKMapRect()
+            var centerPoint = CLLocationCoordinate2D()
+            if let latestQuake = quakes.sort({ $0.timestamp.timeIntervalSince1970 > $1.timestamp.timeIntervalSince1970 }).first {
+                centerPoint = latestQuake.coordinate
+                mapRect = MKMapRect(
+                    origin: MKMapPointMake(MKMapPointForCoordinate(latestQuake.coordinate).x / 2, MKMapPointForCoordinate(latestQuake.coordinate).y / 2),
+                    size: MKMapSize(width: MKMapSizeWorld.width / 10, height: MKMapSizeWorld.height / 10)
                 )
             }
             else {
                 if let userLocation = mapView.userLocation.location {
-                    regionForQuake = MKCoordinateRegion(
-                        center: userLocation.coordinate,
-                        span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+                    centerPoint = userLocation.coordinate
+                    mapRect = MKMapRect(
+                        origin: MKMapPointForCoordinate(userLocation.coordinate),
+                        size: MKMapSize(width: MKMapSizeWorld.width / 10, height: MKMapSizeWorld.height / 10)
                     )
                 }
             }
-            mapView.setRegion(mapView.regionThatFits(regionForQuake), animated: false)
+            
+            mapView.setVisibleMapRect(mapRect, animated: false)
+            mapView.setCenterCoordinate(centerPoint, animated: animated)
         }
-        
-        mapView.addAnnotations(quakesToDisplay)
     }
 
 }
@@ -126,8 +158,8 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
         guard shouldContinueUpdatingUserLocation else { return }
         
-        if let _ = userLocation.location {
-            refreshMapWithQuakesWithUserLocation()
+        if let _ = userLocation.location, let quakes = quakesToDisplay {
+            refreshMapWithQuakes(quakes, animated: false)
             shouldContinueUpdatingUserLocation = false
         }
     }
@@ -138,29 +170,35 @@ extension MapViewController: MKMapViewDelegate {
             return nil
         }
         
-        if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("Quake") as? MKPinAnnotationView {
-            return annotationView
+        let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "Quake")
+        annotationView.enabled = true
+        annotationView.animatesDrop = false
+        annotationView.canShowCallout = true
+        
+        var colorForPin = StyleController.greenQuakeColor
+        if annotation.magnitude >= 4.0 {
+            colorForPin = StyleController.redQuakeColor
+        }
+        else if annotation.magnitude >= 3.0 {
+            colorForPin = StyleController.orangeQuakeColor
         }
         else {
-            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "Quake")
-            annotationView.enabled = true
-            annotationView.animatesDrop = false
-            annotationView.canShowCallout = true
-            
-            var colorForPin = UIColor(red: 0.180,  green: 0.533,  blue: 0.180, alpha: 1.0)
-            if annotation.magnitude >= 4.0 {
-                colorForPin = UIColor(red: 0.667,  green: 0.224,  blue: 0.224, alpha: 1.0)
-            }
-            else if annotation.magnitude >= 3.0 {
-                colorForPin = UIColor(red: 0.799,  green: 0.486,  blue: 0.163, alpha: 1.0)
-            }
-            else {
-                colorForPin = UIColor(red: 0.180,  green: 0.533,  blue: 0.180, alpha: 1.0)
-            }
-            
-            annotationView.pinTintColor = colorForPin
-            
-            return annotationView
+            colorForPin = StyleController.greenQuakeColor
+        }
+        
+        annotationView.pinTintColor = colorForPin
+        
+        return annotationView
+    }
+    
+}
+
+extension MapViewController: CLLocationManagerDelegate
+{
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .AuthorizedWhenInUse {
+            mapView.showsUserLocation = true
         }
     }
     

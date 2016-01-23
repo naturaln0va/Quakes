@@ -16,12 +16,12 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnz-J2-buz">
+                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dnz-J2-buz">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                 </mapView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HBP-Ei-0OC">
-                    <rect key="frame" x="32" y="600" width="35" height="35"/>
-                    <state key="normal" image="locate-map-button"/>
+                    <rect key="frame" x="32" y="593" width="42" height="42"/>
+                    <state key="normal" image="recenter"/>
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -34,9 +34,10 @@
                 <constraint firstAttribute="bottom" secondItem="HBP-Ei-0OC" secondAttribute="bottom" constant="32" id="yGB-dI-dMg"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+            <point key="canvasLocation" x="323.5" y="379.5"/>
         </view>
     </objects>
     <resources>
-        <image name="locate-map-button" width="35" height="35"/>
+        <image name="recenter" width="42" height="42"/>
     </resources>
 </document>

@@ -21,7 +21,7 @@ class QuakesViewController: UITableViewController
         
         button.backgroundColor = StyleController.darkerMainAppColor
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.setTitleColor(StyleController.contrastColor, forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         button.addTarget(self, action: "titleButtonPressed", forControlEvents: .TouchUpInside)
         button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
         button.layer.cornerRadius = 4.0
@@ -34,7 +34,7 @@ class QuakesViewController: UITableViewController
     private let defaults = NSUserDefaults.standardUserDefaults()
     private let geocoder = CLGeocoder()
     private var transitionAnimator: TextBarAnimator?
-    private var mapViewController: MapViewController?
+    private var mapViewController = MapViewController()
 
     var currentLocation: CLLocation?
 
@@ -105,54 +105,60 @@ class QuakesViewController: UITableViewController
         presentViewController(finderVC, animated: true, completion: nil)
     }
     
+    private func commonFetchedQuakes(quakes: [ParsedQuake]) {
+        PersistentController.sharedController.saveQuakes(quakes)
+        if mapViewController.view.superview != nil {
+            mapViewController.fetchQuakesAndDisplay()
+        }
+        
+        if let refresher = self.refreshControl where refresher.refreshing {
+            refresher.endRefreshing()
+        }
+    }
+    
     // MARK: - Actions
     func titleButtonPressed() {
         presentFinder()
     }
     
     func showMap() {
-        if let quakes = fetchedResultsController.fetchedObjects as? [Quake] {
-            let mapVC = MapViewController(quakes: quakes)
-            mapViewController = mapVC
-            
-            mapVC.view.frame = CGRect(x: 0.0, y: -CGRectGetHeight(view.bounds), width: CGRectGetWidth(view.bounds), height: CGRectGetHeight(view.bounds))
-            view.addSubview(mapVC.view)
-            
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-                image: UIImage(named: "pressed-world-bar-icon"),
-                landscapeImagePhone: nil,
-                style: .Plain,
-                target: self,
-                action: "hideMap"
-            )
-            
-            UIView.animateWithDuration(0.345) {
-                mapVC.view.frame = self.view.bounds
-            }
+        mapViewController.view.frame = CGRect(x: 0.0, y: -CGRectGetHeight(view.bounds), width: CGRectGetWidth(view.bounds), height: CGRectGetHeight(view.bounds))
+        view.addSubview(mapViewController.view)
+        
+        mapViewController.fetchQuakesAndDisplay()
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "pressed-world-bar-icon"),
+            landscapeImagePhone: nil,
+            style: .Plain,
+            target: self,
+            action: "hideMap"
+        )
+        
+        UIView.animateWithDuration(0.345) {
+            self.mapViewController.view.frame = self.view.bounds
         }
     }
     
     func hideMap() {
-        if let mapVC = mapViewController {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-                image: UIImage(named: "world-bar-icon"),
-                landscapeImagePhone: nil,
-                style: .Plain,
-                target: self,
-                action: "showMap"
-            )
-            
-            UIView.animateWithDuration(0.345, animations: {
-                mapVC.view.frame.origin.y = -CGRectGetHeight(self.view.bounds)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "world-bar-icon"),
+            landscapeImagePhone: nil,
+            style: .Plain,
+            target: self,
+            action: "showMap"
+        )
+        
+        UIView.animateWithDuration(0.345, animations: {
+            self.mapViewController.view.frame.origin.y = -CGRectGetHeight(self.view.bounds)
             }, completion: { _ in
-                mapVC.view.removeFromSuperview()
-            })
-        }
+                self.mapViewController.view.removeFromSuperview()
+        })
     }
     
     func fetchQuakes() {
         if SettingsController.sharedContoller.fisrtLaunchDate == nil {
-            SettingsController.sharedContoller.lastLocationOption = LocationOption.Nearby.rawValue
+            SettingsController.sharedContoller.lastLocationOption = LocationOption.World.rawValue
         }
         
         if let lastPlace = SettingsController.sharedContoller.lastSearchedPlace {
@@ -163,11 +169,7 @@ class QuakesViewController: UITableViewController
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
 
                 if let quakes = quakes where error == nil {
-                    PersistentController.sharedController.saveQuakes(quakes)
-                    
-                    if let refresher = self.refreshControl where refresher.refreshing {
-                        refresher.endRefreshing()
-                    }
+                    self.commonFetchedQuakes(quakes)
                 }
             }
             return
@@ -184,11 +186,7 @@ class QuakesViewController: UITableViewController
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         
                         if let quakes = quakes where error == nil {
-                            PersistentController.sharedController.saveQuakes(quakes)
-                            
-                            if let refresher = self.refreshControl where refresher.refreshing {
-                                refresher.endRefreshing()
-                            }
+                            self.commonFetchedQuakes(quakes)
                         }
                     }
                 }
@@ -218,11 +216,7 @@ class QuakesViewController: UITableViewController
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     
                     if let quakes = quakes where error == nil {
-                        PersistentController.sharedController.saveQuakes(quakes)
-                        
-                        if let refresher = self.refreshControl where refresher.refreshing {
-                            refresher.endRefreshing()
-                        }
+                        self.commonFetchedQuakes(quakes)
                     }
                 }
                 break
@@ -234,11 +228,7 @@ class QuakesViewController: UITableViewController
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     
                     if let quakes = quakes where error == nil {
-                        PersistentController.sharedController.saveQuakes(quakes)
-                        
-                        if let refresher = self.refreshControl where refresher.refreshing {
-                            refresher.endRefreshing()
-                        }
+                        self.commonFetchedQuakes(quakes)
                     }
                 }
                 break
@@ -407,11 +397,6 @@ extension QuakesViewController: NSFetchedResultsControllerDelegate
     func controllerDidChangeContent(controller: NSFetchedResultsController)
     {
         tableView.endUpdates()
-        
-        if let mapVC = self.mapViewController, let quakes = self.fetchedResultsController.fetchedObjects as? [Quake] {
-            mapVC.quakesToDisplay = quakes
-            mapVC.refreshMapWithQuakesWithUserLocation()
-        }
     }
     
 }
@@ -421,6 +406,8 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
     
     // MARK: - LocationSelectionViewController Delegate
     func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark) {
+        dismissViewControllerAnimated(true, completion: nil)
+        
         SettingsController.sharedContoller.lastSearchedPlace = placemark
         SettingsController.sharedContoller.lastLocationOption = nil
         
@@ -430,6 +417,8 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
     }
     
     func locationFinderViewControllerDidSelectOption(option: LocationOption) {
+        dismissViewControllerAnimated(true, completion: nil)
+        
         SettingsController.sharedContoller.lastLocationOption = option.rawValue
         SettingsController.sharedContoller.lastSearchedPlace = nil
         

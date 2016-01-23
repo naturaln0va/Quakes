@@ -39,8 +39,14 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             return
         }
         
+        finderVC.view.frame = UIScreen.mainScreen().bounds
+        containerView.frame = UIScreen.mainScreen().bounds
+        
         if presenting {
-            let finalFrame = finderVC.searchTextField.frame
+            let finalFrame = CGRect(
+                origin: finderVC.searchTextField.frame.origin,
+                size: CGSize(width: UIScreen.mainScreen().bounds.width - 27 * 2, height: finderVC.searchTextField.frame.height)
+            )
             
             containerView.addSubview(finderVC.view)
             finderVC.view.alpha = 0.0

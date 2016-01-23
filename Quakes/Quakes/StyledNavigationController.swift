@@ -16,13 +16,13 @@ class StyledNavigationController: UINavigationController
         navigationBar.translucent = false
         
         navigationBar.titleTextAttributes = [
-            NSForegroundColorAttributeName: StyleController.contrastColor,
+            NSForegroundColorAttributeName: StyleController.darkerMainAppColor,
             NSFontAttributeName: UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
         ]
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+        return .Default
     }
 
 }
