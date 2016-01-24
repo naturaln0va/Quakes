@@ -60,7 +60,7 @@ extension ParsedNearbyCity: MKAnnotation
     }
     
     var subtitle: String? {
-        return [distanceFormatter.stringFromDistance(distance), directionString].joinWithSeparator(" ")
+        return [distanceFormatter.stringFromDistance(distance * 1000), "from the center of the quake."].joinWithSeparator(" ")
     }
     
     var coordinate: CLLocationCoordinate2D {

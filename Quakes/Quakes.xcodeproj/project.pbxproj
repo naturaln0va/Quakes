@@ -98,6 +98,15 @@
 			name = Operations;
 			sourceTree = "<group>";
 		};
+		48190D361C558B63009712F6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				48190D341C558838009712F6 /* iAd.framework */,
+			);
+			name = Frameworks;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		483D1B151C3C806E003A5970 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,7 +150,6 @@
 		69B30FD61C3B051600241D79 = {
 			isa = PBXGroup;
 			children = (
-				48190D341C558838009712F6 /* iAd.framework */,
 				69B30FE11C3B051600241D79 /* Quakes */,
 				69B30FE01C3B051600241D79 /* Products */,
 			);
@@ -162,6 +170,7 @@
 				69150F251C3DDC9D00D9D3BF /* Cells */,
 				69B30FF81C3B121C00241D79 /* Controllers */,
 				483D1B151C3C806E003A5970 /* Extensions */,
+				48190D361C558B63009712F6 /* Frameworks */,
 				699CA6071C3C529F0094F48A /* Model */,
 				69B30FF71C3B0AF100241D79 /* Networking */,
 				48190D2D1C553A9B009712F6 /* Operations */,

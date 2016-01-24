@@ -19,8 +19,11 @@ class MapViewController: UIViewController
     init(quakeToDisplay quake: Quake?, nearbyCities: [ParsedNearbyCity]?) {
         super.init(nibName: String(MapViewController), bundle: nil)
         
-        quakeToDisplay = quake
-        self.nearbyCitiesToDisplay = nearbyCities
+        if nearbyCities != nil && quake != nil {
+            quakeToDisplay = quake
+            self.nearbyCitiesToDisplay = nearbyCities
+            title = "Nearby Cities"
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -241,7 +244,7 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
         if annotation is Quake {
-            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "Quake")
+            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(Quake))
             annotationView.enabled = true
             annotationView.animatesDrop = false
             annotationView.canShowCallout = true
@@ -262,11 +265,11 @@ extension MapViewController: MKMapViewDelegate {
             return annotationView
         }
         else if annotation is ParsedNearbyCity {
-            let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "City")
+            let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: String(ParsedNearbyCity))
             
             annotationView.enabled = true
             annotationView.canShowCallout = true
-            annotationView.image = UIImage(named: "city-map-pin")
+            annotationView.image = (annotation as! ParsedNearbyCity) == nearbyCitiesToDisplay!.first ? UIImage(named: "selected-city-map-pin") : UIImage(named: "city-map-pin")
             annotationView.tintColor = UIColor.redColor()
             
             return annotationView

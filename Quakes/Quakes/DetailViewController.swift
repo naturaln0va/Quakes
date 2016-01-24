@@ -205,7 +205,9 @@ class DetailViewController: UITableViewController {
             }
         }
         else if let citiesToDisplay = parsedNearbyCities where indexPath.section == 1 && hasNearbyCityInfo {
-            navigationController?.pushViewController(MapViewController(quakeToDisplay: quakeToDisplay, nearbyCities: citiesToDisplay), animated: true)
+            let selectedCity = citiesToDisplay[indexPath.row]
+            let sortedCities = citiesToDisplay.sort({ $0.0.cityName == selectedCity.cityName })
+            navigationController?.pushViewController(MapViewController(quakeToDisplay: quakeToDisplay, nearbyCities: sortedCities), animated: true)
         }
     }
     
