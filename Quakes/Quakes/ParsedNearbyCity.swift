@@ -1,5 +1,6 @@
 
 import Foundation
+import MapKit
 
 class ParsedNearbyCity: NSObject, NSCoding
 {
@@ -8,6 +9,17 @@ class ParsedNearbyCity: NSObject, NSCoding
     let distance, latitude, longitude: Double
     
     let cityName, directionString: String
+    
+    private let distanceFormatter: MKDistanceFormatter = {
+        let formatter = MKDistanceFormatter()
+        formatter.unitStyle = .Abbreviated
+        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+        return formatter
+    }()
+    
+    var location: CLLocation {
+        return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: kCLLocationAccuracyBest, verticalAccuracy: kCLLocationAccuracyBest, timestamp: NSDate.distantFuture())
+    }
     
     init(dict: [String: AnyObject]) {
         distance = dict["distance"] as? Double ?? 0.0
@@ -36,6 +48,23 @@ class ParsedNearbyCity: NSObject, NSCoding
         coder.encodeDouble(longitude, forKey: "longitude")
         coder.encodeObject(cityName, forKey: "cityName")
         coder.encodeObject(directionString, forKey: "directionString")
+    }
+    
+}
+
+extension ParsedNearbyCity: MKAnnotation
+{
+    
+    var title: String? {
+        return [directionString, cityName].joinWithSeparator(" ")
+    }
+    
+    var subtitle: String? {
+        return [distanceFormatter.stringFromDistance(distance), directionString].joinWithSeparator(" ")
+    }
+    
+    var coordinate: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
     
 }

@@ -5,11 +5,12 @@ import CoreLocation
 class SettingsController
 {
     
-    static let sharedContoller = SettingsController()
+    static let sharedController = SettingsController()
     
     private static let kCachedPlacemarkKey = "cachedPlace"
     private static let kLastSearchedKey = "lastsearched"
     private static let kSearchRadiusKey = "searchRadius"
+    private static let kUnitStyleKey = "unitStyle"
     private static let kLastLocationOptionKey = "lastLocationOption"
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
     
@@ -18,6 +19,7 @@ class SettingsController
     lazy private var baseDefaults:[String: AnyObject] = {
         return [
             kSearchRadiusKey : 150.0,
+            kUnitStyleKey: true
         ]
     }()
     
@@ -54,6 +56,16 @@ class SettingsController
                 defaults.setObject(nil, forKey: SettingsController.kCachedPlacemarkKey)
                 defaults.synchronize()
             }
+        }
+    }
+    
+    var isUnitStyleImperial: Bool {
+        get {
+            return defaults.boolForKey(SettingsController.kUnitStyleKey)
+        }
+        set {
+            defaults.setBool(newValue, forKey: SettingsController.kUnitStyleKey)
+            defaults.synchronize()
         }
     }
     

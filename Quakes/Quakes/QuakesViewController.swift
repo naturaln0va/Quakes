@@ -2,6 +2,7 @@
 import UIKit
 import CoreData
 import CoreLocation
+import iAd
 
 
 class QuakesViewController: UITableViewController
@@ -73,6 +74,8 @@ class QuakesViewController: UITableViewController
                 
         preformFetch()
         fetchQuakes()
+        
+        canDisplayBannerAds = true
     }
     
     private func preformFetch() {
@@ -120,7 +123,7 @@ class QuakesViewController: UITableViewController
     
     // MARK: - Actions
     func mapButtonPressed() {
-        navigationController?.pushViewController(MapViewController(), animated: true)
+        navigationController?.pushViewController(MapViewController(quakeToDisplay: nil, nearbyCities: nil), animated: true)
     }
     
     func titleButtonPressed() {
@@ -132,15 +135,15 @@ class QuakesViewController: UITableViewController
     }
     
     func fetchQuakes() {
-        if SettingsController.sharedContoller.fisrtLaunchDate == nil {
-            SettingsController.sharedContoller.lastLocationOption = LocationOption.World.rawValue
+        if SettingsController.sharedController.fisrtLaunchDate == nil {
+            SettingsController.sharedController.lastLocationOption = LocationOption.World.rawValue
         }
         
-        if let lastPlace = SettingsController.sharedContoller.lastSearchedPlace {
+        if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
             setTitleButtonText("\(lastPlace.cityStateString())")
 
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedContoller.searchRadius) { quakes, error in
+            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedController.searchRadius) { quakes, error in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
 
                 if let quakes = quakes where error == nil {
@@ -150,14 +153,14 @@ class QuakesViewController: UITableViewController
             return
         }
         
-        if let option = SettingsController.sharedContoller.lastLocationOption {
+        if let option = SettingsController.sharedController.lastLocationOption {
             switch option {
             case LocationOption.Nearby.rawValue:
                 if let current = currentLocation {
-                    setTitleButtonText("\(SettingsController.sharedContoller.cachedAddress!.cityStateString())")
+                    setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                    NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate, radius: SettingsController.sharedContoller.searchRadius) { quakes, error in
+                    NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate, radius: SettingsController.sharedController.searchRadius) { quakes, error in
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         
                         if let quakes = quakes where error == nil {
@@ -177,7 +180,7 @@ class QuakesViewController: UITableViewController
                         locationManager.delegate = self
                         locationManager.requestWhenInUseAuthorization()
                     default:
-                        SettingsController.sharedContoller.lastLocationOption = nil
+                        SettingsController.sharedController.lastLocationOption = nil
                         presentFinder()
                         break
                     }
@@ -279,7 +282,7 @@ extension QuakesViewController: CLLocationManagerDelegate
         }
         else if status == .Denied {
             stopLocationManager()
-            SettingsController.sharedContoller.lastLocationOption = nil
+            SettingsController.sharedController.lastLocationOption = nil
             presentFinder()
         }
     }
@@ -289,11 +292,11 @@ extension QuakesViewController: CLLocationManagerDelegate
             currentLocation = lastLocation
             stopLocationManager()
             
-            if let cachedAddress = SettingsController.sharedContoller.cachedAddress,
+            if let cachedAddress = SettingsController.sharedController.cachedAddress,
                 let cachedLocation = cachedAddress.location where lastLocation.distanceFromLocation(cachedLocation) > 2500 {
                     geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] places, error in
                         if let placemark = places?.first where error == nil {
-                            SettingsController.sharedContoller.cachedAddress = placemark
+                            SettingsController.sharedController.cachedAddress = placemark
                             self.setTitleButtonText("\(placemark.cityStateString())")
                         }
                         else {
@@ -304,7 +307,7 @@ extension QuakesViewController: CLLocationManagerDelegate
                     }
             }
             else {
-                if let cachedAddress = SettingsController.sharedContoller.cachedAddress {
+                if let cachedAddress = SettingsController.sharedController.cachedAddress {
                     titleViewButton.setTitle("\(cachedAddress.cityStateString())", forState: .Normal)
                     titleViewButton.sizeToFit()
                     fetchQuakes()
@@ -313,7 +316,7 @@ extension QuakesViewController: CLLocationManagerDelegate
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                     geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
                         if let placemark = place?.first where error == nil {
-                            SettingsController.sharedContoller.cachedAddress = placemark
+                            SettingsController.sharedController.cachedAddress = placemark
                             self.setTitleButtonText("\(placemark.cityStateString())")
                         }
                         else {
@@ -383,8 +386,8 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
     func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark) {
         dismissViewControllerAnimated(true, completion: nil)
         
-        SettingsController.sharedContoller.lastSearchedPlace = placemark
-        SettingsController.sharedContoller.lastLocationOption = nil
+        SettingsController.sharedController.lastSearchedPlace = placemark
+        SettingsController.sharedController.lastLocationOption = nil
         
         PersistentController.sharedController.deleteAllQuakes()
         
@@ -394,8 +397,8 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
     func locationFinderViewControllerDidSelectOption(option: LocationOption) {
         dismissViewControllerAnimated(true, completion: nil)
         
-        SettingsController.sharedContoller.lastLocationOption = option.rawValue
-        SettingsController.sharedContoller.lastSearchedPlace = nil
+        SettingsController.sharedController.lastLocationOption = option.rawValue
+        SettingsController.sharedController.lastSearchedPlace = nil
         
         PersistentController.sharedController.deleteAllQuakes()
         

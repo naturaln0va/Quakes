@@ -11,6 +11,7 @@
 		48190D2F1C553C9B009712F6 /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D2E1C553C9B009712F6 /* ConcurrentOperation.swift */; };
 		48190D311C553F81009712F6 /* ParsedNearbyCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D301C553F81009712F6 /* ParsedNearbyCity.swift */; };
 		48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */; };
+		48190D351C558838009712F6 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48190D341C558838009712F6 /* iAd.framework */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
 		4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4871B7A81C4AC96800C466DD /* MapViewController.xib */; };
@@ -44,6 +45,7 @@
 		48190D2E1C553C9B009712F6 /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
 		48190D301C553F81009712F6 /* ParsedNearbyCity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedNearbyCity.swift; sourceTree = "<group>"; };
 		48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadNearbyCitiesOperation.swift; sourceTree = "<group>"; };
+		48190D341C558838009712F6 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Additions.swift"; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4871B7A81C4AC96800C466DD /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48190D351C558838009712F6 /* iAd.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +141,7 @@
 		69B30FD61C3B051600241D79 = {
 			isa = PBXGroup;
 			children = (
+				48190D341C558838009712F6 /* iAd.framework */,
 				69B30FE11C3B051600241D79 /* Quakes */,
 				69B30FE01C3B051600241D79 /* Products */,
 			);

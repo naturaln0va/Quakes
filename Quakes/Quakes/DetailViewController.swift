@@ -50,8 +50,11 @@ class DetailViewController: UITableViewController {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let cities = downloadNearbyCitiesOperation.downloadedCities where cities.count > 0 {
                     PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: cities)
-                    self.parsedNearbyCities = cities
-                    self.hasNearbyCityInfo = true
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.parsedNearbyCities = cities
+                        self.hasNearbyCityInfo = true
+                    }
                 }
             }
             
@@ -200,6 +203,9 @@ class DetailViewController: UITableViewController {
             dispatch_async(dispatch_get_main_queue()) {
                 self.presentViewController(safariVC, animated: true, completion: nil)
             }
+        }
+        else if let citiesToDisplay = parsedNearbyCities where indexPath.section == 1 && hasNearbyCityInfo {
+            navigationController?.pushViewController(MapViewController(quakeToDisplay: quakeToDisplay, nearbyCities: citiesToDisplay), animated: true)
         }
     }
     

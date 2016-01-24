@@ -36,7 +36,7 @@ class LocationFinderViewController: UIViewController
         searchTextField.delegate = self
         searchTextField.becomeFirstResponder()
         
-        if let lastOption = SettingsController.sharedContoller.lastLocationOption {
+        if let lastOption = SettingsController.sharedController.lastLocationOption {
             switch lastOption {
             case LocationOption.Nearby.rawValue:
                 filterSegment.selectedSegmentIndex = 0
@@ -156,7 +156,7 @@ class LocationFinderViewController: UIViewController
                 }
                 
                 if let _ = place.location {
-                    SettingsController.sharedContoller.lastSearchedPlace = place
+                    SettingsController.sharedController.lastSearchedPlace = place
                     self.delegate?.locationFinderViewControllerDidSelectPlace(place)
                 }
                 else {
