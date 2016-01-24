@@ -76,12 +76,19 @@ class MapViewController: UIViewController
         }
     }
     
+    // MARK: - Actions
     func recenterMapButtonPressed() {
         if let quakes = quakesToDisplay {
             refreshMapWithQuakes(quakes, cities: nil, animated: true)
         }
         else if let quake = quakeToDisplay, let citiesToDisplay = nearbyCitiesToDisplay {
             refreshMapWithQuakes([quake], cities: citiesToDisplay, animated: true)
+        }
+    }
+    
+    func detailButtonPressed(sender: UIButton) {
+        if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hashValue == sender.tag }) {
+            navigationController?.pushViewController(DetailViewController(quake: quakes[index]), animated: true)
         }
     }
     
@@ -248,6 +255,14 @@ extension MapViewController: MKMapViewDelegate {
             annotationView.enabled = true
             annotationView.animatesDrop = false
             annotationView.canShowCallout = true
+            
+            let detailButton = UIButton(type: .Custom)
+            detailButton.tag = (annotation as! Quake).hashValue
+            detailButton.setImage(UIImage(named: "right-callout-arrow"), forState: .Normal)
+            detailButton.addTarget(self, action: "detailButtonPressed:", forControlEvents: .TouchUpInside)
+            detailButton.sizeToFit()
+            
+            annotationView.rightCalloutAccessoryView = detailButton
             
             var colorForPin = StyleController.greenQuakeColor
             if (annotation as! Quake).magnitude >= 4.0 {
