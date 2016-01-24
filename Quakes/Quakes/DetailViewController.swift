@@ -148,7 +148,7 @@ class DetailViewController: UITableViewController {
         
         if let url = NSURL(string: quakeToDisplay.weblink) where indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(URL: url)
-            safariVC.view.tintColor = StyleController.mainAppColor
+            safariVC.view.tintColor = StyleController.darkerMainAppColor
             dispatch_async(dispatch_get_main_queue()) {
                 self.presentViewController(safariVC, animated: true, completion: nil)
             }
