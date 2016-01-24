@@ -2,6 +2,8 @@
 import Foundation
 import CoreLocation
 
+typealias DetailURLCompletionBlock = (urlString: String?, error: NSError?) -> Void
+typealias NearbyCityCompletionBlock = (cities: [ParsedNearbyCity]?, error: NSError?) -> Void
 typealias QuakesCompletionBlock = (quakes: [ParsedQuake]?, error: NSError?) -> Void
 typealias CountCompletionBlock = (count: Int?, error: NSError?) -> Void
 
@@ -14,7 +16,6 @@ private let kUSGSAPIHost = "http://earthquake.usgs.gov/fdsnws/event/1/"
 private let kQueryMethodName = "query"
 private let kCountMethodName = "count"
 
-private let kResponseDataKeyPath = "response.data"
 private let DEBUG_REQUESTS = false
 
 class NetworkClient
@@ -65,15 +66,59 @@ class NetworkClient
         return urlString
     }
     
-    func getDetailForQuakeWithURL(urlForDetail url: NSURL, completion: QuakesCompletionBlock) {
+    func getNearbyCitiesWithURL(urlForNearbyCities url: NSURL, completion: NearbyCityCompletionBlock) {
         dispatch_async(allRequestsQueue) {
             NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
-                var quakes: [ParsedQuake]?
+                var nearbyCities: [ParsedNearbyCity]?
                 var resultError = error
                 
                 defer {
                     dispatch_async(dispatch_get_main_queue()) {
-                        completion(quakes: quakes, error: error)
+                        completion(cities: nearbyCities, error: resultError)
+                    }
+                }
+                
+                guard error == nil else { return }
+                
+                guard let data = data else {
+                    resultError = kNoResponseError
+                    return
+                }
+                
+                var dicts: [[String: AnyObject]]?
+                
+                do {
+                    dicts = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [[String: AnyObject]]
+                } catch {
+                    if DEBUG_REQUESTS { print("Error parsing JSON") }
+                    resultError = kJSONParseError
+                    return
+                }
+                
+                guard let responseDicts = dicts else {
+                    resultError = kInvalidDataError
+                    return
+                }
+                
+                if DEBUG_REQUESTS { print("Sent: \(response?.URL)\nReceived: \(responseDicts)") }
+
+                nearbyCities = responseDicts.map {
+                    return ParsedNearbyCity(dict: $0)
+                }
+            }.resume()
+        }
+
+    }
+    
+    func getDetailForQuakeWithURL(urlForDetail url: NSURL, completion: DetailURLCompletionBlock) {
+        dispatch_async(allRequestsQueue) {
+            NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
+                var detailURLString: String?
+                var resultError = error
+                
+                defer {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        completion(urlString: detailURLString, error: resultError)
                     }
                 }
                 
@@ -99,16 +144,19 @@ class NetworkClient
                     return
                 }
                 
-                print("Sent: \(response?.URL)\nReceived: \(responseDict)")
+                if DEBUG_REQUESTS { print("Sent: \(response?.URL)\nReceived: \(responseDict)") }
                 
-                guard let quakesDicts = responseDict["features"] as? [[String: AnyObject]] else {
+                guard let firstDetailDict = ((responseDict as AnyObject).valueForKeyPath("properties.products.nearby-cities") as? [[String: AnyObject]])?.first else {
                     resultError = kInvalidDataError
                     return
                 }
                 
-                if DEBUG_REQUESTS { print("Sent: \(response?.URL)\nReceived: \(responseDict)") }
+                guard let urlString = (((firstDetailDict as AnyObject).valueForKeyPath("contents") as? [String: AnyObject])?["nearby-cities.json"] as? [String: AnyObject])?["url"] as? String else {
+                    resultError = kInvalidDataError
+                    return
+                }
                 
-                quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
+                detailURLString = urlString
             }.resume()
         }
     }
@@ -154,12 +202,12 @@ class NetworkClient
                     return
                 }
                 
+                if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
+                
                 guard let quakesDicts = responseDict["features"] as? [[String: AnyObject]] else {
                     resultError = kInvalidDataError
                     return
                 }
-                
-                if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
             }.resume()

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		48190D2C1C553A96009712F6 /* DownloadDetailOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D2B1C553A96009712F6 /* DownloadDetailOperation.swift */; };
+		48190D2F1C553C9B009712F6 /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D2E1C553C9B009712F6 /* ConcurrentOperation.swift */; };
+		48190D311C553F81009712F6 /* ParsedNearbyCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D301C553F81009712F6 /* ParsedNearbyCity.swift */; };
+		48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
 		4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4871B7A81C4AC96800C466DD /* MapViewController.xib */; };
@@ -36,6 +40,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		48190D2B1C553A96009712F6 /* DownloadDetailOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadDetailOperation.swift; sourceTree = "<group>"; };
+		48190D2E1C553C9B009712F6 /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
+		48190D301C553F81009712F6 /* ParsedNearbyCity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedNearbyCity.swift; sourceTree = "<group>"; };
+		48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadNearbyCitiesOperation.swift; sourceTree = "<group>"; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Additions.swift"; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4871B7A81C4AC96800C466DD /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
@@ -77,6 +85,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		48190D2D1C553A9B009712F6 /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				48190D2E1C553C9B009712F6 /* ConcurrentOperation.swift */,
+				48190D2B1C553A96009712F6 /* DownloadDetailOperation.swift */,
+				48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */,
+			);
+			name = Operations;
+			sourceTree = "<group>";
+		};
 		483D1B151C3C806E003A5970 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -110,6 +128,7 @@
 			children = (
 				699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */,
 				699CA60E1C3C55E10094F48A /* Fetchable.swift */,
+				48190D301C553F81009712F6 /* ParsedNearbyCity.swift */,
 				69D235361C3D75E100C9AA50 /* ParsedQuake.swift */,
 				699CA6091C3C543F0094F48A /* Quake.swift */,
 			);
@@ -141,6 +160,7 @@
 				483D1B151C3C806E003A5970 /* Extensions */,
 				699CA6071C3C529F0094F48A /* Model */,
 				69B30FF71C3B0AF100241D79 /* Networking */,
+				48190D2D1C553A9B009712F6 /* Operations */,
 				69B30FF41C3B056400241D79 /* Resources */,
 				69B30FF91C3B122300241D79 /* ViewControllers */,
 			);
@@ -282,15 +302,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */,
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
 				48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
+				48190D2C1C553A96009712F6 /* DownloadDetailOperation.swift in Sources */,
 				699CA60B1C3C543F0094F48A /* Quake.swift in Sources */,
 				69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */,
 				69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */,
+				48190D311C553F81009712F6 /* ParsedNearbyCity.swift in Sources */,
 				699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */,
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
@@ -298,6 +321,7 @@
 				69B30FE31C3B051600241D79 /* WindowController.swift in Sources */,
 				48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */,
 				694269EB1C46E55800BAA5C9 /* TextBarAnimator.swift in Sources */,
+				48190D2F1C553C9B009712F6 /* ConcurrentOperation.swift in Sources */,
 				483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */,
 				69150F291C3DE60600D9D3BF /* String+Additions.swift in Sources */,
 				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift in Sources */,

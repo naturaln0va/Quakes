@@ -80,6 +80,22 @@ class PersistentController
         attemptSave()
     }
     
+    func updateQuakeWithID(identifier: String, withNearbyCities cities: [ParsedNearbyCity]) {
+        do {
+            if let quakeToUpdate = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", identifier), sortedBy: nil, ascending: false) {
+                let data = NSKeyedArchiver.archivedDataWithRootObject(cities)
+                quakeToUpdate.nearbyCitiesData = data
+            }
+        }
+        
+        catch {
+            print("Error updating quake with id: \(identifier), error: \(error)")
+            return
+        }
+        
+        attemptSave()
+    }
+    
     func saveQuakes(parsedQuake: [ParsedQuake]) {
         for quake in parsedQuake {
             do {

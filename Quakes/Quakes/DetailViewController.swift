@@ -13,10 +13,17 @@ class DetailViewController: UITableViewController {
         return map
     }()
     
+    let mainQueue = NSOperationQueue.mainQueue()
     let manager = CLLocationManager()
     var quakeToDisplay: Quake!
+    var parsedNearbyCities: [ParsedNearbyCity]?
     var lastUserLocation: CLLocation?
     var distanceStringForCell: String?
+    var hasNearbyCityInfo: Bool = false {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     init(quake: Quake) {
         super.init(style: .Grouped)
@@ -29,9 +36,31 @@ class DetailViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        NetworkClient.sharedClient.getDetailForQuakeWithURL(urlForDetail: NSURL(string: quakeToDisplay.detailURL)!) { quakes, error in
-//            
-//        }
+        
+        if let nearbyCities = quakeToDisplay.nearbyCities {
+            self.parsedNearbyCities = nearbyCities
+            self.hasNearbyCityInfo = true
+        }
+        else if let url = NSURL(string: quakeToDisplay.detailURL) {
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            let downloadDetailOperation = DownloadDetailOperation(url: url)
+            let downloadNearbyCitiesOperation = DownloadNearbyCitiesOperation()
+            
+            downloadNearbyCitiesOperation.completionBlock = {
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                if let cities = downloadNearbyCitiesOperation.downloadedCities where cities.count > 0 {
+                    PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: cities)
+                    self.parsedNearbyCities = cities
+                    self.hasNearbyCityInfo = true
+                }
+            }
+            
+            downloadDetailOperation |> downloadNearbyCitiesOperation
+            
+            mainQueue.maxConcurrentOperationCount = 1
+            mainQueue.qualityOfService = .UserInitiated
+            mainQueue.addOperations([downloadDetailOperation, downloadNearbyCitiesOperation], waitUntilFinished: false)
+        }
         
         title = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "shareButtonPressed")
@@ -132,6 +161,16 @@ class DetailViewController: UITableViewController {
             }
         }
         else if indexPath.section == 1 {
+            if hasNearbyCityInfo {
+                cell.textLabel?.text = parsedNearbyCities![indexPath.row].cityName
+                cell.accessoryType = .DisclosureIndicator
+            }
+            else {
+                cell.textLabel?.text = "Open in USGS.gov"
+                cell.accessoryType = .DisclosureIndicator
+            }
+        }
+        else {
             cell.textLabel?.text = "Open in USGS.gov"
             cell.accessoryType = .DisclosureIndicator
         }
@@ -139,14 +178,23 @@ class DetailViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+       if section == 1 {
+            return hasNearbyCityInfo ? "Nearby Cities" : nil
+        }
+        else {
+            return nil
+        }
+    }
+    
     override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == 1
+        return indexPath.section != 0
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if let url = NSURL(string: quakeToDisplay.weblink) where indexPath.section == 1 && indexPath.row == 0 {
+        if let url = NSURL(string: quakeToDisplay.weblink) where hasNearbyCityInfo ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(URL: url)
             safariVC.view.tintColor = StyleController.darkerMainAppColor
             dispatch_async(dispatch_get_main_queue()) {
@@ -158,14 +206,21 @@ class DetailViewController: UITableViewController {
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 44.0
     }
-    
     // MARK: - UITableView DataSource
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return hasNearbyCityInfo ? 3 : 2
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 6 : 1
+        if section == 0 {
+            return 6
+        }
+        else if section == 1 {
+            return hasNearbyCityInfo ? parsedNearbyCities!.count : 1
+        }
+        else {
+            return 1
+        }
     }
 
 }

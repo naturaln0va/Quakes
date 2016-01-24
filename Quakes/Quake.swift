@@ -54,6 +54,7 @@ class Quake: NSManagedObject {
     @NSManaged var latitude: Double
     @NSManaged var identifier: String
     @NSManaged var detailURL: String
+    @NSManaged var nearbyCitiesData: NSData?
     
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -61,6 +62,15 @@ class Quake: NSManagedObject {
     
     var location: CLLocation {
         return CLLocation(coordinate: coordinate, altitude: -depth, horizontalAccuracy: kCLLocationAccuracyBest, verticalAccuracy: kCLLocationAccuracyBest, timestamp: timestamp)
+    }
+    
+    var nearbyCities: [ParsedNearbyCity]? {
+        if let data = nearbyCitiesData {
+            if let cities = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [ParsedNearbyCity] {
+                return cities
+            }
+        }
+        return nil
     }
     
 }
