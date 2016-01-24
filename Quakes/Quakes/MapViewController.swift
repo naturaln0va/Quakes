@@ -46,6 +46,7 @@ class MapViewController: UIViewController
             
             if let quakes = quakesToDisplay {
                 refreshMapWithQuakes(quakes, animated: false)
+                title = "\(quakes.count) Earthquakes"
             }
         }
         catch {

@@ -12,6 +12,7 @@
 		4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4871B7A81C4AC96800C466DD /* MapViewController.xib */; };
 		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
+		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
 		48C7131A1C4090C600196225 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C713191C4090C600196225 /* SettingsController.swift */; };
 		48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EEE8DB1C40A3000032EF39 /* DetailViewController.swift */; };
 		69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */; };
@@ -40,6 +41,7 @@
 		4871B7A81C4AC96800C466DD /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
 		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
+		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		48C713191C4090C600196225 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		48EEE8DB1C40A3000032EF39 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				4871B7A71C4AC96800C466DD /* MapViewController.swift */,
 				4871B7A81C4AC96800C466DD /* MapViewController.xib */,
 				699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */,
+				48C000661C543B960046CC8F /* SettingsViewController.swift */,
 				699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */,
 			);
 			name = ViewControllers;
@@ -281,6 +284,7 @@
 			files = (
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
 				48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */,
+				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,

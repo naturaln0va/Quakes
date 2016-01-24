@@ -34,7 +34,6 @@ class QuakesViewController: UITableViewController
     private let defaults = NSUserDefaults.standardUserDefaults()
     private let geocoder = CLGeocoder()
     private var transitionAnimator: TextBarAnimator?
-    private var mapViewController = MapViewController()
 
     var currentLocation: CLLocation?
 
@@ -51,7 +50,13 @@ class QuakesViewController: UITableViewController
             landscapeImagePhone: nil,
             style: .Plain,
             target: self,
-            action: "showMap"
+            action: "mapButtonPressed"
+        )
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "settings-bar-icon"),
+            style: .Plain,
+            target: self,
+            action: "settingsButtonPressed"
         )
         navigationItem.rightBarButtonItem?.enabled = false
         
@@ -107,9 +112,6 @@ class QuakesViewController: UITableViewController
     
     private func commonFetchedQuakes(quakes: [ParsedQuake]) {
         PersistentController.sharedController.saveQuakes(quakes)
-        if mapViewController.view.superview != nil {
-            mapViewController.fetchQuakesAndDisplay()
-        }
         
         if let refresher = self.refreshControl where refresher.refreshing {
             refresher.endRefreshing()
@@ -117,43 +119,16 @@ class QuakesViewController: UITableViewController
     }
     
     // MARK: - Actions
+    func mapButtonPressed() {
+        navigationController?.pushViewController(MapViewController(), animated: true)
+    }
+    
     func titleButtonPressed() {
         presentFinder()
     }
     
-    func showMap() {
-        mapViewController.view.frame = CGRect(x: 0.0, y: -CGRectGetHeight(view.bounds), width: CGRectGetWidth(view.bounds), height: CGRectGetHeight(view.bounds))
-        view.addSubview(mapViewController.view)
-        
-        mapViewController.fetchQuakesAndDisplay()
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "pressed-world-bar-icon"),
-            landscapeImagePhone: nil,
-            style: .Plain,
-            target: self,
-            action: "hideMap"
-        )
-        
-        UIView.animateWithDuration(0.345) {
-            self.mapViewController.view.frame = self.view.bounds
-        }
-    }
-    
-    func hideMap() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "world-bar-icon"),
-            landscapeImagePhone: nil,
-            style: .Plain,
-            target: self,
-            action: "showMap"
-        )
-        
-        UIView.animateWithDuration(0.345, animations: {
-            self.mapViewController.view.frame.origin.y = -CGRectGetHeight(self.view.bounds)
-            }, completion: { _ in
-                self.mapViewController.view.removeFromSuperview()
-        })
+    func settingsButtonPressed() {
+        // present settings vc
     }
     
     func fetchQuakes() {

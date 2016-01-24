@@ -29,10 +29,9 @@ class DetailViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        NetworkClient.sharedClient.getDetailForQuakeWithURL(urlForDetail: NSURL(string: quakeToDisplay.detailURL)!) { quakes, error in
-            
-        }
+//        NetworkClient.sharedClient.getDetailForQuakeWithURL(urlForDetail: NSURL(string: quakeToDisplay.detailURL)!) { quakes, error in
+//            
+//        }
         
         title = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "shareButtonPressed")
@@ -194,12 +193,12 @@ extension DetailViewController: MKMapViewDelegate {
             return
         }
         
-        if userLocation.distanceFromLocation(quakeToDisplay.location) > 2250.0 {
-            return
-        }
-        
         distanceStringForCell = Quake.distanceFormatter.stringFromMeters(userLocation.distanceFromLocation(quakeToDisplay.location))
         tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 5, inSection: 0)], withRowAnimation: .Automatic)
+        
+        if userLocation.distanceFromLocation(quakeToDisplay.location) > (1000 * 900) {
+            return
+        }
         
         let userMapPoint = MKMapPointForCoordinate(userLocation.coordinate)
         let quakeMapPoint = MKMapPointForCoordinate(quakeToDisplay.coordinate)
