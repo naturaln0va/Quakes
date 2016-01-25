@@ -256,7 +256,7 @@ extension DetailViewController: MKMapViewDelegate {
             return
         }
         
-        distanceStringForCell = Quake.distanceFormatter.stringFromMeters(userLocation.distanceFromLocation(quakeToDisplay.location))
+        distanceStringForCell = Quake.distanceFormatter.stringFromDistance(userLocation.distanceFromLocation(quakeToDisplay.location))
         tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 5, inSection: 0)], withRowAnimation: .Automatic)
         
         if userLocation.distanceFromLocation(quakeToDisplay.location) > (1000 * 900) {

@@ -9,6 +9,7 @@ class SettingsViewController: UITableViewController
     {
         case LimitRow
         case RadiusRow
+        case UnitRow
         case TotalRows
     }
     
@@ -25,6 +26,11 @@ class SettingsViewController: UITableViewController
         case UserSection
         case GeneralSection
         case TotalSections
+    }
+    
+    enum SwitchTag: Int
+    {
+        case Unit
     }
     
     override func viewDidLoad() {
@@ -44,6 +50,19 @@ class SettingsViewController: UITableViewController
     func doneButtonPressed()
     {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func switchWasToggled(sender: UISwitch)
+    {
+        switch sender.tag {
+            
+        case SwitchTag.Unit.rawValue:
+            SettingsController.sharedController.isUnitStyleImperial = !sender.on
+            break
+            
+        default:
+            break
+        }
     }
     
     // MARK: - UITableViewDataSource
@@ -66,7 +85,7 @@ class SettingsViewController: UITableViewController
     }
     
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return section == 1 ? "Quakes" + UIDevice.currentDevice().appVersionAndBuildString : nil
+        return section == 1 ? "Quakes v" + UIDevice.currentDevice().appVersionAndBuildString : nil
     }
     
     // MARK: - UITableViewDelegate
@@ -86,6 +105,21 @@ class SettingsViewController: UITableViewController
                 cell.textLabel?.text = "Nearby Radius"
                 cell.detailTextLabel?.text = SettingsController.sharedController.searchRadius.displayString()
                 cell.accessoryType = .DisclosureIndicator
+                break
+                
+            case UserSectionRows.UnitRow.rawValue:
+                cell.textLabel?.text = "Metric Unit Style"
+                
+                let unitSwitch = UISwitch()
+                unitSwitch.tag = SwitchTag.Unit.rawValue
+                unitSwitch.on = !SettingsController.sharedController.isUnitStyleImperial
+                unitSwitch.addTarget(
+                    self,
+                    action: "switchWasToggled:",
+                    forControlEvents: .ValueChanged
+                )
+                
+                cell.accessoryView = unitSwitch
                 break
                 
             default:
@@ -118,5 +152,114 @@ class SettingsViewController: UITableViewController
         
         return cell
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        if indexPath.section == TableSections.GeneralSection.rawValue {
+            switch indexPath.row {
+            case GeneralSectionRows.RateRow.rawValue:
+                UIApplication.sharedApplication().openURL(NSURL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8")!)
+                break
+                
+            case GeneralSectionRows.ContactRow.rawValue:
+                let mailVC = MFMailComposeViewController()
+                mailVC.setSubject("Quakes Feedback")
+                mailVC.setToRecipients(["support@ackermann.io"])
+                let devInfo = "• iOS Version: \(UIDevice.currentDevice().deviceIOSVersion)<br>• Hardware: \(UIDevice.currentDevice().deviceModel)<br>• App Version: \(UIDevice.currentDevice().appVersionAndBuildString)"
+                mailVC.setMessageBody("<br><br><br><br><br><br><br><br><br><br><br><br><hr> <center>Developer Info</center> <br>\(devInfo)<hr>", isHTML: true)
+                mailVC.mailComposeDelegate = self
+                presentViewController(mailVC, animated: true, completion: nil)
+                break
+                
+            default:
+                break
+            }
+        }
+        else if indexPath.section == TableSections.UserSection.rawValue {
+            switch indexPath.row {
+            case UserSectionRows.LimitRow.rawValue:
+                let values = [
+                    SettingsController.APIFetchSize.Small.rawValue,
+                    SettingsController.APIFetchSize.Medium.rawValue,
+                    SettingsController.APIFetchSize.Large.rawValue,
+                    SettingsController.APIFetchSize.ExtraLarge.rawValue
+                ]
+                let labels = [
+                    SettingsController.APIFetchSize.Small.displayString(),
+                    SettingsController.APIFetchSize.Medium.displayString(),
+                    SettingsController.APIFetchSize.Large.displayString(),
+                    SettingsController.APIFetchSize.ExtraLarge.displayString()
+                ]
+                
+                let index: Int = values.indexOf(SettingsController.sharedController.fetchLimit.rawValue)!
+                
+                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: nil, footerDescription: "A larger fetch size will take longer to load.")
+                let pvc = PickerViewController(type: .Limit, data: data, title: "Fetch Size")
+                pvc.delegate = self
+                
+                navigationController?.pushViewController(pvc, animated: true)
+                break
+                
+            case UserSectionRows.RadiusRow.rawValue:
+                let values = [
+                    SettingsController.SearchRadiusSize.Small.rawValue,
+                    SettingsController.SearchRadiusSize.Medium.rawValue,
+                    SettingsController.SearchRadiusSize.Large.rawValue,
+                    SettingsController.SearchRadiusSize.ExtraLarge.rawValue
+                ]
+                let labels = [
+                    SettingsController.SearchRadiusSize.Small.displayString(),
+                    SettingsController.SearchRadiusSize.Medium.displayString(),
+                    SettingsController.SearchRadiusSize.Large.displayString(),
+                    SettingsController.SearchRadiusSize.ExtraLarge.displayString()
+                ]
+                
+                let index: Int = values.indexOf(SettingsController.sharedController.searchRadius.rawValue)!
+                
+                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: nil, footerDescription: "A smaller radius will yield more location specific quakes.")
+                let pvc = PickerViewController(type: .Radius, data: data, title: "Search Radius")
+                pvc.delegate = self
+                
+                navigationController?.pushViewController(pvc, animated: true)
+                break
+                
+            default:
+                break
+            }
+        }
+    }
 
+}
+
+extension SettingsViewController: MFMailComposeViewControllerDelegate
+{
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?)
+    {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+}
+
+extension SettingsViewController: PickerViewControllerDelegate
+{
+    
+    func pickerViewController(pvc: PickerViewController, didPickObject object: AnyObject) {
+        tableView.reloadData()
+        
+        switch pvc.type {
+            
+        case .Limit:
+            SettingsController.sharedController.fetchLimit = SettingsController.APIFetchSize.closestValueForInteger(object as! Int)
+            break
+            
+        case .Radius:
+            SettingsController.sharedController.searchRadius = SettingsController.SearchRadiusSize.closestValueForInteger(object as! Int)
+            break
+            
+        }
+    }
+    
 }

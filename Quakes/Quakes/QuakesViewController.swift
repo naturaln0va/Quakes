@@ -72,6 +72,13 @@ class QuakesViewController: UITableViewController
         refresher.addTarget(self, action: "fetchQuakes", forControlEvents: .ValueChanged)
         refreshControl = refresher
         
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "settingsDidChangeUnitStyle",
+            name: kSettingsControllerDidChangeUnitStyleNotification,
+            object: nil
+        )
+        
         preformFetch()
         fetchQuakes()
         
@@ -132,6 +139,10 @@ class QuakesViewController: UITableViewController
     
     func settingsButtonPressed() {
         presentViewController(StyledNavigationController(rootViewController: SettingsViewController()), animated: true, completion: nil)
+    }
+    
+    func settingsDidChangeUnitStyle() {
+        tableView.reloadData()
     }
     
     func fetchQuakes() {

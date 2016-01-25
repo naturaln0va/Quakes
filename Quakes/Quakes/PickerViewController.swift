@@ -24,6 +24,11 @@ struct PickerData
     }
 }
 
+enum PickerType {
+    case Limit
+    case Radius
+}
+
 protocol PickerViewControllerDelegate
 {
     func pickerViewController(pvc: PickerViewController, didPickObject object: AnyObject)
@@ -33,20 +38,16 @@ protocol PickerViewControllerDelegate
 class PickerViewController: UITableViewController
 {
     
-    var dataForPicker: PickerData?
+    let type: PickerType
+    var dataForPicker: PickerData!
     var delegate: PickerViewControllerDelegate?
     
-    
-    init(data: PickerData, title: String)
+    init(type: PickerType, data: PickerData, title: String)
     {
+        self.type = type
         super.init(style: .Plain)
         dataForPicker = data
         self.title = title
-    }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?)
-    {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
     required init?(coder aDecoder: NSCoder)

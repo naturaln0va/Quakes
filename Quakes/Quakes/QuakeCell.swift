@@ -21,7 +21,7 @@ class QuakeCell: UITableViewCell
         timestampLabel.text = relativeStringForDate(quake.timestamp)
         magnitudeLabel.text = Quake.magnitudeFormatter.stringFromNumber(quake.magnitude)
         
-        additionalInfoLabel.text = quake.name
+        additionalInfoLabel.text = quake.nameString
         
         cityLabel.text = quake.name.componentsSeparatedByString(" of ").last!
         

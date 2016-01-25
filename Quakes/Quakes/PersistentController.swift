@@ -121,6 +121,7 @@ class PersistentController
             dataToSave.longitude = quake.longitude
             dataToSave.identifier = quake.identifier
             dataToSave.detailURL = quake.detailURL
+            dataToSave.distance = quake.distance
         }
         
         attemptSave()

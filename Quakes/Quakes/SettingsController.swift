@@ -2,6 +2,9 @@
 import Foundation
 import CoreLocation
 
+let kSettingsControllerDidChangeUnitStyleNotification: String = "settingsControllerDidChangeUnitStyle"
+
+
 class SettingsController
 {
     
@@ -138,6 +141,7 @@ class SettingsController
         set {
             defaults.setBool(newValue, forKey: SettingsController.kUnitStyleKey)
             defaults.synchronize()
+            NSNotificationCenter.defaultCenter().postNotificationName(kSettingsControllerDidChangeUnitStyleNotification, object: nil)
         }
     }
     

@@ -9,15 +9,13 @@ struct ParsedQuake
     
     let identifier, name, link, detailURL: String
     
-    let depth, latitude, longitude, magnitude: Double
+    let depth, latitude, longitude, magnitude, distance: Double
 
     init?(dict: [String: AnyObject]) {
         guard let earthquakeID = dict["id"] as? String where !earthquakeID.isEmpty else { return nil }
         identifier = earthquakeID
         
         let properties = dict["properties"] as? [String: AnyObject] ?? [:]
-        
-        name = properties["place"] as? String ?? ""
         
         link = properties["url"] as? String ?? ""
         
@@ -32,6 +30,15 @@ struct ParsedQuake
             date = NSDate.distantFuture()
         }
         
+        let origionalNameString = properties["place"] as? String ?? ""
+        if origionalNameString.characters.count > 0 && origionalNameString.containsString("km ") {
+            let comps = origionalNameString.componentsSeparatedByString("km ")
+            name = comps.last ?? ""
+            distance = (Double(comps.first ?? "0") ?? 0) * 1000
+        }
+        else {
+            return nil
+        }
         
         let geometry = dict["geometry"] as? [String: AnyObject] ?? [:]
         

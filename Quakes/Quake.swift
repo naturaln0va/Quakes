@@ -35,13 +35,11 @@ class Quake: NSManagedObject {
         return depthFormatter
     }()
     
-    static let distanceFormatter: NSLengthFormatter = {
-        let distanceFormatter = NSLengthFormatter()
-        
-        distanceFormatter.forPersonHeightUse = false
-        distanceFormatter.numberFormatter.maximumFractionDigits = 2
-        
-        return distanceFormatter
+    static let distanceFormatter: MKDistanceFormatter = {
+        let formatter = MKDistanceFormatter()
+        formatter.unitStyle = .Abbreviated
+        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+        return formatter
     }()
     
     // MARK: - Properties
@@ -55,6 +53,14 @@ class Quake: NSManagedObject {
     @NSManaged var identifier: String
     @NSManaged var detailURL: String
     @NSManaged var nearbyCitiesData: NSData?
+    @NSManaged var distance: Double
+    
+    var nameString: String {
+        let formatter = MKDistanceFormatter()
+        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+
+        return [formatter.stringFromDistance(distance), name].joinWithSeparator(" ")
+    }
     
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -89,7 +95,7 @@ extension Quake: Fetchable {
 extension Quake: MKAnnotation {
     
     var title: String? {
-        return name
+        return nameString
     }
     
     var subtitle: String? {

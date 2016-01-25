@@ -3,6 +3,7 @@
     <entity name="Quake" representedClassName=".Quake" syncable="YES">
         <attribute name="depth" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="detailURL" attributeType="String" syncable="YES"/>
+        <attribute name="distance" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -13,6 +14,6 @@
         <attribute name="weblink" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Quake" positionX="-63" positionY="-18" width="128" height="195"/>
+        <element name="Quake" positionX="-63" positionY="-18" width="128" height="210"/>
     </elements>
 </model>
