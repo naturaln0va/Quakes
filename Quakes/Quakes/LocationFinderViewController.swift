@@ -164,11 +164,11 @@ class LocationFinderViewController: UIViewController
                     self.delegate?.locationFinderViewControllerDidSelectPlace(place)
                 }
                 else {
-                    //self.searchHelperLabel.text = self.searchErrorMessage + " \(searchText)"
+                    self.searchTextField.text = "Invalid Location"
                 }
             }
             else {
-                //self.searchHelperLabel.text = self.searchErrorMessage + " '\(searchText)'.\n\nTry again?"
+                self.searchTextField.text = "Invalid Location"
             }
         }
     }

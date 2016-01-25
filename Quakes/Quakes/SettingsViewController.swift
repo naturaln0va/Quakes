@@ -173,6 +173,10 @@ class SettingsViewController: UITableViewController
                 presentViewController(mailVC, animated: true, completion: nil)
                 break
                 
+            case GeneralSectionRows.RemoveAdsRow.rawValue:
+                navigationController?.pushViewController(RemoveAdsViewController(), animated: true)
+                break
+                
             default:
                 break
             }
