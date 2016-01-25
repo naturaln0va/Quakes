@@ -12,6 +12,8 @@
 		48190D311C553F81009712F6 /* ParsedNearbyCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D301C553F81009712F6 /* ParsedNearbyCity.swift */; };
 		48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */; };
 		48190D351C558838009712F6 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48190D341C558838009712F6 /* iAd.framework */; };
+		48190D381C559601009712F6 /* PickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D371C559601009712F6 /* PickerViewController.swift */; };
+		48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D391C55A02F009712F6 /* UIDevice+Additions.swift */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
 		4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4871B7A81C4AC96800C466DD /* MapViewController.xib */; };
@@ -46,6 +48,8 @@
 		48190D301C553F81009712F6 /* ParsedNearbyCity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedNearbyCity.swift; sourceTree = "<group>"; };
 		48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadNearbyCitiesOperation.swift; sourceTree = "<group>"; };
 		48190D341C558838009712F6 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		48190D371C559601009712F6 /* PickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerViewController.swift; sourceTree = "<group>"; };
+		48190D391C55A02F009712F6 /* UIDevice+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Additions.swift"; sourceTree = "<group>"; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Additions.swift"; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4871B7A81C4AC96800C466DD /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
@@ -114,6 +118,7 @@
 				699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */,
 				69150F261C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift */,
 				69150F281C3DE60600D9D3BF /* String+Additions.swift */,
+				48190D391C55A02F009712F6 /* UIDevice+Additions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -217,6 +222,7 @@
 				48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */,
 				4871B7A71C4AC96800C466DD /* MapViewController.swift */,
 				4871B7A81C4AC96800C466DD /* MapViewController.xib */,
+				48190D371C559601009712F6 /* PickerViewController.swift */,
 				699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */,
 				48C000661C543B960046CC8F /* SettingsViewController.swift */,
 				699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */,
@@ -316,6 +322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */,
+				48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */,
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
 				48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
@@ -331,6 +338,7 @@
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* QuakesViewController.swift in Sources */,
+				48190D381C559601009712F6 /* PickerViewController.swift in Sources */,
 				69B30FE31C3B051600241D79 /* WindowController.swift in Sources */,
 				48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */,
 				694269EB1C46E55800BAA5C9 /* TextBarAnimator.swift in Sources */,

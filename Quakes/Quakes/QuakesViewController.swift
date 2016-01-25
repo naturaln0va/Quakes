@@ -71,7 +71,7 @@ class QuakesViewController: UITableViewController
         refresher.backgroundColor = StyleController.backgroundColor
         refresher.addTarget(self, action: "fetchQuakes", forControlEvents: .ValueChanged)
         refreshControl = refresher
-                
+        
         preformFetch()
         fetchQuakes()
         
@@ -131,7 +131,7 @@ class QuakesViewController: UITableViewController
     }
     
     func settingsButtonPressed() {
-        // present settings vc
+        presentViewController(StyledNavigationController(rootViewController: SettingsViewController()), animated: true, completion: nil)
     }
     
     func fetchQuakes() {
@@ -143,7 +143,7 @@ class QuakesViewController: UITableViewController
             setTitleButtonText("\(lastPlace.cityStateString())")
 
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedController.searchRadius) { quakes, error in
+            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
 
                 if let quakes = quakes where error == nil {
@@ -160,7 +160,7 @@ class QuakesViewController: UITableViewController
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                    NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate, radius: SettingsController.sharedController.searchRadius) { quakes, error in
+                    NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         
                         if let quakes = quakes where error == nil {
@@ -190,7 +190,7 @@ class QuakesViewController: UITableViewController
                 setTitleButtonText("Worldwide Earthquakes")
                 
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                NetworkClient.sharedClient.getRecentWorldQuakes(shouldLimit: true) { quakes, error in
+                NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     
                     if let quakes = quakes where error == nil {

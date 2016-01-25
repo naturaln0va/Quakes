@@ -61,7 +61,7 @@ class NetworkClient
             urlString += paramString
         }
         
-        if limit { urlString += "&\(ParamTypes.Limit.rawValue)=\(300)" }
+        if limit { urlString += "&\(ParamTypes.Limit.rawValue)=\(SettingsController.sharedController.fetchLimit.rawValue)" }
         
         return urlString
     }
@@ -161,7 +161,7 @@ class NetworkClient
         }
     }
     
-    func getRecentQuakesByLocation(coordinate: CLLocationCoordinate2D, radius: Double, completion: QuakesCompletionBlock) {
+    func getRecentQuakesByLocation(coordinate: CLLocationCoordinate2D, radius: Int, completion: QuakesCompletionBlock) {
         dispatch_async(allRequestsQueue) {
             let params = [
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
@@ -265,9 +265,9 @@ class NetworkClient
         }
     }
     
-    func getRecentWorldQuakes(shouldLimit limit: Bool, completion: QuakesCompletionBlock) {
+    func getRecentWorldQuakes(completion: QuakesCompletionBlock) {
         dispatch_async(allRequestsQueue) {
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: limit, method: kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
                 var resultError = error
