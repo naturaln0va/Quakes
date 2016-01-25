@@ -34,7 +34,6 @@ class LocationFinderViewController: UIViewController
         notificationCenter.addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         
         searchTextField.delegate = self
-        searchTextField.becomeFirstResponder()
         
         if let lastOption = SettingsController.sharedController.lastLocationOption {
             switch lastOption {
@@ -51,6 +50,11 @@ class LocationFinderViewController: UIViewController
                 print("Unknown option from the SettingsController.")
             }
         }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        searchTextField.becomeFirstResponder()
     }
     
     override func viewDidDisappear(animated: Bool) {

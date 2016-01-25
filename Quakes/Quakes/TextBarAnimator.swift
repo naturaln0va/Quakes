@@ -52,7 +52,6 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             finderVC.view.alpha = 0.0
             
             finderVC.searchTextField.alpha = 0.0
-            finderVC.searchTextField.frame = originFrame
             
             let buttonView = UIView(frame: originFrame)
             buttonView.backgroundColor = StyleController.darkerMainAppColor
@@ -62,13 +61,13 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             UIView.animateWithDuration(transitionDuration(transitionContext),
                 animations: {
                     finderVC.view.alpha = 1.0
-                    finderVC.searchTextField.alpha = 1.0
                     
                     finderVC.searchTextField.frame = finalFrame
                     buttonView.frame = finalFrame
                     buttonView.layer.cornerRadius = 0.0
                 },
                 completion: { _ in
+                    finderVC.searchTextField.alpha = 1.0
                     buttonView.removeFromSuperview()
                     transitionContext.completeTransition(true)
             })
