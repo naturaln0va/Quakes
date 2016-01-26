@@ -26,6 +26,7 @@
 		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
 		48C7131A1C4090C600196225 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C713191C4090C600196225 /* SettingsController.swift */; };
 		48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EEE8DB1C40A3000032EF39 /* DetailViewController.swift */; };
+		690C289B1C580A750035F47A /* NSDate+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690C289A1C580A750035F47A /* NSDate+Additions.swift */; };
 		69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */; };
 		69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F211C3DDC9900D9D3BF /* QuakeCell.swift */; };
 		69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69150F221C3DDC9900D9D3BF /* QuakeCell.xib */; };
@@ -66,6 +67,7 @@
 		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		48C713191C4090C600196225 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		48EEE8DB1C40A3000032EF39 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		690C289A1C580A750035F47A /* NSDate+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Additions.swift"; sourceTree = "<group>"; };
 		69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
 		69150F211C3DDC9900D9D3BF /* QuakeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuakeCell.swift; sourceTree = "<group>"; };
 		69150F221C3DDC9900D9D3BF /* QuakeCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakeCell.xib; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
 				48190D341C558838009712F6 /* iAd.framework */,
 			);
 			name = Frameworks;
@@ -128,6 +131,7 @@
 				69150F261C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift */,
 				69150F281C3DE60600D9D3BF /* String+Additions.swift */,
 				48190D391C55A02F009712F6 /* UIDevice+Additions.swift */,
+				690C289A1C580A750035F47A /* NSDate+Additions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -164,7 +168,6 @@
 		69B30FD61C3B051600241D79 = {
 			isa = PBXGroup;
 			children = (
-				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
 				69B30FE11C3B051600241D79 /* Quakes */,
 				69B30FE01C3B051600241D79 /* Products */,
 			);
@@ -278,6 +281,9 @@
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = WK4Y48HVH2;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
@@ -346,6 +352,7 @@
 				48EEE8DD1C40A3000032EF39 /* DetailViewController.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
 				4872AB9C1C55C6C100B6CF37 /* IAPHelper.swift in Sources */,
+				690C289B1C580A750035F47A /* NSDate+Additions.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,

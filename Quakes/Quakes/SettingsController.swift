@@ -87,6 +87,7 @@ class SettingsController
     private static let kUnitStyleKey = "unitStyle"
     private static let kLastLocationOptionKey = "lastLocationOption"
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
+    private static let kLastFetchedKey = "lastFetch"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -214,6 +215,19 @@ class SettingsController
         set {
             defaults.setDouble(NSDate().timeIntervalSince1970, forKey: SettingsController.kUserFirstLaunchedKey)
             defaults.synchronize()
+        }
+    }
+    
+    var lastFetchDate: NSDate? {
+        get {
+            let interval = defaults.doubleForKey(SettingsController.kUserFirstLaunchedKey)
+            return interval == 0 ? nil : NSDate(timeIntervalSince1970: interval)
+        }
+        set {
+            if let newDate = newValue {
+                defaults.setDouble(newDate.timeIntervalSince1970, forKey: SettingsController.kLastFetchedKey)
+                defaults.synchronize()
+            }
         }
     }
     

@@ -3,6 +3,7 @@ import UIKit
 import CoreData
 import CoreLocation
 
+typealias NewQuakeCountCompletionBlock = (newCount: Int) -> Void
 
 class PersistentController
 {
@@ -97,6 +98,11 @@ class PersistentController
     }
     
     func saveQuakes(parsedQuake: [ParsedQuake]) {
+        saveQuakes(parsedQuake, completion: nil)
+    }
+    
+    func saveQuakes(parsedQuake: [ParsedQuake], completion: NewQuakeCountCompletionBlock?) {
+        var newQuakeCount = 0
         for quake in parsedQuake {
             do {
                 if let _ = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", quake.identifier), sortedBy: nil, ascending: false) {
@@ -122,9 +128,15 @@ class PersistentController
             dataToSave.identifier = quake.identifier
             dataToSave.detailURL = quake.detailURL
             dataToSave.distance = quake.distance
+            
+            newQuakeCount++
         }
         
         attemptSave()
+        
+        if let completion = completion {
+            completion(newCount: newQuakeCount)
+        }
     }
     
 }
