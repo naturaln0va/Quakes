@@ -220,7 +220,7 @@ class SettingsController
     
     var lastFetchDate: NSDate? {
         get {
-            let interval = defaults.doubleForKey(SettingsController.kUserFirstLaunchedKey)
+            let interval = defaults.doubleForKey(SettingsController.kLastFetchedKey)
             return interval == 0 ? nil : NSDate(timeIntervalSince1970: interval)
         }
         set {

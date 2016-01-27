@@ -1,6 +1,7 @@
 
 import UIKit
 import MessageUI
+import MapKit
 
 class SettingsViewController: UITableViewController
 {
@@ -196,10 +197,11 @@ class SettingsViewController: UITableViewController
                     SettingsController.APIFetchSize.Large.displayString(),
                     SettingsController.APIFetchSize.ExtraLarge.displayString()
                 ]
+                let detailLabels = values.map { String($0) }
                 
                 let index: Int = values.indexOf(SettingsController.sharedController.fetchLimit.rawValue)!
                 
-                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: nil, footerDescription: "A larger fetch size will take longer to load.")
+                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: detailLabels, footerDescription: "A larger fetch size will take longer to load.")
                 let pvc = PickerViewController(type: .Limit, data: data, title: "Fetch Size")
                 pvc.delegate = self
                 
@@ -220,9 +222,13 @@ class SettingsViewController: UITableViewController
                     SettingsController.SearchRadiusSize.ExtraLarge.displayString()
                 ]
                 
+                let formatter = MKDistanceFormatter()
+                formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+                let detailLabels = values.map { formatter.stringFromDistance(CLLocationDistance($0 * 1000)) }
+                
                 let index: Int = values.indexOf(SettingsController.sharedController.searchRadius.rawValue)!
                 
-                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: nil, footerDescription: "A smaller radius will yield more location specific quakes.")
+                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: detailLabels, footerDescription: "A smaller radius will yield more location specific quakes.")
                 let pvc = PickerViewController(type: .Radius, data: data, title: "Search Radius")
                 pvc.delegate = self
                 

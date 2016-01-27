@@ -45,6 +45,8 @@ class QuakesViewController: UITableViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Quakes"
+        
         navigationItem.titleView = titleViewButton
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(named: "world-bar-icon"),
