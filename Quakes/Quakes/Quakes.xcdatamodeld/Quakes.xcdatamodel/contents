@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15C50" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 7.0">
     <entity name="Quake" representedClassName=".Quake" syncable="YES">
+        <attribute name="countryCode" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="depth" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="detailURL" attributeType="String" syncable="YES"/>
         <attribute name="distance" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -14,6 +15,6 @@
         <attribute name="weblink" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Quake" positionX="-63" positionY="-18" width="128" height="210"/>
+        <element name="Quake" positionX="-63" positionY="-18" width="128" height="225"/>
     </elements>
 </model>

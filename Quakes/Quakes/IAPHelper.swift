@@ -1,3 +1,4 @@
+
 import StoreKit
 import Foundation
 
@@ -5,7 +6,7 @@ import Foundation
 class IAPHelper: NSObject
 {
     
-    static let sharedController = IAPHelper()
+    static let IAPHelperPurchaseNotification = "IAPHelperPurchaseNotification"
     
     typealias ProductsRequestCompletionHandler = (products: [SKProduct]?) -> ()
     
@@ -14,53 +15,77 @@ class IAPHelper: NSObject
     private let removeAdsProductIdentifier: String = "io.ackermann.quakes.removeads"
     private var productsRequestCompletionHandler:  ProductsRequestCompletionHandler?
     
-}
-
-//:- API
-extension IAPHelper
-{
+    deinit {
+        SKPaymentQueue.defaultQueue().removeTransactionObserver(self)
+    }
     
-    func hasCompletedPurchase() -> Bool {
-        if SKPaymentQueue.canMakePayments() {
-            productsRequest?.cancel()
-            productsRequest = SKProductsRequest(productIdentifiers: Set([removeAdsProductIdentifier]))
-            productsRequest?.delegate = self
-            productsRequest?.start()
-        }
-        
-        return false
+    override init() {
+        super.init()
+        SKPaymentQueue.defaultQueue().addTransactionObserver(self)
     }
     
 }
 
-//:- SKProductsRequestDelegate
+//MARK: Public Methods
+extension IAPHelper
+{
+    
+    static func isRemoveAdsProduct(product: SKProduct) -> Bool {
+        return product.productIdentifier == "io.ackermann.quakes.removeads"
+    }
+    
+    func requestProducts(completionHandler: ProductsRequestCompletionHandler) {
+        guard SKPaymentQueue.canMakePayments() else { return }
+        
+        productsRequest?.cancel()
+        productsRequestCompletionHandler = completionHandler
+        
+        productsRequest = SKProductsRequest(productIdentifiers: Set([removeAdsProductIdentifier]))
+        productsRequest?.delegate = self
+        productsRequest?.start()
+    }
+    
+    func purchaseRemoveAds() {
+        guard let product = removeAdsProduct where SKPaymentQueue.canMakePayments() else { return }
+
+        let payment = SKPayment(product: product)
+        SKPaymentQueue.defaultQueue().addPayment(payment)
+    }
+    
+    func restorePurchases() {
+        guard SKPaymentQueue.canMakePayments() else { return }
+
+        SKPaymentQueue.defaultQueue().restoreCompletedTransactions()
+    }
+    
+}
+
+//MARK: SKProductsRequestDelegate
 extension IAPHelper: SKProductsRequestDelegate
 {
     
     func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse)
     {
-        let products = response.products
-        
-        for product in products {
+        for product in response.products {
             if product.productIdentifier == removeAdsProductIdentifier {
                 removeAdsProduct = product
             }
-            
-            print("Product: \(product.productIdentifier) \(product.localizedTitle) \(product.price.floatValue)")
         }
         
+        productsRequestCompletionHandler?(products: response.products)
         clearRequest()
     }
     
     func request(request: SKRequest, didFailWithError error: NSError)
     {
-        print("Failed to load list of products.")
-        print("Error: \(error)")
+        print("Failed to load list of products. Error: \(error)")
+        productsRequestCompletionHandler?(products: .None)
         clearRequest()
     }
     
     private func clearRequest()
     {
+        productsRequestCompletionHandler = .None
         productsRequest = nil
     }
     
@@ -82,14 +107,14 @@ extension IAPHelper: SKPaymentTransactionObserver
             case .Restored:
                 restoredTransaction(transaction)
                 break
-            case .Deferred, .Purchasing:
-                break
+            default:
+                print("Unhandled transaction type")
             }
         }
     }
     
-    private func completeTransaction(transaction: SKPaymentTransaction) {        
-        removeAdsProduct = nil
+    private func completeTransaction(transaction: SKPaymentTransaction) {
+        deliverPurchaseNotification()
         SKPaymentQueue.defaultQueue().finishTransaction(transaction)
     }
     
@@ -101,7 +126,15 @@ extension IAPHelper: SKPaymentTransactionObserver
     }
     
     private func restoredTransaction(transaction: SKPaymentTransaction) {
-        
+        if transaction.originalTransaction?.payment.productIdentifier == removeAdsProductIdentifier {
+            deliverPurchaseNotification()
+        }
+        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+    }
+    
+    private func deliverPurchaseNotification() {
+        NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.IAPHelperPurchaseNotification, object: nil)
+        removeAdsProduct = nil
     }
     
 }

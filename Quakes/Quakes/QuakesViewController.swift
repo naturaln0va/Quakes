@@ -67,6 +67,9 @@ class QuakesViewController: UITableViewController
         tableView.estimatedRowHeight = QuakeCell.cellHeight
         tableView.backgroundColor = StyleController.backgroundColor
         tableView.registerNib(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
+        if UIDevice.currentDevice().hasForceTouch {
+            registerForPreviewingWithDelegate(self, sourceView: tableView)
+        }
         
         let refresher = UIRefreshControl()
         refresher.tintColor = StyleController.contrastColor
@@ -77,14 +80,21 @@ class QuakesViewController: UITableViewController
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: "settingsDidChangeUnitStyle",
-            name: kSettingsControllerDidChangeUnitStyleNotification,
+            name: SettingsController.kSettingsControllerDidChangeUnitStyleNotification,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "settingsDidPurchaseAdRemoval",
+            name: SettingsController.kSettingsControllerDidChangePurchaseAdRemovalNotification,
             object: nil
         )
         
         preformFetch()
         fetchQuakes()
         
-        canDisplayBannerAds = true
+        canDisplayBannerAds = !SettingsController.sharedController.hasPaidToRemoveAds
     }
     
     private func preformFetch() {
@@ -130,6 +140,15 @@ class QuakesViewController: UITableViewController
         }
     }
     
+    // MARK: - Notifications
+    func settingsDidPurchaseAdRemoval() {
+        canDisplayBannerAds = !SettingsController.sharedController.hasPaidToRemoveAds
+    }
+    
+    func settingsDidChangeUnitStyle() {
+        tableView.reloadData()
+    }
+    
     // MARK: - Actions
     func mapButtonPressed() {
         navigationController?.pushViewController(MapViewController(quakeToDisplay: nil, nearbyCities: nil), animated: true)
@@ -141,10 +160,6 @@ class QuakesViewController: UITableViewController
     
     func settingsButtonPressed() {
         presentViewController(StyledNavigationController(rootViewController: SettingsViewController()), animated: true, completion: nil)
-    }
-    
-    func settingsDidChangeUnitStyle() {
-        tableView.reloadData()
     }
     
     func fetchQuakes() {
@@ -260,8 +275,7 @@ class QuakesViewController: UITableViewController
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
-            let detailVC = DetailViewController(quake: quake)
-            navigationController?.pushViewController(detailVC, animated: true)
+            navigationController?.pushViewController(QuakeDetailViewController(quake: quake), animated: true)
         }
     }
     
@@ -422,6 +436,7 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
 
 extension QuakesViewController: UIViewControllerTransitioningDelegate
 {
+    
     // MARK: - UIViewControllerTransitioning Delegate
     func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return transitionAnimator
@@ -431,4 +446,40 @@ extension QuakesViewController: UIViewControllerTransitioningDelegate
         transitionAnimator?.presenting = false
         return transitionAnimator
     }
+    
+}
+
+extension QuakesViewController: UIViewControllerPreviewingDelegate
+{
+    
+    // MARK: - UIViewControllerPreviewing Delegate
+    func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = tableView.indexPathForRowAtPoint(location) else {
+            print("Unable to parse an indexPath for location: \(location)")
+            return nil
+        }
+        
+        guard let cell = tableView.cellForRowAtIndexPath(indexPath) else { return nil }
+        
+        if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
+            previewingContext.sourceRect = cell.frame
+            
+            let peekVC = PeekableDetailViewController(quake: quake)
+            peekVC.preferredContentSize = CGSize(width: 0.0, height: 300.0)
+            
+            return peekVC
+        }
+        
+        return nil
+    }
+    
+    func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+        if viewControllerToCommit is PeekableDetailViewController {
+            navigationController?.pushViewController(QuakeDetailViewController(quake: (viewControllerToCommit as! PeekableDetailViewController).quakeToDisplay), animated: true)
+        }
+        else {
+            print("the view controller to commit is a unsupported type: \(viewControllerToCommit.dynamicType)")
+        }
+    }
+    
 }

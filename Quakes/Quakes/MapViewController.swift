@@ -88,7 +88,7 @@ class MapViewController: UIViewController
     
     func detailButtonPressed(sender: UIButton) {
         if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hashValue == sender.tag }) {
-            navigationController?.pushViewController(DetailViewController(quake: quakes[index]), animated: true)
+            navigationController?.pushViewController(QuakeDetailViewController(quake: quakes[index]), animated: true)
         }
     }
     

@@ -16,6 +16,7 @@ class SettingsViewController: UITableViewController
     
     enum GeneralSectionRows: Int
     {
+        case AboutRow
         case RateRow
         case RemoveAdsRow
         case ContactRow
@@ -129,8 +130,13 @@ class SettingsViewController: UITableViewController
         }
         else if indexPath.section == TableSections.GeneralSection.rawValue {
             switch indexPath.row {
+            case GeneralSectionRows.AboutRow.rawValue:
+                cell.textLabel?.text = "About Quakes"
+                cell.accessoryType = .DisclosureIndicator
+                break
+                
             case GeneralSectionRows.RateRow.rawValue:
-                cell.textLabel?.text = "Rate Quakes"
+                cell.textLabel?.text = "Rate the App"
                 cell.accessoryType = .DisclosureIndicator
                 break
                 
@@ -160,6 +166,10 @@ class SettingsViewController: UITableViewController
         
         if indexPath.section == TableSections.GeneralSection.rawValue {
             switch indexPath.row {
+            case GeneralSectionRows.AboutRow.rawValue:
+                navigationController?.pushViewController(AboutViewController(), animated: true)
+                break
+                
             case GeneralSectionRows.RateRow.rawValue:
                 UIApplication.sharedApplication().openURL(NSURL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8")!)
                 break

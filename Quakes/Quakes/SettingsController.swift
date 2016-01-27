@@ -2,11 +2,12 @@
 import Foundation
 import CoreLocation
 
-let kSettingsControllerDidChangeUnitStyleNotification: String = "settingsControllerDidChangeUnitStyle"
-
 
 class SettingsController
 {
+    
+    static let kSettingsControllerDidChangeUnitStyleNotification = "settingsControllerDidChangeUnitStyle"
+    static let kSettingsControllerDidChangePurchaseAdRemovalNotification = "settingsControllerDidChangePurchaseAdRemoval"
     
     enum APIFetchSize: Int {
         case Small = 100
@@ -88,6 +89,7 @@ class SettingsController
     private static let kLastLocationOptionKey = "lastLocationOption"
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
     private static let kLastFetchedKey = "lastFetch"
+    private static let kPaidToRemoveKey = "alreadyPaid"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -95,6 +97,7 @@ class SettingsController
         return [
             kSearchRadiusKey: SearchRadiusSize.Medium.rawValue,
             kFetchSizeLimitKey: APIFetchSize.Medium.rawValue,
+            kPaidToRemoveKey: false,
             kUnitStyleKey: true
         ]
     }()
@@ -135,6 +138,17 @@ class SettingsController
         }
     }
     
+    var hasPaidToRemoveAds: Bool {
+        get {
+            return defaults.boolForKey(SettingsController.kPaidToRemoveKey)
+        }
+        set {
+            defaults.setBool(newValue, forKey: SettingsController.kPaidToRemoveKey)
+            defaults.synchronize()
+            NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.kSettingsControllerDidChangePurchaseAdRemovalNotification, object: nil)
+        }
+    }
+    
     var isUnitStyleImperial: Bool {
         get {
             return defaults.boolForKey(SettingsController.kUnitStyleKey)
@@ -142,7 +156,7 @@ class SettingsController
         set {
             defaults.setBool(newValue, forKey: SettingsController.kUnitStyleKey)
             defaults.synchronize()
-            NSNotificationCenter.defaultCenter().postNotificationName(kSettingsControllerDidChangeUnitStyleNotification, object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.kSettingsControllerDidChangeUnitStyleNotification, object: nil)
         }
     }
     

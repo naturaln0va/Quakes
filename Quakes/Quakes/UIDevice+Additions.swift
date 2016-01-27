@@ -5,6 +5,10 @@ import UIKit
 extension UIDevice
 {
     
+    public var hasForceTouch: Bool {
+        return UIScreen.mainScreen().traitCollection.forceTouchCapability == .Available
+    }
+    
     public var deviceCode: String {
         var sysInfo: [CChar] = Array(count: sizeof(utsname), repeatedValue: 0)
         

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PeekableDetailViewController" customModule="Quakes" customModuleProvider="target">
+            <connections>
+                <outlet property="headerLabel" destination="JzP-pr-vPM" id="XHJ-Mv-Xgm"/>
+                <outlet property="magnitudeColorView" destination="yzo-lU-jDv" id="vrA-ko-4Ll"/>
+                <outlet property="mapView" destination="sms-Gg-lqd" id="Kxs-ki-eML"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="274"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="sms-Gg-lqd">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="180" id="nkf-ji-bM7"/>
+                    </constraints>
+                </mapView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name of the earthquake." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JzP-pr-vPM">
+                    <rect key="frame" x="8" y="188" width="304" height="26"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yzo-lU-jDv" customClass="SeverityView" customModule="Quakes" customModuleProvider="target">
+                    <rect key="frame" x="20" y="222" width="280" height="32"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="32" id="yvT-vw-nid"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="sms-Gg-lqd" secondAttribute="trailing" id="4cc-hL-wqz"/>
+                <constraint firstAttribute="trailing" secondItem="JzP-pr-vPM" secondAttribute="trailing" constant="8" id="C3p-5e-Gae"/>
+                <constraint firstItem="yzo-lU-jDv" firstAttribute="top" secondItem="JzP-pr-vPM" secondAttribute="bottom" constant="8" id="RRc-9E-T92"/>
+                <constraint firstAttribute="bottom" secondItem="yzo-lU-jDv" secondAttribute="bottom" constant="20" id="Tcz-A3-x23"/>
+                <constraint firstItem="JzP-pr-vPM" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="Tl0-mU-xTi"/>
+                <constraint firstItem="sms-Gg-lqd" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="U3z-6V-PgZ"/>
+                <constraint firstItem="yzo-lU-jDv" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="l5u-Kr-Zff"/>
+                <constraint firstAttribute="trailing" secondItem="yzo-lU-jDv" secondAttribute="trailing" constant="20" id="lGL-JW-nIs"/>
+                <constraint firstItem="sms-Gg-lqd" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="sUf-TX-wKO"/>
+                <constraint firstItem="JzP-pr-vPM" firstAttribute="top" secondItem="sms-Gg-lqd" secondAttribute="bottom" constant="8" id="ziH-gp-K19"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="228" y="322"/>
+        </view>
+    </objects>
+</document>

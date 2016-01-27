@@ -81,11 +81,14 @@ class PersistentController
         attemptSave()
     }
     
-    func updateQuakeWithID(identifier: String, withNearbyCities cities: [ParsedNearbyCity]) {
+    func updateQuakeWithID(identifier: String, withNearbyCities cities: [ParsedNearbyCity]?, withCountry country: String?) {
         do {
             if let quakeToUpdate = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", identifier), sortedBy: nil, ascending: false) {
-                let data = NSKeyedArchiver.archivedDataWithRootObject(cities)
-                quakeToUpdate.nearbyCitiesData = data
+                if let cities = cities {
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(cities)
+                    quakeToUpdate.nearbyCitiesData = data
+                }
+                quakeToUpdate.countryCode = country ?? nil
             }
         }
         

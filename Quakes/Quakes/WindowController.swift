@@ -21,7 +21,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         
-        // do this more intelligently
+        // do this more intelligentlys
         application.registerUserNotificationSettings(UIUserNotificationSettings(
             forTypes: .Alert,
             categories: nil)
@@ -32,8 +32,8 @@ class WindowController: UIResponder, UIApplicationDelegate
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         if let lastFetch = SettingsController.sharedController.lastFetchDate {
-            let hoursDifference = lastFetch.hoursFrom(NSDate())
-            guard hoursDifference > 0 else { return }
+            let hoursDifference = NSDate().hoursFrom(lastFetch)
+            guard hoursDifference > 0 else { completionHandler(.NoData); return }
             
             if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -46,6 +46,10 @@ class WindowController: UIResponder, UIApplicationDelegate
                                 self.postLocalNotificationWithNumberOfNewQuakes(newCount, lastFetched: hoursDifference)
                             }
                         }
+                        completionHandler(.NewData)
+                    }
+                    else {
+                        completionHandler(.Failed)
                     }
                 }
                 return
@@ -65,6 +69,10 @@ class WindowController: UIResponder, UIApplicationDelegate
                                         self.postLocalNotificationWithNumberOfNewQuakes(newCount, lastFetched: hoursDifference)
                                     }
                                 }
+                                completionHandler(.NewData)
+                            }
+                            else {
+                                completionHandler(.Failed)
                             }
                         }
                     }
@@ -80,6 +88,10 @@ class WindowController: UIResponder, UIApplicationDelegate
                                     self.postLocalNotificationWithNumberOfNewQuakes(newCount, lastFetched: hoursDifference)
                                 }
                             }
+                            completionHandler(.NewData)
+                        }
+                        else {
+                            completionHandler(.Failed)
                         }
                     }
                     break
@@ -94,6 +106,10 @@ class WindowController: UIResponder, UIApplicationDelegate
                                     self.postLocalNotificationWithNumberOfNewQuakes(newCount, lastFetched: hoursDifference)
                                 }
                             }
+                            completionHandler(.NewData)
+                        }
+                        else {
+                            completionHandler(.Failed)
                         }
                     }
                     break

@@ -54,6 +54,7 @@ class Quake: NSManagedObject {
     @NSManaged var detailURL: String
     @NSManaged var nearbyCitiesData: NSData?
     @NSManaged var distance: Double
+    @NSManaged var countryCode: String?
     
     var nameString: String {
         let formatter = MKDistanceFormatter()

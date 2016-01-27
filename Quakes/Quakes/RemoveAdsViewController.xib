@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RemoveAdsViewController" customModule="Quakes" customModuleProvider="target">
             <connections>
+                <outlet property="headerLabel" destination="Zb5-tt-2gr" id="vt1-yc-BxW"/>
+                <outlet property="loadingActivityIndicator" destination="b9J-s6-6Ax" id="vwa-ae-mhZ"/>
                 <outlet property="removeAdsButton" destination="rCm-cA-RKA" id="eAp-Ao-hGt"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -16,10 +18,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OTI-5n-vAS">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="93.5"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="61"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Are you enjoying Quakes? Do you find ads annoying?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb5-tt-2gr">
-                            <rect key="frame" x="20" y="8" width="335" height="65.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Do you find ads annoying?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb5-tt-2gr">
+                            <rect key="frame" x="20" y="8" width="335" height="33"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
@@ -40,14 +42,14 @@
                     </variation>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jma-gz-Bgc">
-                    <rect key="frame" x="20" y="113.5" width="335" height="101.5"/>
+                    <rect key="frame" x="20" y="81" width="335" height="101"/>
                     <string key="text">Ads help fund the development of this app. By choosing to remove ads with a one time payment you are supporting this app and will help improve and keep this app updated and relevant.</string>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rCm-cA-RKA">
-                    <rect key="frame" x="65" y="265" width="245" height="48"/>
+                    <rect key="frame" x="65" y="232" width="245" height="48"/>
                     <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="27" minY="15" maxX="27" maxY="15"/>
@@ -63,20 +65,25 @@
                         <action selector="removeAdsButtonPressed:" destination="-1" eventType="touchUpInside" id="qoz-Hy-nMl"/>
                     </connections>
                 </button>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="b9J-s6-6Ax">
+                    <rect key="frame" x="177" y="246" width="20" height="20"/>
+                </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
+                <constraint firstItem="b9J-s6-6Ax" firstAttribute="centerY" secondItem="rCm-cA-RKA" secondAttribute="centerY" id="1fR-gi-uNC"/>
                 <constraint firstItem="OTI-5n-vAS" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Kgs-4S-vLl"/>
                 <constraint firstAttribute="trailing" secondItem="Jma-gz-Bgc" secondAttribute="trailing" constant="20" id="PhO-Ft-0Cn"/>
                 <constraint firstAttribute="trailing" secondItem="OTI-5n-vAS" secondAttribute="trailing" id="Pkn-aA-RP5"/>
                 <constraint firstItem="Jma-gz-Bgc" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="V2F-S4-lFA"/>
+                <constraint firstItem="b9J-s6-6Ax" firstAttribute="centerX" secondItem="rCm-cA-RKA" secondAttribute="centerX" id="YS0-mb-q7j"/>
                 <constraint firstItem="Jma-gz-Bgc" firstAttribute="top" secondItem="OTI-5n-vAS" secondAttribute="bottom" constant="20" id="dPT-12-6L9"/>
                 <constraint firstItem="OTI-5n-vAS" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="nts-aK-Q3S"/>
                 <constraint firstItem="rCm-cA-RKA" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="qhR-eb-irH"/>
                 <constraint firstItem="rCm-cA-RKA" firstAttribute="top" secondItem="Jma-gz-Bgc" secondAttribute="bottom" constant="50" id="szf-e3-vAz"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-            <point key="canvasLocation" x="289.5" y="350.5"/>
+            <point key="canvasLocation" x="169.5" y="246.5"/>
         </view>
     </objects>
 </document>
