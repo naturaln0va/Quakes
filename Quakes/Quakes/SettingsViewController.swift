@@ -35,6 +35,12 @@ class SettingsViewController: UITableViewController
         case Unit
     }
     
+    private lazy var formatter: MKDistanceFormatter = {
+        let distFormatter = MKDistanceFormatter()
+        distFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+        return distFormatter
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -60,6 +66,9 @@ class SettingsViewController: UITableViewController
             
         case SwitchTag.Unit.rawValue:
             SettingsController.sharedController.isUnitStyleImperial = !sender.on
+            formatter.units = !sender.on ? .Imperial : .Metric
+            tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: .None)
+            
             break
             
         default:
@@ -105,7 +114,7 @@ class SettingsViewController: UITableViewController
                 
             case UserSectionRows.RadiusRow.rawValue:
                 cell.textLabel?.text = "Nearby Radius"
-                cell.detailTextLabel?.text = SettingsController.sharedController.searchRadius.displayString()
+                cell.detailTextLabel?.text = formatter.stringFromDistance(CLLocationDistance(SettingsController.sharedController.searchRadius.rawValue * 1000))
                 cell.accessoryType = .DisclosureIndicator
                 break
                 
@@ -136,7 +145,7 @@ class SettingsViewController: UITableViewController
                 break
                 
             case GeneralSectionRows.RateRow.rawValue:
-                cell.textLabel?.text = "Rate the App"
+                cell.textLabel?.text = "Rate on the App Store"
                 cell.accessoryType = .DisclosureIndicator
                 break
                 
@@ -232,8 +241,6 @@ class SettingsViewController: UITableViewController
                     SettingsController.SearchRadiusSize.ExtraLarge.displayString()
                 ]
                 
-                let formatter = MKDistanceFormatter()
-                formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
                 let detailLabels = values.map { formatter.stringFromDistance(CLLocationDistance($0 * 1000)) }
                 
                 let index: Int = values.indexOf(SettingsController.sharedController.searchRadius.rawValue)!

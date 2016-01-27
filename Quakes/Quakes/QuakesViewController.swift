@@ -56,7 +56,7 @@ class QuakesViewController: UITableViewController
             action: "mapButtonPressed"
         )
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "settings-bar-icon"),
+            image: UIImage(named: "settings-gear"),
             style: .Plain,
             target: self,
             action: "settingsButtonPressed"
@@ -215,7 +215,7 @@ class QuakesViewController: UITableViewController
                 }
                 break
             case LocationOption.World.rawValue:
-                setTitleButtonText("Worldwide Earthquakes")
+                setTitleButtonText("Worldwide Quakes")
                 
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
@@ -227,7 +227,7 @@ class QuakesViewController: UITableViewController
                 }
                 break
             case LocationOption.Major.rawValue:
-                setTitleButtonText("Major Earthquakes")
+                setTitleButtonText("Major Quakes")
                 
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 NetworkClient.sharedClient.getRecentMajorQuakes { quakes, error in

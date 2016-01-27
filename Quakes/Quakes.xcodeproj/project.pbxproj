@@ -123,6 +123,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		480205011C5986B800DB19A0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				696031BB1C5948EF00F71B93 /* SeverityView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		48190D2D1C553A9B009712F6 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
@@ -214,7 +222,7 @@
 				48190D2D1C553A9B009712F6 /* Operations */,
 				69B30FF41C3B056400241D79 /* Resources */,
 				69B30FF91C3B122300241D79 /* ViewControllers */,
-				696031BB1C5948EF00F71B93 /* SeverityView.swift */,
+				480205011C5986B800DB19A0 /* Views */,
 			);
 			path = Quakes;
 			sourceTree = "<group>";
