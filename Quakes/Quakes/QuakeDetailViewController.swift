@@ -20,7 +20,6 @@ class QuakeDetailViewController: UIViewController
     
     let mainQueue = NSOperationQueue.mainQueue()
     let manager = CLLocationManager()
-    let titleImageView = UIImageView(image: UIImage(named: "WW"))
     
     var quakeToDisplay: Quake!
     var parsedNearbyCities: [ParsedNearbyCity]?
@@ -73,22 +72,6 @@ class QuakeDetailViewController: UIViewController
             mainQueue.addOperations([downloadDetailOperation, downloadNearbyCitiesOperation], waitUntilFinished: false)
         }
         
-        if quakeToDisplay.countryCode == nil {
-            let geocoder = CLGeocoder()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            geocoder.reverseGeocodeLocation(quakeToDisplay.location) { marks, error in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                
-                if let mark = marks?.first where error == nil {
-                    let code = mark.ISOcountryCode
-                    PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: nil, withCountry: code)
-                    self.refreshTitleViewWithCountry(code)
-                }
-            }
-        }
-        
-        title = "Detail"
-        refreshTitleViewWithCountry(quakeToDisplay.countryCode)
         nameHeaderLabel.text = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "shareButtonPressed")
         
@@ -110,6 +93,35 @@ class QuakeDetailViewController: UIViewController
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor(red: 0.933,  green: 0.933,  blue: 0.933, alpha: 1.0)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        title = "Detail"
+        if let countryCode = quakeToDisplay.countryCode {
+            navigationItem.titleView = UIImageView(image: UIImage(named: countryCode) ?? UIImage(named: "WW"))
+        }
+        else {
+            let indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+            self.navigationItem.titleView = indicatorView
+            indicatorView.startAnimating()
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            CLGeocoder().geocodeAddressString(quakeToDisplay.name.componentsSeparatedByString(" of ").last!) { marks, error -> Void in
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    if let mark = marks?.first, let code = mark.ISOcountryCode where error == nil {
+                        PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: nil, withCountry: UIImage(named: code) == nil ? nil : code)
+                        self.navigationItem.titleView = UIImageView(image: UIImage(named: code) ?? UIImage(named: "WW"))
+                    }
+                    else {
+                        self.navigationItem.titleView = UIImageView(image: UIImage(named: "WW"))
+                    }
+                }
+            }
+        }
     }
     
     internal func shareButtonPressed() {
@@ -155,14 +167,6 @@ class QuakeDetailViewController: UIViewController
                 )
             }
         }
-    }
-    
-    private func refreshTitleViewWithCountry(countryCode: String?) {
-        if navigationItem.titleView == nil {
-            navigationItem.titleView = titleImageView
-        }
-        
-        titleImageView.image = UIImage(named: countryCode ?? "WW")
     }
     
 }
@@ -343,4 +347,3 @@ extension QuakeDetailViewController: MKMapViewDelegate
     }
     
 }
-
