@@ -95,8 +95,8 @@ class QuakeDetailViewController: UIViewController
         tableView.backgroundColor = UIColor(red: 0.933,  green: 0.933,  blue: 0.933, alpha: 1.0)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         
         title = "Detail"
         if let countryCode = quakeToDisplay.countryCode {
@@ -107,8 +107,16 @@ class QuakeDetailViewController: UIViewController
             self.navigationItem.titleView = indicatorView
             indicatorView.startAnimating()
             
+            var stringToSearch = ""
+            if let lastLocationName = quakeToDisplay.name.componentsSeparatedByString(" of ").last?.componentsSeparatedByString(", ").last {
+                stringToSearch = lastLocationName
+            }
+            else if let wholeLocationName = quakeToDisplay.name.componentsSeparatedByString(" of ").last {
+                stringToSearch = wholeLocationName
+            }
+            
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            CLGeocoder().geocodeAddressString(quakeToDisplay.name.componentsSeparatedByString(" of ").last!) { marks, error -> Void in
+            CLGeocoder().geocodeAddressString(stringToSearch) { marks, error -> Void in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
                 dispatch_async(dispatch_get_main_queue()) {
