@@ -48,13 +48,13 @@ class QuakeDetailViewController: UIViewController
             hasNearbyCityInfo = true
         }
         else if let url = NSURL(string: quakeToDisplay.detailURL) where quakeToDisplay.nearbyCities == nil {
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            NetworkUtility.networkOperationStarted()
             
             let downloadDetailOperation = DownloadDetailOperation(url: url)
             let downloadNearbyCitiesOperation = DownloadNearbyCitiesOperation()
                             
             downloadNearbyCitiesOperation.completionBlock = {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                NetworkUtility.networkOperationFinished()
                 if let cities = downloadNearbyCitiesOperation.downloadedCities where cities.count > 0 {
                     PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: cities, withCountry: nil)
                     
@@ -70,6 +70,16 @@ class QuakeDetailViewController: UIViewController
             mainQueue.maxConcurrentOperationCount = 1
             mainQueue.qualityOfService = .UserInitiated
             mainQueue.addOperations([downloadDetailOperation, downloadNearbyCitiesOperation], waitUntilFinished: false)
+        }
+        
+        title = "Detail"
+        if let countryCode = quakeToDisplay.countryCode {
+            navigationItem.titleView = UIImageView(image: UIImage(named: countryCode) ?? UIImage(named: "WW"))
+        }
+        else {
+            let indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+            self.navigationItem.titleView = indicatorView
+            indicatorView.startAnimating()
         }
         
         nameHeaderLabel.text = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
@@ -98,15 +108,7 @@ class QuakeDetailViewController: UIViewController
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        title = "Detail"
-        if let countryCode = quakeToDisplay.countryCode {
-            navigationItem.titleView = UIImageView(image: UIImage(named: countryCode) ?? UIImage(named: "WW"))
-        }
-        else {
-            let indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-            self.navigationItem.titleView = indicatorView
-            indicatorView.startAnimating()
-            
+        if quakeToDisplay.countryCode == nil {
             var stringToSearch = ""
             if let lastLocationName = quakeToDisplay.name.componentsSeparatedByString(" of ").last?.componentsSeparatedByString(", ").last {
                 stringToSearch = lastLocationName
@@ -115,13 +117,13 @@ class QuakeDetailViewController: UIViewController
                 stringToSearch = wholeLocationName
             }
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            NetworkUtility.networkOperationStarted()
             CLGeocoder().geocodeAddressString(stringToSearch) { marks, error -> Void in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                NetworkUtility.networkOperationFinished()
                 
                 dispatch_async(dispatch_get_main_queue()) {
                     if let mark = marks?.first, let code = mark.ISOcountryCode where error == nil {
-                        PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: nil, withCountry: UIImage(named: code) == nil ? nil : code)
+                        PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: nil, withCountry: code)
                         self.navigationItem.titleView = UIImageView(image: UIImage(named: code) ?? UIImage(named: "WW"))
                     }
                     else {
@@ -245,6 +247,10 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        
+        guard NetworkUtility.internetReachable() else {
+            return
+        }
         
         if let url = NSURL(string: quakeToDisplay.weblink) where hasNearbyCityInfo ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(URL: url)

@@ -69,6 +69,7 @@ class NetworkClient
     }
     
     func getNearbyCitiesWithURL(urlForNearbyCities url: NSURL, completion: NearbyCityCompletionBlock) {
+        NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
                 var nearbyCities: [ParsedNearbyCity]?
@@ -107,12 +108,14 @@ class NetworkClient
                 nearbyCities = responseDicts.map {
                     return ParsedNearbyCity(dict: $0)
                 }
+                NetworkUtility.networkOperationFinished()
             }.resume()
         }
 
     }
     
     func getDetailForQuakeWithURL(urlForDetail url: NSURL, completion: DetailURLCompletionBlock) {
+        NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
                 var detailURLString: String?
@@ -159,11 +162,13 @@ class NetworkClient
                 }
                 
                 detailURLString = urlString
+                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
     
     func getRecentQuakesByLocation(coordinate: CLLocationCoordinate2D, radius: Int, completion: QuakesCompletionBlock) {
+        NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             let params = [
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
@@ -212,11 +217,13 @@ class NetworkClient
                 }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
+                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
     
     func getRecentMajorQuakes(completion: QuakesCompletionBlock) {
+        NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             let params = [
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
@@ -263,11 +270,13 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
+                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
     
     func getRecentWorldQuakes(completion: QuakesCompletionBlock) {
+        NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
@@ -310,11 +319,13 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
+                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
     
     func getNearbyCount(latitude: Double, longitude: Double, radius: Double, completion: CountCompletionBlock) {
+        NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             let params = [
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
@@ -363,6 +374,7 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 count = quakeCount
+                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }

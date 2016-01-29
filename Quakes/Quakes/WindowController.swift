@@ -36,9 +36,9 @@ class WindowController: UIResponder, UIApplicationDelegate
             guard hoursDifference > 0 else { completionHandler(.NoData); return }
             
             if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                NetworkUtility.networkOperationStarted()
                 NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    NetworkUtility.networkOperationFinished()
                     
                     if let quakes = quakes where error == nil {
                         PersistentController.sharedController.saveQuakes(quakes) { newCount in
@@ -59,9 +59,9 @@ class WindowController: UIResponder, UIApplicationDelegate
                 switch option {
                 case LocationOption.Nearby.rawValue:
                     if let currentLocation = SettingsController.sharedController.cachedAddress?.location {
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                        NetworkUtility.networkOperationStarted()
                         NetworkClient.sharedClient.getRecentQuakesByLocation(currentLocation.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
-                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                            NetworkUtility.networkOperationFinished()
                             
                             if let quakes = quakes where error == nil {
                                 PersistentController.sharedController.saveQuakes(quakes) { newCount in
@@ -78,9 +78,9 @@ class WindowController: UIResponder, UIApplicationDelegate
                     }
                     break
                 case LocationOption.World.rawValue:
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                    NetworkUtility.networkOperationStarted()
                     NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                        NetworkUtility.networkOperationFinished()
                         
                         if let quakes = quakes where error == nil {
                             PersistentController.sharedController.saveQuakes(quakes) { newCount in
@@ -96,9 +96,9 @@ class WindowController: UIResponder, UIApplicationDelegate
                     }
                     break
                 case LocationOption.Major.rawValue:
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                    NetworkUtility.networkOperationStarted()
                     NetworkClient.sharedClient.getRecentMajorQuakes { quakes, error in
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                        NetworkUtility.networkOperationFinished()
                         
                         if let quakes = quakes where error == nil {
                             PersistentController.sharedController.saveQuakes(quakes) { newCount in

@@ -3,7 +3,7 @@ import StoreKit
 import Foundation
 
 
-class IAPHelper: NSObject
+class IAPUtility: NSObject
 {
     
     static let IAPHelperPurchaseNotification = "IAPHelperPurchaseNotification"
@@ -27,7 +27,7 @@ class IAPHelper: NSObject
 }
 
 //MARK: Public Methods
-extension IAPHelper
+extension IAPUtility
 {
     
     static func isRemoveAdsProduct(product: SKProduct) -> Bool {
@@ -61,7 +61,7 @@ extension IAPHelper
 }
 
 //MARK: SKProductsRequestDelegate
-extension IAPHelper: SKProductsRequestDelegate
+extension IAPUtility: SKProductsRequestDelegate
 {
     
     func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse)
@@ -91,7 +91,7 @@ extension IAPHelper: SKProductsRequestDelegate
     
 }
 
-extension IAPHelper: SKPaymentTransactionObserver
+extension IAPUtility: SKPaymentTransactionObserver
 {
     
     func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])

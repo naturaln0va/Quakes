@@ -148,9 +148,9 @@ class LocationFinderViewController: UIViewController
     func searchForAddressWithText(searchText: String) {
         let geocoder = CLGeocoder()
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        NetworkUtility.networkOperationStarted()
         geocoder.geocodeAddressString(searchText) { places, error in
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            NetworkUtility.networkOperationFinished()
             if let place = places?.first where error == nil {
                 
                 if places != nil {

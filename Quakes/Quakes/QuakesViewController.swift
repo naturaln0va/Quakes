@@ -135,7 +135,7 @@ class QuakesViewController: UITableViewController
     private func commonFetchedQuakes(quakes: [ParsedQuake]) {
         PersistentController.sharedController.saveQuakes(quakes)
         
-        if let refresher = self.refreshControl where refresher.refreshing {
+        if let refresher = refreshControl where refresher.refreshing {
             refresher.endRefreshing()
         }
     }
@@ -151,6 +151,9 @@ class QuakesViewController: UITableViewController
     
     // MARK: - Actions
     func mapButtonPressed() {
+        guard NetworkUtility.internetReachable() else {
+            return
+        }
         navigationController?.pushViewController(MapViewController(quakeToDisplay: nil, nearbyCities: nil), animated: true)
     }
     
@@ -163,6 +166,13 @@ class QuakesViewController: UITableViewController
     }
     
     func fetchQuakes() {
+        guard NetworkUtility.internetReachable() else {
+            if let refresher = refreshControl where refresher.refreshing {
+                refresher.endRefreshing()
+            }
+            return
+        }
+        
         if SettingsController.sharedController.fisrtLaunchDate == nil {
             SettingsController.sharedController.lastLocationOption = LocationOption.World.rawValue
         }
@@ -170,9 +180,9 @@ class QuakesViewController: UITableViewController
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
             setTitleButtonText("\(lastPlace.cityStateString())")
 
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            NetworkUtility.networkOperationStarted()
             NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                NetworkUtility.networkOperationFinished()
 
                 if let quakes = quakes where error == nil {
                     self.commonFetchedQuakes(quakes)
@@ -187,9 +197,9 @@ class QuakesViewController: UITableViewController
                 if let current = currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                    NetworkUtility.networkOperationStarted()
                     NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                        NetworkUtility.networkOperationFinished()
                         
                         if let quakes = quakes where error == nil {
                             self.commonFetchedQuakes(quakes)
@@ -217,9 +227,9 @@ class QuakesViewController: UITableViewController
             case LocationOption.World.rawValue:
                 setTitleButtonText("Worldwide Quakes")
                 
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                NetworkUtility.networkOperationStarted()
                 NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    NetworkUtility.networkOperationFinished()
                     
                     if let quakes = quakes where error == nil {
                         self.commonFetchedQuakes(quakes)
@@ -229,9 +239,9 @@ class QuakesViewController: UITableViewController
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                NetworkUtility.networkOperationStarted()
                 NetworkClient.sharedClient.getRecentMajorQuakes { quakes, error in
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    NetworkUtility.networkOperationFinished()
                     
                     if let quakes = quakes where error == nil {
                         self.commonFetchedQuakes(quakes)
@@ -340,7 +350,7 @@ extension QuakesViewController: CLLocationManagerDelegate
                     fetchQuakes()
                 }
                 else {
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                    NetworkUtility.networkOperationStarted()
                     geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
                         if let placemark = place?.first where error == nil {
                             SettingsController.sharedController.cachedAddress = placemark
@@ -351,7 +361,7 @@ extension QuakesViewController: CLLocationManagerDelegate
                         }
                         
                         self.fetchQuakes()
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                        NetworkUtility.networkOperationFinished()
                     }
                 }
             }

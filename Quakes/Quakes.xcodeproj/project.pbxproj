@@ -19,7 +19,7 @@
 		4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4871B7A81C4AC96800C466DD /* MapViewController.xib */; };
 		4872AB991C55C15300B6CF37 /* RemoveAdsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */; };
 		4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */; };
-		4872AB9C1C55C6C100B6CF37 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB9B1C55C6C100B6CF37 /* IAPHelper.swift */; };
+		4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */; };
 		4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4872AB9D1C55C76000B6CF37 /* StoreKit.framework */; };
 		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
@@ -55,6 +55,8 @@
 		69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69B30FEB1C3B051600241D79 /* LaunchScreen.storyboard */; };
 		69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */; };
 		69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D235361C3D75E100C9AA50 /* ParsedQuake.swift */; };
+		69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB431C5AAA990028AD81 /* Reachability.swift */; };
+		69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,7 +72,7 @@
 		4871B7A81C4AC96800C466DD /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
 		4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveAdsViewController.swift; sourceTree = "<group>"; };
 		4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RemoveAdsViewController.xib; sourceTree = "<group>"; };
-		4872AB9B1C55C6C100B6CF37 /* IAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
+		4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPUtility.swift; sourceTree = "<group>"; };
 		4872AB9D1C55C76000B6CF37 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
@@ -90,24 +92,26 @@
 		696031BB1C5948EF00F71B93 /* SeverityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityView.swift; sourceTree = "<group>"; };
 		696031BD1C5953F000F71B93 /* country-to-code.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "country-to-code.plist"; sourceTree = "<group>"; };
 		696031BF1C59554300F71B93 /* FlagKit.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FlagKit.xcassets; sourceTree = "<group>"; };
-		696031C11C595BD200F71B93 /* QuakeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuakeDetailViewController.swift; sourceTree = "<group>"; };
+		696031C11C595BD200F71B93 /* QuakeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = QuakeDetailViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakeDetailViewController.xib; sourceTree = "<group>"; };
 		696031C51C596C4000F71B93 /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		696031C61C596C4000F71B93 /* countrytocode.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countrytocode.txt; sourceTree = "<group>"; };
 		699CA6051C3C52980094F48A /* Quakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Quakes.xcdatamodel; sourceTree = "<group>"; };
 		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
 		699CA60E1C3C55E10094F48A /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
-		699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuakesViewController.swift; sourceTree = "<group>"; };
+		699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = QuakesViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyledNavigationController.swift; sourceTree = "<group>"; };
 		699E4EF01C3D69A00049C7F4 /* StyleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleController.swift; sourceTree = "<group>"; };
 		699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Additions.swift"; sourceTree = "<group>"; };
 		69B30FDF1C3B051600241D79 /* Quakes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quakes.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		69B30FE21C3B051600241D79 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		69B30FE21C3B051600241D79 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		69B30FE91C3B051600241D79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		69B30FEC1C3B051600241D79 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		69B30FEE1C3B051600241D79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		69D235361C3D75E100C9AA50 /* ParsedQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedQuake.swift; sourceTree = "<group>"; };
+		69F9CB431C5AAA990028AD81 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../Reachability.swift; sourceTree = "<group>"; };
+		69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkUtility.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,7 +249,9 @@
 		69B30FF71C3B0AF100241D79 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				69F9CB431C5AAA990028AD81 /* Reachability.swift */,
 				69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */,
+				69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -257,7 +263,7 @@
 				699E4EF01C3D69A00049C7F4 /* StyleController.swift */,
 				69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */,
 				48C713191C4090C600196225 /* SettingsController.swift */,
-				4872AB9B1C55C6C100B6CF37 /* IAPHelper.swift */,
+				4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -396,7 +402,8 @@
 				696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */,
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
-				4872AB9C1C55C6C100B6CF37 /* IAPHelper.swift in Sources */,
+				4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */,
+				69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */,
 				690C289B1C580A750035F47A /* NSDate+Additions.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */,
@@ -424,6 +431,7 @@
 				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift in Sources */,
 				69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */,
 				699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */,
+				69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

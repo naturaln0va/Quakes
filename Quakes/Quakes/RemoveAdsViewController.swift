@@ -9,7 +9,7 @@ class RemoveAdsViewController: UIViewController
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
     
-    private let helper = IAPHelper()
+    private let helper = IAPUtility()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,12 +24,11 @@ class RemoveAdsViewController: UIViewController
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
                 selector: "adRemovalPurchased",
-                name: IAPHelper.IAPHelperPurchaseNotification,
+                name: IAPUtility.IAPHelperPurchaseNotification,
                 object: nil
             )
             
             removeAdsButton.setTitle("", forState: .Normal)
-            
             navigationItem.rightBarButtonItem = UIBarButtonItem(
                 barButtonSystemItem: .Refresh,
                 target: self,
@@ -42,7 +41,7 @@ class RemoveAdsViewController: UIViewController
             helper.requestProducts { products in
                 self.loadingActivityIndicator.stopAnimating()
 
-                if let firstProduct = products?.first where IAPHelper.isRemoveAdsProduct(firstProduct) {
+                if let firstProduct = products?.first where IAPUtility.isRemoveAdsProduct(firstProduct) {
                     let numberFormatter = NSNumberFormatter()
                     numberFormatter.numberStyle = .CurrencyStyle
                     

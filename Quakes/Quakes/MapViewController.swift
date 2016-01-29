@@ -24,6 +24,9 @@ class MapViewController: UIViewController
             self.nearbyCitiesToDisplay = nearbyCities
             title = "Nearby Cities"
         }
+        else {
+            title = "Map"
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -68,7 +71,6 @@ class MapViewController: UIViewController
             
             if let quakes = quakesToDisplay {
                 refreshMapWithQuakes(quakes, cities: nil, animated: false)
-                title = "\(quakes.count) Earthquakes"
             }
         }
         catch {
