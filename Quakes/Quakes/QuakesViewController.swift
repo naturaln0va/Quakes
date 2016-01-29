@@ -17,6 +17,15 @@ class QuakesViewController: UITableViewController
         return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: moc, sectionNameKeyPath: nil, cacheName: "quakes")
     }()
     
+    private lazy var noResultsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No Recent Quakes"
+        label.font = UIFont.systemFontOfSize(27.0, weight: UIFontWeightMedium)
+        label.textColor = UIColor(white: 0.0, alpha: 0.25)
+        label.sizeToFit()
+        return label
+    }()
+    
     lazy var titleViewButton: UIButton = {
         let button = UIButton(type: .Custom)
         
@@ -133,6 +142,11 @@ class QuakesViewController: UITableViewController
     }
     
     private func commonFetchedQuakes(quakes: [ParsedQuake]) {
+        if quakes.count == 0 && fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
+            noResultsLabel.center = CGPoint(x: view.center.x, y: 65.0)
+            tableView.addSubview(noResultsLabel)
+        }
+        
         PersistentController.sharedController.saveQuakes(quakes)
         
         if let refresher = refreshControl where refresher.refreshing {
@@ -171,6 +185,10 @@ class QuakesViewController: UITableViewController
                 refresher.endRefreshing()
             }
             return
+        }
+        
+        if noResultsLabel.superview != nil {
+            noResultsLabel.removeFromSuperview()
         }
         
         if SettingsController.sharedController.fisrtLaunchDate == nil {
