@@ -19,7 +19,13 @@ extension CLPlacemark {
             return wholeString
         }
         else {
-            return "Invalid Address"
+            if self.country != nil {
+                return self.country!
+            }
+            else {
+                print("Malformed address: \(self)")
+                return "Invalid Address"
+            }
         }
     }
     

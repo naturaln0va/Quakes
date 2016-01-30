@@ -89,6 +89,7 @@ class SettingsController
     private static let kLastLocationOptionKey = "lastLocationOption"
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
     private static let kLastFetchedKey = "lastFetch"
+    private static let kLastWorldFetchedKey = "lastFetch"
     private static let kPaidToRemoveKey = "alreadyPaid"
     private static let kNotificationsActiveKey = "notificationsActive"
     
@@ -252,6 +253,19 @@ class SettingsController
         set {
             if let newDate = newValue {
                 defaults.setDouble(newDate.timeIntervalSince1970, forKey: SettingsController.kLastFetchedKey)
+                defaults.synchronize()
+            }
+        }
+    }
+    
+    var lastWorldFetchDate: NSDate? {
+        get {
+            let interval = defaults.doubleForKey(SettingsController.kLastWorldFetchedKey)
+            return interval == 0 ? nil : NSDate(timeIntervalSince1970: interval)
+        }
+        set {
+            if let newDate = newValue {
+                defaults.setDouble(newDate.timeIntervalSince1970, forKey: SettingsController.kLastWorldFetchedKey)
                 defaults.synchronize()
             }
         }

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MapViewController" customModule="Quakes" customModuleProvider="target">
             <connections>
-                <outlet property="locateButton" destination="HBP-Ei-0OC" id="E47-2v-G0a"/>
                 <outlet property="mapView" destination="dnz-J2-buz" id="jMh-fs-vUk"/>
+                <outlet property="searchAreaButton" destination="Oys-bC-xPi" id="Ckg-8c-7tL"/>
+                <outlet property="searchAreaButtonBottomConstraint" destination="qyU-tC-tbY" id="91p-PT-GoN"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -19,25 +20,39 @@
                 <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dnz-J2-buz">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                 </mapView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HBP-Ei-0OC">
-                    <rect key="frame" x="32" y="593" width="42" height="42"/>
-                    <state key="normal" image="recenter"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oys-bC-xPi">
+                    <rect key="frame" x="0.0" y="617" width="375" height="50"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="lKF-eI-aIx"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                    <state key="normal" title="Search This Area" image="search-glass">
+                        <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="searchButtonPressed" destination="-1" eventType="touchUpInside" id="cf2-3O-HK1"/>
+                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="dnz-J2-buz" secondAttribute="bottom" id="9aq-V0-RmO"/>
                 <constraint firstItem="dnz-J2-buz" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="NMC-P3-Rsr"/>
-                <constraint firstItem="HBP-Ei-0OC" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="32" id="NpF-u3-34I"/>
+                <constraint firstItem="Oys-bC-xPi" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="QXA-sV-L53"/>
+                <constraint firstAttribute="trailing" secondItem="Oys-bC-xPi" secondAttribute="trailing" id="e9i-nm-R4d"/>
                 <constraint firstAttribute="trailing" secondItem="dnz-J2-buz" secondAttribute="trailing" id="p6m-h5-SzX"/>
+                <constraint firstAttribute="bottom" secondItem="Oys-bC-xPi" secondAttribute="bottom" id="qyU-tC-tbY"/>
                 <constraint firstItem="dnz-J2-buz" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="sTN-1h-ab8"/>
-                <constraint firstAttribute="bottom" secondItem="HBP-Ei-0OC" secondAttribute="bottom" constant="32" id="yGB-dI-dMg"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
             <point key="canvasLocation" x="323.5" y="379.5"/>
         </view>
     </objects>
     <resources>
-        <image name="recenter" width="42" height="42"/>
+        <image name="search-glass" width="22" height="22"/>
     </resources>
 </document>

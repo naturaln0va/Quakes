@@ -18,13 +18,15 @@ class QuakeDetailViewController: UIViewController
         return map
     }()
     
+    let geocoder = CLGeocoder()
+    let titleIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     let mainQueue = NSOperationQueue.mainQueue()
     let manager = CLLocationManager()
     
     var quakeToDisplay: Quake!
     var parsedNearbyCities: [ParsedNearbyCity]?
     var lastUserLocation: CLLocation?
-    var distanceStringForCell: String?
+    var distanceFromQuake: Double?
     var hasNearbyCityInfo: Bool = false {
         didSet {
             tableView.reloadData()
@@ -77,9 +79,8 @@ class QuakeDetailViewController: UIViewController
             navigationItem.titleView = UIImageView(image: UIImage(named: countryCode) ?? UIImage(named: "WW"))
         }
         else {
-            let indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-            self.navigationItem.titleView = indicatorView
-            indicatorView.startAnimating()
+            navigationItem.titleView = titleIndicatorView
+            titleIndicatorView.startAnimating()
         }
         
         nameHeaderLabel.text = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
@@ -118,7 +119,7 @@ class QuakeDetailViewController: UIViewController
             }
             
             NetworkUtility.networkOperationStarted()
-            CLGeocoder().geocodeAddressString(stringToSearch) { marks, error -> Void in
+            geocoder.geocodeAddressString(stringToSearch) { marks, error -> Void in
                 NetworkUtility.networkOperationFinished()
                 
                 dispatch_async(dispatch_get_main_queue()) {
@@ -134,6 +135,19 @@ class QuakeDetailViewController: UIViewController
         }
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if titleIndicatorView.superview != nil {
+            titleIndicatorView.removeFromSuperview()
+            navigationItem.titleView = nil
+        }
+        
+        if geocoder.geocoding {
+            geocoder.cancelGeocode()
+        }
+    }
+    
     internal func shareButtonPressed() {
         guard let url = NSURL(string: quakeToDisplay.weblink) else { return }
         let options = MKMapSnapshotOptions()
@@ -143,7 +157,6 @@ class QuakeDetailViewController: UIViewController
         options.mapType = .Hybrid
         
         MKMapSnapshotter(options: options).startWithCompletionHandler { snapshot, error in
-            
             let prompt = "A \(Quake.magnitudeFormatter.stringFromNumber(self.quakeToDisplay.magnitude)!) magnitude earthquake happened \(relativeStringForDate(self.quakeToDisplay.timestamp)) ago near \(self.quakeToDisplay.name.componentsSeparatedByString(" of ").last!)."
             var items = [prompt, url, self.quakeToDisplay.location]
             
@@ -195,7 +208,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
             }
             else if indexPath.row == 1 {
                 cell.textLabel?.text = "Depth"
-                cell.detailTextLabel?.text = Quake.depthFormatter.stringFromMeters(quakeToDisplay.depth)
+                cell.detailTextLabel?.text = Quake.depthFormatter.stringFromValue(quakeToDisplay.depth, unit: SettingsController.sharedController.isUnitStyleImperial ? .Mile : .Kilometer)
             }
             else if indexPath.row == 2 {
                 cell.textLabel?.text = "Location"
@@ -210,8 +223,9 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
                 cell.detailTextLabel?.text = Quake.timestampFormatter.stringFromDate(quakeToDisplay.timestamp)
             }
             else if indexPath.row == 5 {
+                Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
                 cell.textLabel?.text = "Distance"
-                cell.detailTextLabel?.text = distanceStringForCell == nil ? "N/A" : distanceStringForCell!
+                cell.detailTextLabel?.text = distanceFromQuake == nil ? "N/A" : Quake.distanceFormatter.stringFromDistance(distanceFromQuake!)
             }
         }
         else if indexPath.section == 1 {
@@ -313,7 +327,7 @@ extension QuakeDetailViewController: MKMapViewDelegate
             return
         }
         
-        distanceStringForCell = Quake.distanceFormatter.stringFromDistance(userLocation.distanceFromLocation(quakeToDisplay.location))
+        distanceFromQuake = userLocation.distanceFromLocation(quakeToDisplay.location)
         tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 5, inSection: 0)], withRowAnimation: .Automatic)
         
         if userLocation.distanceFromLocation(quakeToDisplay.location) > (1000 * 900) {
@@ -341,20 +355,9 @@ extension QuakeDetailViewController: MKMapViewDelegate
         else {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "Quake")
             annotationView.enabled = true
-            annotationView.animatesDrop = false
+            annotationView.animatesDrop = true
             
-            var colorForPin = StyleController.greenQuakeColor
-            if quakeToDisplay.magnitude >= 4.0 {
-                colorForPin = StyleController.redQuakeColor
-            }
-            else if quakeToDisplay.magnitude >= 3.0 {
-                colorForPin = StyleController.orangeQuakeColor
-            }
-            else {
-                colorForPin = StyleController.greenQuakeColor
-            }
-            
-            annotationView.pinTintColor = colorForPin
+            annotationView.pinTintColor = quakeToDisplay.severityColor
             
             return annotationView
         }

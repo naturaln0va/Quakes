@@ -3,18 +3,28 @@ import UIKit
 import MapKit
 import CoreLocation
 
+protocol MapViewControllerDelegate {
+    func mapViewControllerDidFindPlace(placemark: CLPlacemark)
+}
+
 class MapViewController: UIViewController
 {
     
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var locateButton: UIButton!
+    @IBOutlet weak var searchAreaButton: UIButton!
+    @IBOutlet weak var searchAreaButtonBottomConstraint: NSLayoutConstraint!
     
     var quakesToDisplay: [Quake]?
+    var searchedQuakes: [Quake]?
+    
     var quakeToDisplay: Quake?
     var nearbyCitiesToDisplay: [ParsedNearbyCity]?
     
+    var delegate: MapViewControllerDelegate?
+    
     var shouldContinueUpdatingUserLocation = true
     let manager = CLLocationManager()
+    let geocoder = CLGeocoder()
     
     init(quakeToDisplay quake: Quake?, nearbyCities: [ParsedNearbyCity]?) {
         super.init(nibName: String(MapViewController), bundle: nil)
@@ -37,9 +47,19 @@ class MapViewController: UIViewController
     {
         super.viewDidLoad()
         
+        searchAreaButtonBottomConstraint.constant = -50
+        view.layoutIfNeeded()
+        
         mapView.showsScale = true
         mapView.showsCompass = true
         mapView.delegate = self
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "center-bar-button"),
+            style: .Plain,
+            target: self,
+            action: "recenterMapButtonPressed"
+        )
         
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true
@@ -49,36 +69,72 @@ class MapViewController: UIViewController
             manager.requestWhenInUseAuthorization()
         }
         
-        locateButton.addTarget(self, action: "recenterMapButtonPressed", forControlEvents: .TouchUpInside)
-    }
-    
-    override func viewWillAppear(animated: Bool)
-    {
-        super.viewWillAppear(animated)
-        
-        if nearbyCitiesToDisplay == nil {
+        if let quake = quakeToDisplay, let citiesToDisplay = nearbyCitiesToDisplay {
+            refreshMapWithQuakes([quake], cities: citiesToDisplay, animated: true)
+        }
+        else {
             fetchQuakesAndDisplay()
         }
-        else if let quake = quakeToDisplay, let citiesToDisplay = nearbyCitiesToDisplay {
-            refreshMapWithQuakes([quake], cities: citiesToDisplay, animated: true)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if geocoder.geocoding {
+            geocoder.cancelGeocode()
         }
     }
     
     func fetchQuakesAndDisplay()
     {
-        do {
-            quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
+        if SettingsController.sharedController.lastWorldFetchDate?.hoursFrom(NSDate()) > 2 || Quake.objectCountInContext(PersistentController.sharedController.worldMoc) == 0 {
             
-            if let quakes = quakesToDisplay {
-                refreshMapWithQuakes(quakes, cities: nil, animated: false)
+            NetworkUtility.networkOperationStarted()
+            NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
+                NetworkUtility.networkOperationFinished()
+                SettingsController.sharedController.lastWorldFetchDate = NSDate()
+                
+                if let quakes = quakes where error == nil {
+                    PersistentController.sharedController.saveWorldQuakes(quakes)
+                    self.fetchQuakesAndDisplay()
+                }
             }
         }
-        catch {
-            print("Error loading quakes from persistent store \(error)")
+        else {
+            do {
+                quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.worldMoc)
+                
+                if let quakes = quakesToDisplay {
+                    refreshMapWithQuakes(quakes, cities: nil, animated: true)
+                }
+            }
+            catch {
+                print("Error loading quakes from world persistent store \(error)")
+            }
         }
     }
     
     // MARK: - Actions
+    @IBAction func searchButtonPressed() {
+        self.searchAreaButton.setTitle("Searching...", forState: .Normal)
+        
+        NetworkUtility.networkOperationStarted()
+        geocoder.reverseGeocodeLocation(CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)) { places, error in
+            NetworkUtility.networkOperationFinished()
+            if let place = places?.first where error == nil {
+                if let _ = place.location {
+                    self.delegate?.mapViewControllerDidFindPlace(place)
+                }
+                else {
+                    self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
+                }
+            }
+            else {
+                self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
+            }
+        }
+    }
+    
     func recenterMapButtonPressed() {
         if let quakes = quakesToDisplay {
             refreshMapWithQuakes(quakes, cities: nil, animated: true)
@@ -95,7 +151,7 @@ class MapViewController: UIViewController
     }
     
     func refreshMapWithQuakes(quakes: [Quake], cities: [ParsedNearbyCity]?, animated: Bool) {
-        if mapView.annotations.count == 0 {
+        if mapView.annotations.count <= 1 {
             mapView.addAnnotations(quakes)
             if let cities = cities {
                 mapView.addAnnotations(cities)
@@ -148,93 +204,48 @@ class MapViewController: UIViewController
             mapView.setVisibleMapRect(fittedRect, animated: animated)
         }
         else {
-            if SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue || SettingsController.sharedController.lastSearchedPlace != nil {
-                var locations = quakes.map { $0.location }
-                
-                if let userLocation = mapView.userLocation.location where SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue {
-                    locations.append(userLocation)
-                }
-                
-                var mapRect = MKMapRect()
-                if locations.count == 1 {
-                    let center = CLLocationCoordinate2D(
-                        latitude: mapView.userLocation.location!.coordinate.latitude,
-                        longitude: mapView.userLocation.location!.coordinate.longitude
-                    )
-                    mapRect = MKMapRect(origin: MKMapPoint(x: center.latitude, y: center.longitude), size: MKMapSize(width: 650, height: 650))
-                }
-                else {
-                    var topLeftCoord = CLLocationCoordinate2D(
-                        latitude: -90,
-                        longitude: 180
-                    )
-                    var bottomRightCoord = CLLocationCoordinate2D(
-                        latitude: 90,
-                        longitude: -180
-                    )
-                    
-                    for location in locations {
-                        topLeftCoord.latitude = max(
-                            topLeftCoord.latitude,
-                            location.coordinate.latitude
-                        )
-                        topLeftCoord.longitude = min(
-                            topLeftCoord.longitude,
-                            location.coordinate.longitude
-                        )
-                        bottomRightCoord.latitude = min(
-                            bottomRightCoord.latitude,
-                            location.coordinate.latitude
-                        )
-                        bottomRightCoord.longitude = max(
-                            bottomRightCoord.longitude,
-                            location.coordinate.longitude
-                        )
-                    }
-                    
-                    let topLeftPoint = MKMapPointForCoordinate(topLeftCoord)
-                    let bottomRightPoint = MKMapPointForCoordinate(bottomRightCoord)
-                    
-                    mapRect = MKMapRectMake(
-                        min(topLeftPoint.x, bottomRightPoint.x),
-                        min(topLeftPoint.y, bottomRightPoint.y),
-                        abs(topLeftPoint.x - bottomRightPoint.x),
-                        abs(topLeftPoint.y - bottomRightPoint.y)
-                    )
-                }
-                
-                let fittedRect = mapView.mapRectThatFits(mapRect, edgePadding: UIEdgeInsets(top: 55, left: 27, bottom: 55, right: 27))
-                mapView.setVisibleMapRect(fittedRect, animated: animated)
+            guard let latestQuake = quakes.sort({ $0.timestamp.timeIntervalSince1970 > $1.timestamp.timeIntervalSince1970 }).first else {
+                print("WARNING: There was not a sorted quake to center on.")
+                return
             }
-            else {
-                var mapRect = MKMapRect()
-                var centerPoint = CLLocationCoordinate2D()
-                if let latestQuake = quakes.sort({ $0.timestamp.timeIntervalSince1970 > $1.timestamp.timeIntervalSince1970 }).first {
-                    centerPoint = latestQuake.coordinate
-                    mapRect = MKMapRect(
-                        origin: MKMapPointMake(MKMapPointForCoordinate(latestQuake.coordinate).x / 2, MKMapPointForCoordinate(latestQuake.coordinate).y / 2),
-                        size: MKMapSize(width: MKMapSizeWorld.width / 10, height: MKMapSizeWorld.height / 10)
-                    )
-                }
-                else {
-                    if let userLocation = mapView.userLocation.location {
-                        centerPoint = userLocation.coordinate
-                        mapRect = MKMapRect(
-                            origin: MKMapPointForCoordinate(userLocation.coordinate),
-                            size: MKMapSize(width: MKMapSizeWorld.width / 10, height: MKMapSizeWorld.height / 10)
-                        )
-                    }
-                }
-                
-                mapView.setVisibleMapRect(mapRect, animated: false)
-                mapView.setCenterCoordinate(centerPoint, animated: animated)
-            }
+            
+            let region = MKCoordinateRegion(center: latestQuake.coordinate, span:
+                MKCoordinateSpan(
+                    latitudeDelta: 2.0,
+                    longitudeDelta: 2.0
+                )
+            )
+            
+            mapView.setVisibleMapRect(region.mapRectForCoordinateRegion(), animated: animated)
         }
-        
     }
 }
 
 extension MapViewController: MKMapViewDelegate {
+    
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool)
+    {
+        guard NetworkUtility.internetReachable() else {
+            return
+        }
+
+        guard nearbyCitiesToDisplay == nil && quakeToDisplay == nil else {
+            return
+        }
+        
+        if mapView.region.span.latitudeDelta < 7 {
+            searchAreaButtonBottomConstraint.constant = 0
+            UIView.animateWithDuration(0.345) {
+                self.view.layoutIfNeeded()
+            }
+        }
+        else {
+            searchAreaButtonBottomConstraint.constant = -50
+            UIView.animateWithDuration(0.345) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
     
     func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
         guard shouldContinueUpdatingUserLocation else { return }
@@ -258,26 +269,17 @@ extension MapViewController: MKMapViewDelegate {
             annotationView.animatesDrop = false
             annotationView.canShowCallout = true
             
-            let detailButton = UIButton(type: .Custom)
-            detailButton.tag = (annotation as! Quake).hashValue
-            detailButton.setImage(UIImage(named: "right-callout-arrow"), forState: .Normal)
-            detailButton.addTarget(self, action: "detailButtonPressed:", forControlEvents: .TouchUpInside)
-            detailButton.sizeToFit()
-            
-            annotationView.rightCalloutAccessoryView = detailButton
-            
-            var colorForPin = StyleController.greenQuakeColor
-            if (annotation as! Quake).magnitude >= 4.0 {
-                colorForPin = StyleController.redQuakeColor
-            }
-            else if (annotation as! Quake).magnitude >= 3.0 {
-                colorForPin = StyleController.orangeQuakeColor
-            }
-            else {
-                colorForPin = StyleController.greenQuakeColor
+            if nearbyCitiesToDisplay == nil {
+                let detailButton = UIButton(type: .Custom)
+                detailButton.tag = (annotation as! Quake).hashValue
+                detailButton.setImage(UIImage(named: "right-callout-arrow"), forState: .Normal)
+                detailButton.addTarget(self, action: "detailButtonPressed:", forControlEvents: .TouchUpInside)
+                detailButton.sizeToFit()
+
+                annotationView.rightCalloutAccessoryView = detailButton
             }
             
-            annotationView.pinTintColor = colorForPin
+            annotationView.pinTintColor = (annotation as! Quake).severityColor
             
             return annotationView
         }

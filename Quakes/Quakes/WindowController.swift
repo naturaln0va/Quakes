@@ -122,7 +122,7 @@ class WindowController: UIResponder, UIApplicationDelegate
     }
     
     internal func postLocalNotificationWithNumberOfNewQuakes(newQuakes: Int, lastFetched numberOfHoursAgo: Int) {
-        let partOne = newQuakes == 1 ? "An quake happened" : "\(newQuakes) quakes happened"
+        let partOne = newQuakes == 1 ? "A quake happened" : "\(newQuakes) quakes happened"
         let partTwo = numberOfHoursAgo == 1 ? "an hour ago." : "\(numberOfHoursAgo) hours ago."
         
         let notification = UILocalNotification()

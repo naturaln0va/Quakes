@@ -153,14 +153,7 @@ class LocationFinderViewController: UIViewController
             NetworkUtility.networkOperationFinished()
             if let place = places?.first where error == nil {
                 
-                if places != nil {
-                    for placeToLookInTo in places! {
-                        print("\(placeToLookInTo)\n\n")
-                    }
-                }
-                
                 if let _ = place.location {
-                    SettingsController.sharedController.lastSearchedPlace = place
                     self.delegate?.locationFinderViewControllerDidSelectPlace(place)
                 }
                 else {

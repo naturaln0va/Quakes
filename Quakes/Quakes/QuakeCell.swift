@@ -25,45 +25,20 @@ class QuakeCell: UITableViewCell
         
         cityLabel.text = quake.name.componentsSeparatedByString(" of ").last!
         
-        if quake.magnitude >= 4.0 {
-            colorView.backgroundColor = StyleController.redQuakeColor
-        }
-        else if quake.magnitude >= 3.0 {
-            colorView.backgroundColor = StyleController.orangeQuakeColor
-        }
-        else {
-            colorView.backgroundColor = StyleController.greenQuakeColor
-        }
-        
+        colorView.backgroundColor = quake.severityColor
         colorView.layer.cornerRadius = 6.0
     }
     
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
-        if quakeToDisplay.magnitude >= 4.0 {
-            colorView.backgroundColor = StyleController.redQuakeColor
-        }
-        else if quakeToDisplay.magnitude >= 3.0 {
-            colorView.backgroundColor = StyleController.orangeQuakeColor
-        }
-        else {
-            colorView.backgroundColor = StyleController.greenQuakeColor
-        }
+        colorView.backgroundColor = quakeToDisplay.severityColor
     }
     
     override func setHighlighted(highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         
-        if quakeToDisplay.magnitude >= 4.0 {
-            colorView.backgroundColor = StyleController.redQuakeColor
-        }
-        else if quakeToDisplay.magnitude >= 3.0 {
-            colorView.backgroundColor = StyleController.orangeQuakeColor
-        }
-        else {
-            colorView.backgroundColor = StyleController.greenQuakeColor
-        }
+        colorView.backgroundColor = quakeToDisplay.severityColor
     }
     
 }

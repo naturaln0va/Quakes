@@ -168,7 +168,9 @@ class QuakesViewController: UITableViewController
         guard NetworkUtility.internetReachable() else {
             return
         }
-        navigationController?.pushViewController(MapViewController(quakeToDisplay: nil, nearbyCities: nil), animated: true)
+        let mapVC = MapViewController(quakeToDisplay: nil, nearbyCities: nil)
+        mapVC.delegate = self
+        navigationController?.pushViewController(mapVC, animated: true)
     }
     
     func titleButtonPressed() {
@@ -454,6 +456,23 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
         
         SettingsController.sharedController.lastLocationOption = option.rawValue
         SettingsController.sharedController.lastSearchedPlace = nil
+        
+        PersistentController.sharedController.deleteAllQuakes()
+        
+        fetchQuakes()
+    }
+    
+}
+
+extension QuakesViewController: MapViewControllerDelegate
+{
+    
+    // MARK: - MapViewController Delegate
+    func mapViewControllerDidFindPlace(placemark: CLPlacemark) {
+        navigationController?.popViewControllerAnimated(true)
+        
+        SettingsController.sharedController.lastSearchedPlace = placemark
+        SettingsController.sharedController.lastLocationOption = nil
         
         PersistentController.sharedController.deleteAllQuakes()
         

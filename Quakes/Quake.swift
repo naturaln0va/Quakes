@@ -71,6 +71,21 @@ class Quake: NSManagedObject {
         return CLLocation(coordinate: coordinate, altitude: -depth, horizontalAccuracy: kCLLocationAccuracyBest, verticalAccuracy: kCLLocationAccuracyBest, timestamp: timestamp)
     }
     
+    var severityColor: UIColor {
+        if magnitude >= 6.5 {
+            return StyleController.purpleColor
+        }
+        else if magnitude >= 4.0 {
+            return StyleController.redQuakeColor
+        }
+        else if magnitude >= 3.0 {
+            return StyleController.orangeQuakeColor
+        }
+        else {
+            return StyleController.greenQuakeColor
+        }
+    }
+    
     var nearbyCities: [ParsedNearbyCity]? {
         if let data = nearbyCitiesData {
             if let cities = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [ParsedNearbyCity] {
