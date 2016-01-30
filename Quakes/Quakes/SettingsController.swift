@@ -92,6 +92,8 @@ class SettingsController
     private static let kLastWorldFetchedKey = "lastFetch"
     private static let kPaidToRemoveKey = "alreadyPaid"
     private static let kNotificationsActiveKey = "notificationsActive"
+    private static let kNotificationsTypeKey = "notificationsType"
+    private static let kNotificationsAmountKey = "notificationsAmount"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -100,6 +102,8 @@ class SettingsController
             kSearchRadiusKey: SearchRadiusSize.Medium.rawValue,
             kFetchSizeLimitKey: APIFetchSize.Medium.rawValue,
             kNotificationsActiveKey: false,
+            kNotificationsTypeKey: 0,
+            kNotificationsAmountKey: 0,
             kPaidToRemoveKey: false,
             kUnitStyleKey: true
         ]
@@ -147,6 +151,26 @@ class SettingsController
         }
         set {
             defaults.setBool(newValue, forKey: SettingsController.kNotificationsActiveKey)
+            defaults.synchronize()
+        }
+    }
+    
+    var notificationType: Int {
+        get {
+            return defaults.integerForKey(SettingsController.kNotificationsTypeKey)
+        }
+        set {
+            defaults.setInteger(newValue, forKey: SettingsController.kNotificationsTypeKey)
+            defaults.synchronize()
+        }
+    }
+    
+    var notificationAmount: Int {
+        get {
+            return defaults.integerForKey(SettingsController.kNotificationsAmountKey)
+        }
+        set {
+            defaults.setInteger(newValue, forKey: SettingsController.kNotificationsAmountKey)
             defaults.synchronize()
         }
     }

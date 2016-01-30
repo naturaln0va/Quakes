@@ -27,6 +27,8 @@ struct PickerData
 enum PickerType {
     case Limit
     case Radius
+    case NotificationType
+    case NotificationAmount
 }
 
 protocol PickerViewControllerDelegate
@@ -77,6 +79,7 @@ class PickerViewController: UITableViewController
             descriptionLabel.bounds = footerView.bounds
             descriptionLabel.center = footerView.center
             descriptionLabel.frame.origin.x += 15.0
+            descriptionLabel.frame.size.width -= 30.0
             footerView.addSubview(descriptionLabel)
             
             tableView.tableFooterView = footerView

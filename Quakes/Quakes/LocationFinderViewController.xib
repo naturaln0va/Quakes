@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
@@ -82,7 +82,7 @@
                 <constraint firstItem="fyp-kc-jvt" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="TGN-6o-ECJ"/>
                 <constraint firstAttribute="trailing" secondItem="fyp-kc-jvt" secondAttribute="trailing" id="UiV-S0-oOF"/>
                 <constraint firstAttribute="trailing" secondItem="u0K-Dt-gs5" secondAttribute="trailing" constant="27" id="X8r-0H-YUC"/>
-                <constraint firstItem="fyp-kc-jvt" firstAttribute="top" relation="greaterThanOrEqual" secondItem="u0K-Dt-gs5" secondAttribute="bottom" constant="44" id="ZTX-ZG-H8E"/>
+                <constraint firstItem="fyp-kc-jvt" firstAttribute="top" relation="greaterThanOrEqual" secondItem="u0K-Dt-gs5" secondAttribute="bottom" constant="32" id="ZTX-ZG-H8E"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="27" id="cCK-QK-1VR"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" priority="250" constant="175" id="p5S-Xm-yHB"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="LnI-3p-nMk" secondAttribute="bottom" constant="175" id="tMy-ef-Qj7"/>

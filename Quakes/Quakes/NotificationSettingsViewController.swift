@@ -1,6 +1,20 @@
 
 import UIKit
 
+enum NotificationType: Int {
+    case Auto
+    case Nearby
+    case World
+    case Major
+}
+
+enum NotificationAmmount: Int {
+    case NoLimit
+    case Hourly
+    case Daily
+    case Weekly
+}
+
 class NotificationSettingsViewController: UITableViewController
 {
     enum TableSections: Int {
@@ -19,6 +33,8 @@ class NotificationSettingsViewController: UITableViewController
         case Activate
     }
     
+    private let hasAttemptedNotificationKey = "hasAttemptedNotificationPermission"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,18 +50,39 @@ class NotificationSettingsViewController: UITableViewController
         switch sender.tag {
             
         case SwitchTag.Activate.rawValue:
-            SettingsController.sharedController.notificationsActive = sender.on
-            tableView.reloadData()
-            
             if sender.on {
-                // check if there is permission, if not request it, if blocked open settings
+                if let settings = UIApplication.sharedApplication().currentUserNotificationSettings() where settings.types != .None {
+                    SettingsController.sharedController.notificationsActive = true
+                    tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
+                }
+                else {
+                    sender.setOn(false, animated: true)
+                    if NSUserDefaults.standardUserDefaults().boolForKey(hasAttemptedNotificationKey) {
+                        let alertView = UIAlertController(title: "Error", message: "Notification permission denied", preferredStyle: .Alert)
+                        
+                        alertView.addAction(UIAlertAction(title: "Open Settings", style: .Default, handler: { action in
+                            UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                        }))
+                        
+                        alertView.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                        
+                        presentViewController(alertView, animated: true, completion: nil)
+                    }
+                    else {
+                       NSUserDefaults.standardUserDefaults().setBool(true, forKey: hasAttemptedNotificationKey)
+                        UIApplication.sharedApplication().registerUserNotificationSettings(
+                            UIUserNotificationSettings(
+                                forTypes: .Alert,
+                                categories: nil
+                            )
+                        )
+                    }
+                }
                 
-                    // show the rest of the table
-                    // save the setting
             }
             else {
-                // hide the settings
-                // save the setting
+                SettingsController.sharedController.notificationsActive = false
+                tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
             }
             break
             
@@ -56,7 +93,7 @@ class NotificationSettingsViewController: UITableViewController
 
     // MARK: - UITableView Data Source
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return SettingsController.sharedController.notificationsActive ? TableSections.TotalSections.rawValue : 1
+        return TableSections.TotalSections.rawValue
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -64,7 +101,7 @@ class NotificationSettingsViewController: UITableViewController
             return 1
         }
         else if section == TableSections.UserSettings.rawValue {
-            return UserSettingsRows.TotalRows.rawValue
+            return SettingsController.sharedController.notificationsActive ? UserSettingsRows.TotalRows.rawValue : 0
         }
         else {
             fatalError("Unhandled table section, \(section), for row count.")
@@ -93,10 +130,44 @@ class NotificationSettingsViewController: UITableViewController
             if indexPath.row == UserSettingsRows.TypeRow.rawValue {
                 cell.textLabel?.text = "Notification Type"
                 cell.accessoryType = .DisclosureIndicator
+                
+                switch SettingsController.sharedController.notificationType {
+                case NotificationType.Auto.rawValue:
+                    cell.detailTextLabel?.text = "Automatic"
+                    
+                case NotificationType.Nearby.rawValue:
+                    cell.detailTextLabel?.text = "Nearby"
+                    
+                case NotificationType.World.rawValue:
+                    cell.detailTextLabel?.text = "World"
+                    
+                case NotificationType.Major.rawValue:
+                    cell.detailTextLabel?.text = "Major"
+                    
+                default:
+                    fatalError("Unhandled type stored in the settings.")
+                }
             }
             else if indexPath.row == UserSettingsRows.AmmountRow.rawValue {
-                cell.textLabel?.text = "Ammount of Notifications"
+                cell.textLabel?.text = "Notification Amount"
                 cell.accessoryType = .DisclosureIndicator
+                
+                switch SettingsController.sharedController.notificationAmount {
+                case NotificationAmmount.NoLimit.rawValue:
+                    cell.detailTextLabel?.text = "No Limit"
+                    
+                case NotificationAmmount.Hourly.rawValue:
+                    cell.detailTextLabel?.text = "Hourly"
+
+                case NotificationAmmount.Daily.rawValue:
+                    cell.detailTextLabel?.text = "Daily"
+
+                case NotificationAmmount.Weekly.rawValue:
+                    cell.detailTextLabel?.text = "Weekly"
+                    
+                default:
+                    fatalError("Unhandled amount stored in the settings.")
+                }
             }
             else {
                 fatalError("Unhandled table row, \(indexPath.row), in cell for row")
@@ -111,6 +182,97 @@ class NotificationSettingsViewController: UITableViewController
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        if indexPath.section == TableSections.UserSettings.rawValue {
+            if indexPath.row == UserSettingsRows.TypeRow.rawValue {
+                let values = [
+                    NotificationType.Auto.rawValue,
+                    NotificationType.Nearby.rawValue,
+                    NotificationType.World.rawValue,
+                    NotificationType.Major.rawValue
+                ]
+                let labels = [
+                    "Last Quake Search",
+                    "Nearby Quakes",
+                    "World Quakes",
+                    "Major Quakes"
+                ]
+                
+                guard let index: Int = values.indexOf(SettingsController.sharedController.notificationType) else {
+                    fatalError("There was an incorrect index stored for notification type.")
+                }
+                
+                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: nil, footerDescription: "The type of alerts you will be receiving.")
+                let pvc = PickerViewController(type: .NotificationType, data: data, title: "Type")
+                pvc.delegate = self
+                
+                navigationController?.pushViewController(pvc, animated: true)
+            }
+            else if indexPath.row == UserSettingsRows.AmmountRow.rawValue {
+                let values = [
+                    NotificationAmmount.NoLimit.rawValue,
+                    NotificationAmmount.Hourly.rawValue,
+                    NotificationAmmount.Daily.rawValue,
+                    NotificationAmmount.Weekly.rawValue
+                ]
+                let labels = [
+                    "No Limit",
+                    "Once an Hour",
+                    "Once a Day",
+                    "Once a Week"
+                ]
+                
+                guard let index: Int = values.indexOf(SettingsController.sharedController.notificationAmount) else {
+                    fatalError("There was an incorrect index stored for notification type.")
+                }
+                
+                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: nil, footerDescription: "You will only be notified if new quakes have happened within the selected limit.")
+                let pvc = PickerViewController(type: .NotificationAmount, data: data, title: "Amount")
+                pvc.delegate = self
+                
+                navigationController?.pushViewController(pvc, animated: true)
+            }
+            else {
+                fatalError("Unhandled table row, \(indexPath.row), in did select indexPath.")
+            }
+        }
+        else {
+            fatalError("Unhandled table section, \(indexPath.section), in did select indexPath.")
+        }
+    }
+    
+    override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if indexPath.section == TableSections.ToggleNotifications.rawValue {
+            return false
+        }
+        else {
+            return true
+        }
     }
 
+}
+
+extension NotificationSettingsViewController: PickerViewControllerDelegate
+{
+    
+    // MARK: - PickerViewController Delegate
+    func pickerViewController(pvc: PickerViewController, didPickObject object: AnyObject) {
+        tableView.reloadData()
+        
+        switch pvc.type {
+            
+        case .NotificationType:
+            SettingsController.sharedController.notificationType = object as! Int
+            break
+            
+        case .NotificationAmount:
+            SettingsController.sharedController.notificationAmount = object as! Int
+            break
+            
+        default:
+            fatalError("Unhandled picker vc type in notification settings vc: \(pvc.type)")
+            
+        }
+    }
+    
 }

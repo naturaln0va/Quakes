@@ -264,6 +264,15 @@ class SettingsViewController: UITableViewController
             }
         }
     }
+    
+    override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if indexPath.section == TableSections.UserSection.rawValue && indexPath.row == UserSectionRows.UnitRow.rawValue {
+            return false
+        }
+        else {
+            return true
+        }
+    }
 
 }
 
@@ -292,6 +301,9 @@ extension SettingsViewController: PickerViewControllerDelegate
         case .Radius:
             SettingsController.sharedController.searchRadius = SettingsController.SearchRadiusSize.closestValueForInteger(object as! Int)
             break
+            
+        default:
+            fatalError("Unhandled picker vc type in settings vc: \(pvc.type)")
             
         }
     }

@@ -21,12 +21,6 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         
-        // do this more intelligentlys
-        application.registerUserNotificationSettings(UIUserNotificationSettings(
-            forTypes: .Alert,
-            categories: nil)
-        )
-        
         return true
     }
     
