@@ -170,6 +170,8 @@ class NetworkClient
     func getRecentQuakesByLocation(coordinate: CLLocationCoordinate2D, radius: Int, completion: QuakesCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
+            NSURLSession.sharedSession().invalidateAndCancel()
+            
             let params = [
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
                 (ParamTypes.LocationLatitude.rawValue, "\(coordinate.latitude)"),
@@ -225,6 +227,8 @@ class NetworkClient
     func getRecentMajorQuakes(completion: QuakesCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
+            NSURLSession.sharedSession().invalidateAndCancel()
+            
             let params = [
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
                 (ParamTypes.MagnitudeMin.rawValue, "\(3.8)")
@@ -278,6 +282,8 @@ class NetworkClient
     func getRecentWorldQuakes(completion: QuakesCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
+            NSURLSession.sharedSession().invalidateAndCancel()
+            
             let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
@@ -327,6 +333,8 @@ class NetworkClient
     func getNearbyCount(latitude: Double, longitude: Double, radius: Double, completion: CountCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
+            NSURLSession.sharedSession().invalidateAndCancel()
+            
             let params = [
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
                 (ParamTypes.LocationLatitude.rawValue, "\(latitude)"),
