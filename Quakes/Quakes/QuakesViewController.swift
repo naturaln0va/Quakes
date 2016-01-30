@@ -174,6 +174,7 @@ class QuakesViewController: UITableViewController
     }
     
     func titleButtonPressed() {
+        guard NetworkUtility.internetReachable() else { return }
         presentFinder()
     }
     
