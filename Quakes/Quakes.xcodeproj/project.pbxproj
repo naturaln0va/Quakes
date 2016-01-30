@@ -54,6 +54,8 @@
 		69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69B30FE91C3B051600241D79 /* Assets.xcassets */; };
 		69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69B30FEB1C3B051600241D79 /* LaunchScreen.storyboard */; };
 		69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */; };
+		69D163511C5C52E6000294A5 /* confetti.png in Resources */ = {isa = PBXBuildFile; fileRef = 69D1634F1C5C52E6000294A5 /* confetti.png */; };
+		69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D163501C5C52E6000294A5 /* SAConfettiView.swift */; };
 		69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D235361C3D75E100C9AA50 /* ParsedQuake.swift */; };
 		69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB431C5AAA990028AD81 /* Reachability.swift */; };
 		69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */; };
@@ -109,6 +111,8 @@
 		69B30FEC1C3B051600241D79 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		69B30FEE1C3B051600241D79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
+		69D1634F1C5C52E6000294A5 /* confetti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = confetti.png; sourceTree = "<group>"; };
+		69D163501C5C52E6000294A5 /* SAConfettiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAConfettiView.swift; sourceTree = "<group>"; };
 		69D235361C3D75E100C9AA50 /* ParsedQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedQuake.swift; sourceTree = "<group>"; };
 		69F9CB431C5AAA990028AD81 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../Reachability.swift; sourceTree = "<group>"; };
 		69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkUtility.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -148,6 +152,7 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				69D1634E1C5C52E6000294A5 /* SAConfetti */,
 				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
 				48190D341C558838009712F6 /* iAd.framework */,
 			);
@@ -290,6 +295,15 @@
 			name = ViewControllers;
 			sourceTree = "<group>";
 		};
+		69D1634E1C5C52E6000294A5 /* SAConfetti */ = {
+			isa = PBXGroup;
+			children = (
+				69D1634F1C5C52E6000294A5 /* confetti.png */,
+				69D163501C5C52E6000294A5 /* SAConfettiView.swift */,
+			);
+			path = SAConfetti;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -359,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				696031C01C59554300F71B93 /* FlagKit.xcassets in Resources */,
+				69D163511C5C52E6000294A5 /* confetti.png in Resources */,
 				696031C81C596C4000F71B93 /* countrytocode.txt in Resources */,
 				696031BA1C593D3000F71B93 /* PeekableDetailViewController.xib in Resources */,
 				696031C71C596C4000F71B93 /* convert.py in Resources */,
@@ -399,6 +414,7 @@
 			files = (
 				48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */,
 				48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */,
+				69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */,
 				696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */,
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,

@@ -10,15 +10,18 @@ class RemoveAdsViewController: UIViewController
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
     
     private let helper = IAPUtility()
+    private var confetti: SAConfettiView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Remove Ads"
+        confetti = SAConfettiView(frame: self.view.bounds)
         
         if SettingsController.sharedController.hasPaidToRemoveAds {
             headerLabel.text = "Thanks for your support ♥️"
             removeAdsButton.hidden = true
+            confetti.startConfetti()
         }
         else {
             NSNotificationCenter.defaultCenter().addObserver(
@@ -62,12 +65,18 @@ class RemoveAdsViewController: UIViewController
         }
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        confetti.stopConfetti()
+    }
+    
     // MARK: Notifications
     func adRemovalPurchased() {
         headerLabel.text = "Thanks for your support ♥️"
         removeAdsButton.hidden = true
         navigationItem.rightBarButtonItem = nil
         SettingsController.sharedController.hasPaidToRemoveAds = true
+        confetti.startConfetti()
     }
     
     // MARK: Actions
