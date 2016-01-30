@@ -8,15 +8,14 @@ class RemoveAdsViewController: UIViewController
     @IBOutlet weak var removeAdsButton: UIButton!
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var confetti: SAConfettiView!
     
     private let helper = IAPUtility()
-    private var confetti: SAConfettiView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Remove Ads"
-        confetti = SAConfettiView(frame: self.view.bounds)
         
         if SettingsController.sharedController.hasPaidToRemoveAds {
             headerLabel.text = "Thanks for your support ♥️"
