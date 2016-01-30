@@ -76,9 +76,6 @@ class QuakesViewController: UITableViewController
         tableView.estimatedRowHeight = QuakeCell.cellHeight
         tableView.backgroundColor = StyleController.backgroundColor
         tableView.registerNib(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
-        if UIDevice.currentDevice().hasForceTouch {
-            registerForPreviewingWithDelegate(self, sourceView: tableView)
-        }
         
         let refresher = UIRefreshControl()
         refresher.tintColor = StyleController.contrastColor

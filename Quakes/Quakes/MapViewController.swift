@@ -211,8 +211,8 @@ class MapViewController: UIViewController
             
             let region = MKCoordinateRegion(center: latestQuake.coordinate, span:
                 MKCoordinateSpan(
-                    latitudeDelta: 2.0,
-                    longitudeDelta: 2.0
+                    latitudeDelta: 21.0,
+                    longitudeDelta: 21.0
                 )
             )
             
