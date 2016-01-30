@@ -90,6 +90,7 @@ class SettingsController
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
     private static let kLastFetchedKey = "lastFetch"
     private static let kPaidToRemoveKey = "alreadyPaid"
+    private static let kNotificationsActiveKey = "notificationsActive"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -97,6 +98,7 @@ class SettingsController
         return [
             kSearchRadiusKey: SearchRadiusSize.Medium.rawValue,
             kFetchSizeLimitKey: APIFetchSize.Medium.rawValue,
+            kNotificationsActiveKey: false,
             kPaidToRemoveKey: false,
             kUnitStyleKey: true
         ]
@@ -135,6 +137,16 @@ class SettingsController
                 defaults.setObject(nil, forKey: SettingsController.kCachedPlacemarkKey)
                 defaults.synchronize()
             }
+        }
+    }
+    
+    var notificationsActive: Bool {
+        get {
+            return defaults.boolForKey(SettingsController.kNotificationsActiveKey)
+        }
+        set {
+            defaults.setBool(newValue, forKey: SettingsController.kNotificationsActiveKey)
+            defaults.synchronize()
         }
     }
     

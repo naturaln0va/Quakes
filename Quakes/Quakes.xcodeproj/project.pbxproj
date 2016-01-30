@@ -56,6 +56,7 @@
 		69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */; };
 		69D163511C5C52E6000294A5 /* confetti.png in Resources */ = {isa = PBXBuildFile; fileRef = 69D1634F1C5C52E6000294A5 /* confetti.png */; };
 		69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D163501C5C52E6000294A5 /* SAConfettiView.swift */; };
+		69D163541C5C55D1000294A5 /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D163531C5C55D1000294A5 /* NotificationSettingsViewController.swift */; };
 		69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D235361C3D75E100C9AA50 /* ParsedQuake.swift */; };
 		69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB431C5AAA990028AD81 /* Reachability.swift */; };
 		69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */; };
@@ -113,6 +114,7 @@
 		69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		69D1634F1C5C52E6000294A5 /* confetti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = confetti.png; sourceTree = "<group>"; };
 		69D163501C5C52E6000294A5 /* SAConfettiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAConfettiView.swift; sourceTree = "<group>"; };
+		69D163531C5C55D1000294A5 /* NotificationSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewController.swift; sourceTree = "<group>"; };
 		69D235361C3D75E100C9AA50 /* ParsedQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedQuake.swift; sourceTree = "<group>"; };
 		69F9CB431C5AAA990028AD81 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../Reachability.swift; sourceTree = "<group>"; };
 		69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkUtility.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -291,6 +293,7 @@
 				4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */,
 				48C000661C543B960046CC8F /* SettingsViewController.swift */,
 				699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */,
+				69D163531C5C55D1000294A5 /* NotificationSettingsViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -446,6 +449,7 @@
 				69150F291C3DE60600D9D3BF /* String+Additions.swift in Sources */,
 				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift in Sources */,
 				69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */,
+				69D163541C5C55D1000294A5 /* NotificationSettingsViewController.swift in Sources */,
 				699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */,
 				69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */,
 			);

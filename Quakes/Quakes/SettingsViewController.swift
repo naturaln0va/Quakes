@@ -6,16 +6,14 @@ import MapKit
 class SettingsViewController: UITableViewController
 {
     
-    enum UserSectionRows: Int
-    {
+    enum UserSectionRows: Int {
         case LimitRow
         case RadiusRow
         case UnitRow
         case TotalRows
     }
     
-    enum GeneralSectionRows: Int
-    {
+    enum GeneralSectionRows: Int {
         case AboutRow
         case RateRow
         case RemoveAdsRow
@@ -23,15 +21,14 @@ class SettingsViewController: UITableViewController
         case TotalRows
     }
     
-    enum TableSections: Int
-    {
+    enum TableSections: Int {
         case UserSection
+        case NotificationSection
         case GeneralSection
         case TotalSections
     }
     
-    enum SwitchTag: Int
-    {
+    enum SwitchTag: Int {
         case Unit
     }
     
@@ -87,6 +84,9 @@ class SettingsViewController: UITableViewController
         if section == TableSections.GeneralSection.rawValue {
             return GeneralSectionRows.TotalRows.rawValue
         }
+        else if section == TableSections.NotificationSection.rawValue {
+            return 1
+        }
         else if section == TableSections.UserSection.rawValue {
             return UserSectionRows.TotalRows.rawValue
         }
@@ -96,7 +96,7 @@ class SettingsViewController: UITableViewController
     }
     
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return section == 1 ? "Quakes v" + UIDevice.currentDevice().appVersionAndBuildString : nil
+        return section == TableSections.TotalSections.rawValue ? "Quakes v" + UIDevice.currentDevice().appVersionAndBuildString : nil
     }
     
     // MARK: - UITableViewDelegate
@@ -136,6 +136,10 @@ class SettingsViewController: UITableViewController
             default:
                 break
             }
+        }
+        else if indexPath.section == TableSections.NotificationSection.rawValue {
+            cell.textLabel?.text = "Notification Settings"
+            cell.accessoryType = .DisclosureIndicator
         }
         else if indexPath.section == TableSections.GeneralSection.rawValue {
             switch indexPath.row {
@@ -200,6 +204,9 @@ class SettingsViewController: UITableViewController
             default:
                 break
             }
+        }
+        else if indexPath.section == TableSections.NotificationSection.rawValue {
+            navigationController?.pushViewController(NotificationSettingsViewController(), animated: true)
         }
         else if indexPath.section == TableSections.UserSection.rawValue {
             switch indexPath.row {
