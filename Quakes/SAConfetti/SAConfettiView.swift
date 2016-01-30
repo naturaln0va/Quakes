@@ -58,6 +58,7 @@ public class SAConfettiView: UIView {
     }
     
     public func stopConfetti() {
+        guard emitter != nil else { return }
         emitter.birthRate = 0
     }
     
