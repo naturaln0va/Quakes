@@ -61,8 +61,6 @@ class NetworkClient
             urlString += paramString
         }
         
-        SettingsController.sharedController.lastFetchDate = NSDate()
-        
         if limit { urlString += "&\(ParamTypes.Limit.rawValue)=\(SettingsController.sharedController.fetchLimit.rawValue)" }
         
         return urlString

@@ -88,7 +88,7 @@ class SettingsController
     private static let kUnitStyleKey = "unitStyle"
     private static let kLastLocationOptionKey = "lastLocationOption"
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
-    private static let kLastFetchedKey = "lastFetch"
+    private static let kLastPushKey = "lastPush"
     private static let kLastWorldFetchedKey = "lastFetch"
     private static let kPaidToRemoveKey = "alreadyPaid"
     private static let kNotificationsActiveKey = "notificationsActive"
@@ -119,6 +119,23 @@ class SettingsController
     private func loadSettings()
     {
         defaults.registerDefaults(baseDefaults)
+    }
+    
+    // MARK: - Helper
+    func numberOfHoursPerNotification() -> Int {
+        switch notificationAmount {
+        case NotificationAmmount.NoLimit.rawValue:
+            return 0
+        case NotificationAmmount.Hourly.rawValue:
+            return 1
+        case NotificationAmmount.Daily.rawValue:
+            return 23
+        case NotificationAmmount.Weekly.rawValue:
+            return 24 * 7
+        default:
+            print("Error parsing limit setting")
+            return 5
+        }
     }
     
     // MARK: - Public
@@ -269,14 +286,14 @@ class SettingsController
         }
     }
     
-    var lastFetchDate: NSDate? {
+    var lastPushDate: NSDate? {
         get {
-            let interval = defaults.doubleForKey(SettingsController.kLastFetchedKey)
-            return interval == 0 ? nil : NSDate(timeIntervalSince1970: interval)
+            let interval = defaults.doubleForKey(SettingsController.kLastPushKey)
+            return interval == 0 ? NSDate() : NSDate(timeIntervalSince1970: interval)
         }
         set {
             if let newDate = newValue {
-                defaults.setDouble(newDate.timeIntervalSince1970, forKey: SettingsController.kLastFetchedKey)
+                defaults.setDouble(newDate.timeIntervalSince1970, forKey: SettingsController.kLastPushKey)
                 defaults.synchronize()
             }
         }
