@@ -96,7 +96,7 @@ class SettingsViewController: UITableViewController
     }
     
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return section == TableSections.TotalSections.rawValue ? "Quakes v" + UIDevice.currentDevice().appVersionAndBuildString : nil
+        return section == TableSections.TotalSections.rawValue - 1 ? "Quakes v" + UIDevice.currentDevice().appVersionAndBuildString : nil
     }
     
     // MARK: - UITableViewDelegate
