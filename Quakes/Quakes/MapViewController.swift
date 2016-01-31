@@ -213,14 +213,16 @@ class MapViewController: UIViewController
                 return
             }
             
-            let region = MKCoordinateRegion(center: latestQuake.coordinate, span:
-                MKCoordinateSpan(
-                    latitudeDelta: 17.5,
-                    longitudeDelta: 17.5
-                )
-            )
+            var coordToCenterUpon = CLLocationCoordinate2D()
             
-            mapView.setVisibleMapRect(region.mapRectForCoordinateRegion(), animated: animated)
+            if let userLocation = mapView.userLocation.location {
+                coordToCenterUpon = userLocation.coordinate
+            }
+            else {
+                coordToCenterUpon = latestQuake.coordinate
+            }
+            
+            mapView.setCenterCoordinate(coordToCenterUpon, animated: true)
         }
         else {
             var locations = quakesToShowOnMap.map { $0.location }
