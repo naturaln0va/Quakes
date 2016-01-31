@@ -6,7 +6,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LocationFinderViewController" customModule="Quakes" customModuleProvider="target">
             <connections>
+                <outlet property="cancelButton" destination="JNT-B0-z3l" id="aCC-3K-j2L"/>
                 <outlet property="filterSegment" destination="RKV-SB-6J1" id="QJ9-1B-bOp"/>
+                <outlet property="filterSegmentTrailingConstraint" destination="Czy-EU-zQZ" id="6db-2z-i0l"/>
                 <outlet property="filterViewBottomConstraint" destination="Add-ws-aCg" id="plP-cq-olw"/>
                 <outlet property="searchTextField" destination="u0K-Dt-gs5" id="pZj-Xv-kmY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -29,10 +31,10 @@
                     <textInputTraits key="textInputTraits" returnKeyType="search" enablesReturnKeyAutomatically="YES"/>
                 </textField>
                 <view contentMode="scaleToFill" verticalHuggingPriority="255" verticalCompressionResistancePriority="755" translatesAutoresizingMaskIntoConstraints="NO" id="fyp-kc-jvt">
-                    <rect key="frame" x="0.0" y="599" width="375" height="68"/>
+                    <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                     <subviews>
                         <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="RKV-SB-6J1">
-                            <rect key="frame" x="179" y="20" width="176" height="29"/>
+                            <rect key="frame" x="179" y="8" width="176" height="29"/>
                             <segments>
                                 <segment title="Nearby"/>
                                 <segment title="World"/>
@@ -44,7 +46,7 @@
                             </connections>
                         </segmentedControl>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JNT-B0-z3l">
-                            <rect key="frame" x="15" y="19" width="48" height="30"/>
+                            <rect key="frame" x="20" y="7" width="48" height="30"/>
                             <state key="normal" title="Cancel">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
@@ -55,10 +57,10 @@
                     </subviews>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstItem="JNT-B0-z3l" firstAttribute="leading" secondItem="fyp-kc-jvt" secondAttribute="leading" constant="15" id="91C-k3-w1W"/>
+                        <constraint firstItem="JNT-B0-z3l" firstAttribute="leading" secondItem="fyp-kc-jvt" secondAttribute="leading" constant="20" id="91C-k3-w1W"/>
                         <constraint firstAttribute="trailing" secondItem="RKV-SB-6J1" secondAttribute="trailing" constant="20" id="Czy-EU-zQZ"/>
-                        <constraint firstAttribute="bottom" secondItem="RKV-SB-6J1" secondAttribute="bottom" constant="20" id="SoR-d9-xee"/>
-                        <constraint firstItem="RKV-SB-6J1" firstAttribute="top" secondItem="fyp-kc-jvt" secondAttribute="top" constant="20" id="nEA-0d-9qq"/>
+                        <constraint firstAttribute="bottom" secondItem="RKV-SB-6J1" secondAttribute="bottom" constant="8" id="SoR-d9-xee"/>
+                        <constraint firstItem="RKV-SB-6J1" firstAttribute="top" secondItem="fyp-kc-jvt" secondAttribute="top" constant="8" id="nEA-0d-9qq"/>
                         <constraint firstItem="JNT-B0-z3l" firstAttribute="centerY" secondItem="fyp-kc-jvt" secondAttribute="centerY" id="nUd-IV-0cT"/>
                         <constraint firstItem="RKV-SB-6J1" firstAttribute="centerX" secondItem="fyp-kc-jvt" secondAttribute="centerX" id="uIR-Tt-vya"/>
                     </constraints>

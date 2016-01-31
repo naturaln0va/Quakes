@@ -94,6 +94,7 @@ class SettingsController
     private static let kNotificationsActiveKey = "notificationsActive"
     private static let kNotificationsTypeKey = "notificationsType"
     private static let kNotificationsAmountKey = "notificationsAmount"
+    private static let kNotificationsLocationKey = "notificationLocationKey"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -102,7 +103,7 @@ class SettingsController
             kSearchRadiusKey: SearchRadiusSize.Medium.rawValue,
             kFetchSizeLimitKey: APIFetchSize.Medium.rawValue,
             kNotificationsActiveKey: false,
-            kNotificationsTypeKey: 0,
+            kNotificationsTypeKey: 2,
             kNotificationsAmountKey: 0,
             kPaidToRemoveKey: false,
             kUnitStyleKey: true
@@ -193,6 +194,29 @@ class SettingsController
         set {
             defaults.setInteger(newValue, forKey: SettingsController.kNotificationsAmountKey)
             defaults.synchronize()
+        }
+    }
+    
+    var notificationLocation: CLPlacemark? {
+        get {
+            if let data = defaults.objectForKey(SettingsController.kNotificationsLocationKey) as? NSData,
+                let place = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? CLPlacemark {
+                    return place
+            }
+            else {
+                return nil
+            }
+        }
+        set {
+            if let newPlace = newValue {
+                let data = NSKeyedArchiver.archivedDataWithRootObject(newPlace)
+                defaults.setObject(data, forKey: SettingsController.kNotificationsLocationKey)
+                defaults.synchronize()
+            }
+            else {
+                defaults.setObject(nil, forKey: SettingsController.kNotificationsLocationKey)
+                defaults.synchronize()
+            }
         }
     }
     

@@ -108,7 +108,7 @@ class MapViewController: UIViewController
         }
         
         NetworkUtility.networkOperationStarted()
-        NetworkClient.sharedClient.getRecentQuakesByLocation(placemark.location!.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
+        NetworkClient.sharedClient.getRecentQuakesByLocation(placemark.location!.coordinate) { quakes, error in
             NetworkUtility.networkOperationFinished()
             
             var sucess = false

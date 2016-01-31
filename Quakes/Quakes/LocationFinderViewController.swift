@@ -19,13 +19,31 @@ class LocationFinderViewController: UIViewController
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var filterSegment: UISegmentedControl!
     @IBOutlet weak var filterViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var cancelButton: UIButton!
+    @IBOutlet weak var filterSegmentTrailingConstraint: NSLayoutConstraint!
     
     let manager = CLLocationManager()
     var delegate: LocationFinderViewControllerDelegate?
+    let type: FinderType
+    
+    enum FinderType {
+        case Fetch
+        case Notification
+    }
+    
+    init(type: FinderType) {
+        self.type = type
+        super.init(nibName: String(LocationFinderViewController), bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Choose a Type"
         view.backgroundColor = StyleController.backgroundColor
         searchTextField.backgroundColor = StyleController.darkerMainAppColor
         
@@ -34,8 +52,17 @@ class LocationFinderViewController: UIViewController
         notificationCenter.addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         
         searchTextField.delegate = self
+        searchTextField.text = ""
         
-        if let lastOption = SettingsController.sharedController.lastLocationOption {
+        if type == .Notification {
+            filterSegment.removeSegmentAtIndex(0, animated: false)
+            filterSegment.removeConstraint(filterSegmentTrailingConstraint)
+            view.addConstraint(NSLayoutConstraint(item: filterSegment, attribute: .CenterX, relatedBy: .Equal, toItem: filterSegment.superview, attribute: .CenterX, multiplier: 1, constant: 0))
+            
+            cancelButton.removeFromSuperview()
+        }
+        
+        if let lastOption = SettingsController.sharedController.lastLocationOption where type == .Fetch {
             switch lastOption {
             case LocationOption.Nearby.rawValue:
                 filterSegment.selectedSegmentIndex = 0
@@ -104,6 +131,11 @@ class LocationFinderViewController: UIViewController
     
     @IBAction func filterSegmentWasChanged(sender: UISegmentedControl) {
         if sender.selectedSegmentIndex == 0 {
+            if type == .Notification {
+                delegate?.locationFinderViewControllerDidSelectOption(.World)
+                return
+            }
+            
             var errorMessage = ""
             switch CLLocationManager.authorizationStatus() {
             case .AuthorizedWhenInUse:
@@ -138,7 +170,7 @@ class LocationFinderViewController: UIViewController
             }
         }
         else if sender.selectedSegmentIndex == 1 {
-            delegate?.locationFinderViewControllerDidSelectOption(.World)
+            delegate?.locationFinderViewControllerDidSelectOption(type == .Notification ? .Major : .World)
         }
         else if sender.selectedSegmentIndex == 2 {
             delegate?.locationFinderViewControllerDidSelectOption(.Major)

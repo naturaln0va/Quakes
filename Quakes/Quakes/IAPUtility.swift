@@ -7,6 +7,7 @@ class IAPUtility: NSObject
 {
     
     static let IAPHelperPurchaseNotification = "IAPHelperPurchaseNotification"
+    static let IAPHelperFailedNotification = "IAPHelperFailedNotification"
     
     typealias ProductsRequestCompletionHandler = (products: [SKProduct]?) -> ()
     
@@ -94,6 +95,12 @@ extension IAPUtility: SKProductsRequestDelegate
 extension IAPUtility: SKPaymentTransactionObserver
 {
     
+    func paymentQueue(queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
+        for transaction in transactions {
+            failedTransaction(transaction)
+        }
+    }
+    
     func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])
     {
         for transaction in transactions {
@@ -122,6 +129,7 @@ extension IAPUtility: SKPaymentTransactionObserver
         if transaction.error?.code != SKErrorPaymentCancelled {
             print("Transaction error: \(transaction.error?.localizedDescription)")
         }
+        NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.IAPHelperFailedNotification, object: nil)
         SKPaymentQueue.defaultQueue().finishTransaction(transaction)
     }
     

@@ -9,6 +9,7 @@
                 <outlet property="confetti" destination="Sy3-Wd-ErX" id="LaJ-Ov-epI"/>
                 <outlet property="headerLabel" destination="Zb5-tt-2gr" id="vt1-yc-BxW"/>
                 <outlet property="loadingActivityIndicator" destination="b9J-s6-6Ax" id="vwa-ae-mhZ"/>
+                <outlet property="messageLabel" destination="aTh-6V-eco" id="jnI-SM-vv9"/>
                 <outlet property="removeAdsButton" destination="rCm-cA-RKA" id="eAp-Ao-hGt"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -69,19 +70,28 @@
                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="b9J-s6-6Ax">
                     <rect key="frame" x="177" y="246" width="20" height="20"/>
                 </activityIndicatorView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTh-6V-eco">
+                    <rect key="frame" x="20" y="629" width="335" height="18"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <view opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sy3-Wd-ErX" customClass="SAConfettiView" customModule="Quakes" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="60.5" width="375" height="606.5"/>
+                    <rect key="frame" x="0.0" y="60" width="375" height="606.5"/>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="b9J-s6-6Ax" firstAttribute="centerY" secondItem="rCm-cA-RKA" secondAttribute="centerY" id="1fR-gi-uNC"/>
                 <constraint firstAttribute="bottom" secondItem="Sy3-Wd-ErX" secondAttribute="bottom" id="3Ha-6x-7OQ"/>
+                <constraint firstAttribute="bottom" secondItem="aTh-6V-eco" secondAttribute="bottom" constant="20" id="9Ii-JB-DDR"/>
                 <constraint firstItem="OTI-5n-vAS" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Kgs-4S-vLl"/>
                 <constraint firstAttribute="trailing" secondItem="Jma-gz-Bgc" secondAttribute="trailing" constant="20" id="PhO-Ft-0Cn"/>
                 <constraint firstAttribute="trailing" secondItem="OTI-5n-vAS" secondAttribute="trailing" id="Pkn-aA-RP5"/>
                 <constraint firstItem="Jma-gz-Bgc" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="V2F-S4-lFA"/>
+                <constraint firstItem="aTh-6V-eco" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="YIb-W2-s62"/>
                 <constraint firstItem="b9J-s6-6Ax" firstAttribute="centerX" secondItem="rCm-cA-RKA" secondAttribute="centerX" id="YS0-mb-q7j"/>
+                <constraint firstAttribute="trailing" secondItem="aTh-6V-eco" secondAttribute="trailing" constant="20" id="bQo-jY-Dix"/>
                 <constraint firstItem="Jma-gz-Bgc" firstAttribute="top" secondItem="OTI-5n-vAS" secondAttribute="bottom" constant="20" id="dPT-12-6L9"/>
                 <constraint firstItem="OTI-5n-vAS" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="nts-aK-Q3S"/>
                 <constraint firstAttribute="trailing" secondItem="Sy3-Wd-ErX" secondAttribute="trailing" id="oX0-UX-WLO"/>

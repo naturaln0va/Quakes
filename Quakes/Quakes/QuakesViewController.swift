@@ -132,7 +132,7 @@ class QuakesViewController: UITableViewController
             self.titleViewButton.hidden = false
         })
         
-        let finderVC = LocationFinderViewController()
+        let finderVC = LocationFinderViewController(type: .Fetch)
         finderVC.delegate = self
         finderVC.transitioningDelegate = self
         presentViewController(finderVC, animated: true, completion: nil)
@@ -199,7 +199,7 @@ class QuakesViewController: UITableViewController
             setTitleButtonText("\(lastPlace.cityStateString())")
 
             NetworkUtility.networkOperationStarted()
-            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
+            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
                 NetworkUtility.networkOperationFinished()
 
                 if let quakes = quakes where error == nil {
@@ -216,7 +216,7 @@ class QuakesViewController: UITableViewController
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
                     NetworkUtility.networkOperationStarted()
-                    NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
+                    NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate) { quakes, error in
                         NetworkUtility.networkOperationFinished()
                         
                         if let quakes = quakes where error == nil {

@@ -42,9 +42,10 @@ class NetworkClient
         case LocationMaxRadiusKM = "maxradiuskm"
         case MagnitudeMin = "minmagnitude"
         case Limit = "limit"
+        case StartTime = "starttime"
     }
     
-    static func urlStringFromHostWithMethod(shouldLimit limit: Bool, method: String, parameters: [(String, String)]?) -> String
+    static func urlStringFromHostWithMethod(method: String, parameters: [(String, String)]?) -> String
     {
         var urlString = kUSGSAPIHost
         
@@ -62,7 +63,7 @@ class NetworkClient
             urlString += paramString
         }
         
-        if limit { urlString += "&\(ParamTypes.Limit.rawValue)=\(SettingsController.sharedController.fetchLimit.rawValue)" }
+        urlString += "&\(ParamTypes.Limit.rawValue)=\(SettingsController.sharedController.fetchLimit.rawValue)"
         
         return urlString
     }
@@ -147,7 +148,7 @@ class NetworkClient
                 var dicts: [[String: AnyObject]]?
                 
                 do {
-                    dicts = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [[String: AnyObject]]
+                    dicts = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? [[String: AnyObject]]
                 } catch {
                     if DEBUG_REQUESTS { print("Error parsing JSON") }
                     resultError = kJSONParseError
@@ -193,7 +194,7 @@ class NetworkClient
                 var dict: Dictionary<String, AnyObject>?
                 
                 do {
-                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? Dictionary<String, AnyObject>
+                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? Dictionary<String, AnyObject>
                 } catch {
                     if DEBUG_REQUESTS { print("Error parsing JSON") }
                     resultError = kJSONParseError
@@ -222,7 +223,7 @@ class NetworkClient
         }
     }
     
-    func getRecentQuakesByLocation(coordinate: CLLocationCoordinate2D, radius: Int, completion: QuakesCompletionBlock) {
+    func getRecentQuakesByLocation(coordinate: CLLocationCoordinate2D, completion: QuakesCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             NSURLSession.sharedSession().invalidateAndCancel()
@@ -231,9 +232,9 @@ class NetworkClient
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
                 (ParamTypes.LocationLatitude.rawValue, "\(coordinate.latitude)"),
                 (ParamTypes.LocationLongitude.rawValue, "\(coordinate.longitude)"),
-                (ParamTypes.LocationMaxRadiusKM.rawValue, "\(radius)")
+                (ParamTypes.LocationMaxRadiusKM.rawValue, "\(SettingsController.sharedController.searchRadius.rawValue)")
             ]
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: params))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: params))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
                 var resultError = error
@@ -255,7 +256,7 @@ class NetworkClient
                 var dict: Dictionary<String, AnyObject>?
                 
                 do {
-                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? Dictionary<String, AnyObject>
+                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? Dictionary<String, AnyObject>
                 } catch {
                     if DEBUG_REQUESTS { print("Error parsing JSON") }
                     resultError = kJSONParseError
@@ -288,7 +289,7 @@ class NetworkClient
                 (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
                 (ParamTypes.MagnitudeMin.rawValue, "\(3.8)")
             ]
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: params))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: params))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
                 var resultError = error
@@ -310,7 +311,7 @@ class NetworkClient
                 var dict: Dictionary<String, AnyObject>?
                 
                 do {
-                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? Dictionary<String, AnyObject>
+                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? Dictionary<String, AnyObject>
                 } catch {
                     if DEBUG_REQUESTS { print("Error parsing JSON") }
                     resultError = kJSONParseError
@@ -339,7 +340,7 @@ class NetworkClient
         dispatch_async(allRequestsQueue) {
             NSURLSession.sharedSession().invalidateAndCancel()
             
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kQueryMethodName, parameters: [(FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)]))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var quakes: [ParsedQuake]?
                 var resultError = error
@@ -361,7 +362,7 @@ class NetworkClient
                 var dict: Dictionary<String, AnyObject>?
                 
                 do {
-                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? Dictionary<String, AnyObject>
+                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? Dictionary<String, AnyObject>
                 } catch {
                     if DEBUG_REQUESTS { print("Error parsing JSON") }
                     resultError = kJSONParseError
@@ -385,18 +386,45 @@ class NetworkClient
         }
     }
     
-    func getNearbyCount(latitude: Double, longitude: Double, radius: Double, completion: CountCompletionBlock) {
+    func getNotificationCountFromStartDate(startDate: NSDate, completion: CountCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
             NSURLSession.sharedSession().invalidateAndCancel()
             
-            let params = [
-                (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
-                (ParamTypes.LocationLatitude.rawValue, "\(latitude)"),
-                (ParamTypes.LocationLongitude.rawValue, "\(longitude)"),
-                (ParamTypes.LocationMaxRadiusKM.rawValue, "\(radius)")
-            ]
-            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(shouldLimit: true, method: kCountMethodName, parameters: params))!)
+            var params: [(String, String)]? = []
+            
+            if SettingsController.sharedController.notificationType == NotificationType.Major.rawValue {
+                params = [
+                    (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
+                    (ParamTypes.MagnitudeMin.rawValue, "\(3.8)")
+                ]
+            }
+            else if SettingsController.sharedController.notificationType == NotificationType.World.rawValue {
+                params = [
+                    (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)
+                ]
+            }
+            else {
+                guard let notificationLocation = SettingsController.sharedController.notificationLocation?.location else {
+                    print("WARNING: tried to fetch quake count for an invalid location.")
+                    completion(count: nil, error: kInvalidDataError)
+                    return
+                }
+                
+                params = [
+                    (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
+                    (ParamTypes.LocationLatitude.rawValue, "\(notificationLocation.coordinate.latitude)"),
+                    (ParamTypes.LocationLongitude.rawValue, "\(notificationLocation.coordinate.longitude)"),
+                    (ParamTypes.LocationMaxRadiusKM.rawValue, "\(SettingsController.sharedController.searchRadius.rawValue)")
+                ]
+            }
+            
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            
+            params?.append((ParamTypes.StartTime.rawValue, dateFormatter.stringFromDate(startDate)))
+            
+            let request = NSURLRequest(URL: NSURL(string: NetworkClient.urlStringFromHostWithMethod(kCountMethodName, parameters: params))!)
             NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
                 var count: Int?
                 var resultError = error
@@ -415,10 +443,10 @@ class NetworkClient
                     return
                 }
                 
-                var dict: Dictionary<String, AnyObject>?
+                var dict: [String: AnyObject]?
                 
                 do {
-                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? Dictionary<String, AnyObject>
+                    dict = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? [String: AnyObject]
                 } catch {
                     if DEBUG_REQUESTS { print("Error parsing JSON") }
                     resultError = kJSONParseError

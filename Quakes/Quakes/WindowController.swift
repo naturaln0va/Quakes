@@ -19,6 +19,20 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         self.window = window
         
+//        let cal = NSCalendar.currentCalendar()
+//        let comps = cal.components([.Year, .Day, .Hour], fromDate: NSDate())
+//        comps.hour -= 1
+//        if let threeHoursAgo = cal.dateFromComponents(comps) {
+//            NetworkUtility.networkOperationStarted()
+//            NetworkClient.sharedClient.getNotificationCountFromStartDate(threeHoursAgo) { count, error in
+//                NetworkUtility.networkOperationFinished()
+//                
+//                if let count = count where error == nil {
+//                    print("Number of quakes: \(count), from \(NSDate().hoursFrom(threeHoursAgo)) hours ago.")
+//                }
+//            }
+//        }
+        
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         
         if !SettingsController.sharedController.hasPaidToRemoveAds {
@@ -33,106 +47,38 @@ class WindowController: UIResponder, UIApplicationDelegate
     }
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
-            NetworkUtility.networkOperationStarted()
-            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
-                NetworkUtility.networkOperationFinished()
-                
-                if let quakes = quakes where error == nil {
-                    PersistentController.sharedController.saveQuakes(quakes) { newCount in
-                        if newCount > 0 && SettingsController.sharedController.notificationType == NotificationType.Auto.rawValue {
-                            self.postLocalNotificationWithNumberOfNewQuakes(newCount)
-                        }
-                    }
-                    completionHandler(.NewData)
-                }
-                else {
-                    completionHandler(.Failed)
-                }
-            }
-            return
-        }
-        
-        if let option = SettingsController.sharedController.lastLocationOption {
-            switch option {
-            case LocationOption.Nearby.rawValue:
-                if let currentLocation = SettingsController.sharedController.cachedAddress?.location {
-                    NetworkUtility.networkOperationStarted()
-                    NetworkClient.sharedClient.getRecentQuakesByLocation(currentLocation.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
-                        NetworkUtility.networkOperationFinished()
-                        
-                        if let quakes = quakes where error == nil {
-                            PersistentController.sharedController.saveQuakes(quakes) { newCount in
-                                if newCount > 0 && SettingsController.sharedController.notificationType == NotificationType.Auto.rawValue || SettingsController.sharedController.notificationType == NotificationType.Nearby.rawValue {
-                                    self.postLocalNotificationWithNumberOfNewQuakes(newCount)
-                                }
-                            }
-                            completionHandler(.NewData)
-                        }
-                        else {
-                            completionHandler(.Failed)
-                        }
-                    }
-                }
-                break
-                
-            case LocationOption.World.rawValue:
-                NetworkUtility.networkOperationStarted()
-                NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
-                    NetworkUtility.networkOperationFinished()
-                    
-                    if let quakes = quakes where error == nil {
-                        PersistentController.sharedController.saveQuakes(quakes) { newCount in
-                            if newCount > 0 && SettingsController.sharedController.notificationType == NotificationType.Auto.rawValue || SettingsController.sharedController.notificationType == NotificationType.World.rawValue {
-                                self.postLocalNotificationWithNumberOfNewQuakes(newCount)
-                            }
-                        }
-                        completionHandler(.NewData)
-                    }
-                    else {
-                        completionHandler(.Failed)
-                    }
-                }
-                break
-                
-            case LocationOption.Major.rawValue:
-                NetworkUtility.networkOperationStarted()
-                NetworkClient.sharedClient.getRecentMajorQuakes { quakes, error in
-                    NetworkUtility.networkOperationFinished()
-                    
-                    if let quakes = quakes where error == nil {
-                        PersistentController.sharedController.saveQuakes(quakes) { newCount in
-                            if newCount > 0 && SettingsController.sharedController.notificationType == NotificationType.Auto.rawValue || SettingsController.sharedController.notificationType == NotificationType.Major.rawValue {
-                                self.postLocalNotificationWithNumberOfNewQuakes(newCount)
-                            }
-                        }
-                        completionHandler(.NewData)
-                    }
-                    else {
-                        completionHandler(.Failed)
-                    }
-                }
-                break
-                
-            default:
-                print("WARNING: Invalid option stored in 'SettingsController'.")
-                completionHandler(.Failed)
-                break
+        guard NetworkUtility.internetReachable() else { return }
+        guard SettingsController.sharedController.notificationsActive else { return }
+        guard let lastPush = SettingsController.sharedController.lastPushDate else { return }
+        guard NSDate().hoursFrom(lastPush) > SettingsController.sharedController.numberOfHoursPerNotification() else { return }
+
+        NetworkUtility.networkOperationStarted()
+        NetworkClient.sharedClient.getNotificationCountFromStartDate(lastPush) { count, error in
+            NetworkUtility.networkOperationFinished()
+            
+            if let count = count where error == nil {
+                self.postLocalNotificationWithNumberOfNewQuakes(lastPush, newQuakes: count)
             }
         }
     }
     
-    internal func postLocalNotificationWithNumberOfNewQuakes(newQuakes: Int) {
-        guard SettingsController.sharedController.notificationsActive else { return }
-        guard let lastPush = SettingsController.sharedController.lastPushDate else { return }
-        
+    internal func postLocalNotificationWithNumberOfNewQuakes(lastPush: NSDate, newQuakes: Int) {
         let hoursDifference = NSDate().hoursFrom(lastPush)
-        guard hoursDifference > SettingsController.sharedController.numberOfHoursPerNotification() else { return }
         
         SettingsController.sharedController.lastPushDate = NSDate()
         
         let partOne = newQuakes == 1 ? "A quake happened" : "\(newQuakes) quakes happened"
-        let partTwo = (SettingsController.sharedController.notificationAmount == NotificationAmmount.NoLimit.rawValue || SettingsController.sharedController.notificationAmount == NotificationAmmount.Hourly.rawValue) ? (hoursDifference == 1 ? "within the last hour." : "in the past \(hoursDifference) hours.") : (SettingsController.sharedController.notificationAmount == NotificationAmmount.Weekly.rawValue ? " this week." : " today.")
+        var partTwo = ""
+        if SettingsController.sharedController.notificationAmount == NotificationAmmount.NoLimit.rawValue ||
+            SettingsController.sharedController.notificationAmount == NotificationAmmount.Hourly.rawValue {
+                partTwo = hoursDifference == 1 ? "within the last hour." : "in the past \(hoursDifference) hours."
+        }
+        else if SettingsController.sharedController.notificationAmount == NotificationAmmount.Daily.rawValue {
+            partTwo = " yesterday."
+        }
+        else {
+            partTwo = " last week."
+        }
         
         let notification = UILocalNotification()
         notification.alertBody = [partOne, partTwo].joinWithSeparator(" ")

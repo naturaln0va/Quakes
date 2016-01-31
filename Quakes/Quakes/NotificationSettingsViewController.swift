@@ -1,9 +1,10 @@
 
 import UIKit
+import CoreLocation
+
 
 enum NotificationType: Int {
-    case Auto
-    case Nearby
+    case Location
     case World
     case Major
 }
@@ -132,11 +133,8 @@ class NotificationSettingsViewController: UITableViewController
                 cell.accessoryType = .DisclosureIndicator
                 
                 switch SettingsController.sharedController.notificationType {
-                case NotificationType.Auto.rawValue:
-                    cell.detailTextLabel?.text = "Automatic"
-                    
-                case NotificationType.Nearby.rawValue:
-                    cell.detailTextLabel?.text = "Nearby"
+                case NotificationType.Location.rawValue:
+                    cell.detailTextLabel?.text = "\(SettingsController.sharedController.notificationLocation!.cityStateString())"
                     
                 case NotificationType.World.rawValue:
                     cell.detailTextLabel?.text = "World"
@@ -185,28 +183,10 @@ class NotificationSettingsViewController: UITableViewController
         
         if indexPath.section == TableSections.UserSettings.rawValue {
             if indexPath.row == UserSettingsRows.TypeRow.rawValue {
-                let values = [
-                    NotificationType.Auto.rawValue,
-                    NotificationType.Nearby.rawValue,
-                    NotificationType.World.rawValue,
-                    NotificationType.Major.rawValue
-                ]
-                let labels = [
-                    "Last Quake Search",
-                    "Nearby Quakes",
-                    "World Quakes",
-                    "Major Quakes"
-                ]
+                let finderVC = LocationFinderViewController(type: .Notification)
+                finderVC.delegate = self
                 
-                guard let index: Int = values.indexOf(SettingsController.sharedController.notificationType) else {
-                    fatalError("There was an incorrect index stored for notification type.")
-                }
-                
-                let data = PickerData(values: values, currentIndex: index, labels: labels, detailLabels: nil, footerDescription: "The type of alerts you will be receiving.")
-                let pvc = PickerViewController(type: .NotificationType, data: data, title: "Type")
-                pvc.delegate = self
-                
-                navigationController?.pushViewController(pvc, animated: true)
+                navigationController?.pushViewController(finderVC, animated: true)
             }
             else if indexPath.row == UserSettingsRows.AmmountRow.rawValue {
                 let values = [
@@ -250,6 +230,34 @@ class NotificationSettingsViewController: UITableViewController
         }
     }
 
+}
+
+extension NotificationSettingsViewController: LocationFinderViewControllerDelegate
+{
+    
+    func locationFinderViewControllerDidSelectOption(option: LocationOption) {
+        switch option {
+        case .World:
+            SettingsController.sharedController.notificationType = NotificationType.World.rawValue
+        case .Major:
+            SettingsController.sharedController.notificationType = NotificationType.Major.rawValue
+        case.Nearby:
+            print("WARNING: the user should not have been able to select this option from this view.")
+            SettingsController.sharedController.notificationType = NotificationType.World.rawValue
+        }
+        
+        tableView.reloadData()
+        navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark) {
+        SettingsController.sharedController.notificationLocation = placemark
+        SettingsController.sharedController.notificationType = NotificationType.Location.rawValue
+        
+        tableView.reloadData()
+        navigationController?.popViewControllerAnimated(true)
+    }
+    
 }
 
 extension NotificationSettingsViewController: PickerViewControllerDelegate

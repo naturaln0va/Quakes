@@ -7,6 +7,7 @@ class RemoveAdsViewController: UIViewController
 
     @IBOutlet weak var removeAdsButton: UIButton!
     @IBOutlet weak var headerLabel: UILabel!
+    @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var confetti: SAConfettiView!
     
@@ -16,6 +17,7 @@ class RemoveAdsViewController: UIViewController
         super.viewDidLoad()
         
         title = "Remove Ads"
+        messageLabel.text = ""
         
         if SettingsController.sharedController.hasPaidToRemoveAds {
             headerLabel.text = "Thanks for your support ♥️"
@@ -27,6 +29,12 @@ class RemoveAdsViewController: UIViewController
                 self,
                 selector: "adRemovalPurchased",
                 name: IAPUtility.IAPHelperPurchaseNotification,
+                object: nil
+            )
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: "adRemovalFailed",
+                name: IAPUtility.IAPHelperFailedNotification,
                 object: nil
             )
             
@@ -78,12 +86,33 @@ class RemoveAdsViewController: UIViewController
         confetti.startConfetti()
     }
     
+    func adRemovalFailed() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .Refresh,
+            target: self,
+            action: "refreshButtonPressed"
+        )
+        
+        messageLabel.alpha = 1.0
+        messageLabel.text = "Ad removal failed."
+        
+        UIView.animateWithDuration(0.345, delay: 2.0, options: [], animations: {
+            self.messageLabel.alpha = 0.0
+        }) { _ in
+            self.messageLabel.text = ""
+        }
+    }
+    
     // MARK: Actions
     @IBAction func removeAdsButtonPressed(sender: UIButton) {
         helper.purchaseRemoveAds()
     }
     
     func refreshButtonPressed() {
+        let activityView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityView)
+        activityView.startAnimating()
+        
         helper.restorePurchases()
     }
 
