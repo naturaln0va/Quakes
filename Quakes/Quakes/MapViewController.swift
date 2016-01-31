@@ -4,7 +4,7 @@ import MapKit
 import CoreLocation
 
 protocol MapViewControllerDelegate {
-    func mapViewControllerDidFindPlace(placemark: CLPlacemark)
+    func mapViewControllerDidFinishFetch(sucess: Bool, withPlace placemark: CLPlacemark)
 }
 
 class MapViewController: UIViewController
@@ -15,8 +15,6 @@ class MapViewController: UIViewController
     @IBOutlet weak var searchAreaButtonBottomConstraint: NSLayoutConstraint!
     
     var quakesToDisplay: [Quake]?
-    var searchedQuakes: [Quake]?
-    
     var quakeToDisplay: Quake?
     var nearbyCitiesToDisplay: [ParsedNearbyCity]?
     
@@ -69,8 +67,8 @@ class MapViewController: UIViewController
             manager.requestWhenInUseAuthorization()
         }
         
-        if let quake = quakeToDisplay, let citiesToDisplay = nearbyCitiesToDisplay {
-            refreshMapWithQuakes([quake], cities: citiesToDisplay, animated: true)
+        if nearbyCitiesToDisplay != nil {
+            refreshMapAnimated(true)
         }
         else {
             fetchQuakesAndDisplay()
@@ -85,37 +83,64 @@ class MapViewController: UIViewController
         }
     }
     
-    func fetchQuakesAndDisplay()
+    private func fetchQuakesAndDisplay()
     {
-        if SettingsController.sharedController.lastWorldFetchDate?.hoursFrom(NSDate()) > 2 || Quake.objectCountInContext(PersistentController.sharedController.worldMoc) == 0 {
+        do {
+            quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
             
-            NetworkUtility.networkOperationStarted()
-            NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
-                NetworkUtility.networkOperationFinished()
-                SettingsController.sharedController.lastWorldFetchDate = NSDate()
+            if quakesToDisplay != nil {
+                refreshMapAnimated(true)
+            }
+        }
+        catch {
+            print("Error loading quakes from world persistent store \(error)")
+        }
+    }
+    
+    private func fetchNewQuakesForPlace(placemark: CLPlacemark) {
+        guard NetworkUtility.internetReachable() else {
+            self.searchAreaButton.setTitle("No Internet Connection", forState: .Normal)
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
+            }
+            return
+        }
+        
+        NetworkUtility.networkOperationStarted()
+        NetworkClient.sharedClient.getRecentQuakesByLocation(placemark.location!.coordinate, radius: SettingsController.sharedController.searchRadius.rawValue) { quakes, error in
+            NetworkUtility.networkOperationFinished()
+            
+            var sucess = false
+            if let quakes = quakes where error == nil {
+                sucess = quakes.count > 0
                 
-                if let quakes = quakes where error == nil {
-                    PersistentController.sharedController.saveWorldQuakes(quakes)
+                if quakes.count > 0 {
+                    self.mapView.removeAnnotations(self.mapView.annotations)
+                    PersistentController.sharedController.deleteAllThenSaveQuakes(quakes)
                     self.fetchQuakesAndDisplay()
                 }
             }
-        }
-        else {
-            do {
-                quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.worldMoc)
-                
-                if let quakes = quakesToDisplay {
-                    refreshMapWithQuakes(quakes, cities: nil, animated: true)
-                }
+            
+            self.delegate?.mapViewControllerDidFinishFetch(sucess, withPlace: placemark)
+            
+            if sucess {
+                self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
             }
-            catch {
-                print("Error loading quakes from world persistent store \(error)")
+            else {
+                self.searchAreaButton.setTitle("No Quakes In This Area", forState: .Normal)
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                    self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
+                }
             }
         }
     }
     
     // MARK: - Actions
     @IBAction func searchButtonPressed() {
+        guard NetworkUtility.internetReachable() else { return }
+        
         self.searchAreaButton.setTitle("Searching...", forState: .Normal)
         
         NetworkUtility.networkOperationStarted()
@@ -123,25 +148,28 @@ class MapViewController: UIViewController
             NetworkUtility.networkOperationFinished()
             if let place = places?.first where error == nil {
                 if let _ = place.location {
-                    self.delegate?.mapViewControllerDidFindPlace(place)
+                    self.fetchNewQuakesForPlace(place)
                 }
                 else {
                     self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                        self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
+                    }
                 }
             }
             else {
                 self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                    self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
+                }
             }
         }
     }
     
     func recenterMapButtonPressed() {
-        if let quakes = quakesToDisplay {
-            refreshMapWithQuakes(quakes, cities: nil, animated: true)
-        }
-        else if let quake = quakeToDisplay, let citiesToDisplay = nearbyCitiesToDisplay {
-            refreshMapWithQuakes([quake], cities: citiesToDisplay, animated: true)
-        }
+        refreshMapAnimated(true)
     }
     
     func detailButtonPressed(sender: UIButton) {
@@ -150,17 +178,56 @@ class MapViewController: UIViewController
         }
     }
     
-    func refreshMapWithQuakes(quakes: [Quake], cities: [ParsedNearbyCity]?, animated: Bool) {
+    func refreshMapAnimated(animated: Bool) {
+        var quakesToShowOnMap = [Quake]()
+        
+        if let quakes = quakesToDisplay {
+            quakesToShowOnMap.appendContentsOf(quakes)
+        }
+        else if let quake = quakeToDisplay {
+            quakesToShowOnMap.append(quake)
+        }
+        
         if mapView.annotations.count <= 1 {
-            mapView.addAnnotations(quakes)
-            if let cities = cities {
+            mapView.addAnnotations(quakesToShowOnMap)
+            if let cities = nearbyCitiesToDisplay {
                 mapView.addAnnotations(cities)
             }
         }
         
-        if let citiesToDisplay = cities {
-            var locations = citiesToDisplay.map { $0.location }
-            locations.append(quakes.first!.location)
+        if let userLocation = mapView.userLocation.location where quakesToShowOnMap.count == 0 {
+            let region = MKCoordinateRegion(center: userLocation.coordinate, span:
+                MKCoordinateSpan(
+                    latitudeDelta: 5.5,
+                    longitudeDelta: 5.5
+                )
+            )
+            
+            mapView.setVisibleMapRect(region.mapRectForCoordinateRegion(), animated: animated)
+            return
+        }
+        
+        if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
+            guard let latestQuake = quakesToShowOnMap.sort({ $0.timestamp.timeIntervalSince1970 > $1.timestamp.timeIntervalSince1970 }).first else {
+                print("WARNING: There was not a sorted quake to center on.")
+                return
+            }
+            
+            let region = MKCoordinateRegion(center: latestQuake.coordinate, span:
+                MKCoordinateSpan(
+                    latitudeDelta: 17.5,
+                    longitudeDelta: 17.5
+                )
+            )
+            
+            mapView.setVisibleMapRect(region.mapRectForCoordinateRegion(), animated: animated)
+        }
+        else {
+            var locations = quakesToShowOnMap.map { $0.location }
+            
+            if let cities = nearbyCitiesToDisplay {
+                locations.appendContentsOf(cities.map {$0.location })
+            }
             
             var topLeftCoord = CLLocationCoordinate2D(
                 latitude: -90,
@@ -203,21 +270,6 @@ class MapViewController: UIViewController
             let fittedRect = mapView.mapRectThatFits(mapRect, edgePadding: UIEdgeInsets(top: 55, left: 27, bottom: 55, right: 27))
             mapView.setVisibleMapRect(fittedRect, animated: animated)
         }
-        else {
-            guard let latestQuake = quakes.sort({ $0.timestamp.timeIntervalSince1970 > $1.timestamp.timeIntervalSince1970 }).first else {
-                print("WARNING: There was not a sorted quake to center on.")
-                return
-            }
-            
-            let region = MKCoordinateRegion(center: latestQuake.coordinate, span:
-                MKCoordinateSpan(
-                    latitudeDelta: 21.0,
-                    longitudeDelta: 21.0
-                )
-            )
-            
-            mapView.setVisibleMapRect(region.mapRectForCoordinateRegion(), animated: animated)
-        }
     }
 }
 
@@ -251,12 +303,7 @@ extension MapViewController: MKMapViewDelegate {
         guard shouldContinueUpdatingUserLocation else { return }
         
         if let _ = userLocation.location {
-            if let quakes = quakesToDisplay {
-                refreshMapWithQuakes(quakes, cities: nil, animated: true)
-            }
-            else if let quake = quakeToDisplay, let citiesToDisplay = nearbyCitiesToDisplay {
-                refreshMapWithQuakes([quake], cities: citiesToDisplay, animated: true)
-            }
+            refreshMapAnimated(true)
             shouldContinueUpdatingUserLocation = false
         }
     }

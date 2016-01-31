@@ -87,7 +87,6 @@ class WindowController: UIResponder, UIApplicationDelegate
                                 self.postLocalNotificationWithNumberOfNewQuakes(newCount)
                             }
                         }
-                        PersistentController.sharedController.saveWorldQuakes(quakes)
                         completionHandler(.NewData)
                     }
                     else {

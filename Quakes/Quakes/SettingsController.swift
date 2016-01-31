@@ -138,6 +138,10 @@ class SettingsController
         }
     }
     
+    func isLocationOptionWorldOrMajor() -> Bool {
+        return lastLocationOption == LocationOption.World.rawValue || lastLocationOption == LocationOption.Major.rawValue
+    }
+    
     // MARK: - Public
     var cachedAddress: CLPlacemark? {
         get {

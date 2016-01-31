@@ -466,15 +466,23 @@ extension QuakesViewController: MapViewControllerDelegate
 {
     
     // MARK: - MapViewController Delegate
-    func mapViewControllerDidFindPlace(placemark: CLPlacemark) {
-        navigationController?.popViewControllerAnimated(true)
+    func mapViewControllerDidFinishFetch(sucess: Bool, withPlace placemark: CLPlacemark) {
+        if sucess {
+            setTitleButtonText("\(placemark.cityStateString())")
+            
+            SettingsController.sharedController.lastSearchedPlace = placemark
+            SettingsController.sharedController.lastLocationOption = nil
+        }
         
-        SettingsController.sharedController.lastSearchedPlace = placemark
-        SettingsController.sharedController.lastLocationOption = nil
-        
-        PersistentController.sharedController.deleteAllQuakes()
-        
-        fetchQuakes()
+        if !sucess && fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
+            noResultsLabel.center = CGPoint(x: view.center.x, y: 65.0)
+            tableView.addSubview(noResultsLabel)
+        }
+        else {
+            if noResultsLabel.superview != nil {
+                noResultsLabel.removeFromSuperview()
+            }
+        }
     }
     
 }
