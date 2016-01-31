@@ -33,8 +33,6 @@
 		69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F261C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift */; };
 		69150F291C3DE60600D9D3BF /* String+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F281C3DE60600D9D3BF /* String+Additions.swift */; };
 		694269EB1C46E55800BAA5C9 /* TextBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */; };
-		696031B41C592A7300F71B93 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031B31C592A7300F71B93 /* AboutViewController.swift */; };
-		696031B61C5934B200F71B93 /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 696031B51C5934B200F71B93 /* about.html */; };
 		696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */; };
 		696031BA1C593D3000F71B93 /* PeekableDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */; };
 		696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031BB1C5948EF00F71B93 /* SeverityView.swift */; };
@@ -90,8 +88,6 @@
 		69150F261C3DE52000D9D3BF /* CLLocationCoordinate2D+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+Additions.swift"; sourceTree = "<group>"; };
 		69150F281C3DE60600D9D3BF /* String+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Additions.swift"; sourceTree = "<group>"; };
 		694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextBarAnimator.swift; sourceTree = "<group>"; };
-		696031B31C592A7300F71B93 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
-		696031B51C5934B200F71B93 /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = about.html; sourceTree = "<group>"; };
 		696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekableDetailViewController.swift; sourceTree = "<group>"; };
 		696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PeekableDetailViewController.xib; sourceTree = "<group>"; };
 		696031BB1C5948EF00F71B93 /* SeverityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityView.swift; sourceTree = "<group>"; };
@@ -248,7 +244,6 @@
 				69B30FE91C3B051600241D79 /* Assets.xcassets */,
 				696031BF1C59554300F71B93 /* FlagKit.xcassets */,
 				69B30FEE1C3B051600241D79 /* Info.plist */,
-				696031B51C5934B200F71B93 /* about.html */,
 				696031C51C596C4000F71B93 /* convert.py */,
 				696031C61C596C4000F71B93 /* countrytocode.txt */,
 				696031BD1C5953F000F71B93 /* country-to-code.plist */,
@@ -281,7 +276,6 @@
 		69B30FF91C3B122300241D79 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				696031B31C592A7300F71B93 /* AboutViewController.swift */,
 				48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */,
 				48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */,
 				4871B7A71C4AC96800C466DD /* MapViewController.swift */,
@@ -388,7 +382,6 @@
 				69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */,
 				48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */,
 				4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */,
-				696031B61C5934B200F71B93 /* about.html in Resources */,
 				69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */,
 				4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */,
 				696031C41C595BD200F71B93 /* QuakeDetailViewController.xib in Resources */,
@@ -430,7 +423,6 @@
 				690C289B1C580A750035F47A /* NSDate+Additions.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */,
-				696031B41C592A7300F71B93 /* AboutViewController.swift in Sources */,
 				696031C31C595BD200F71B93 /* QuakeDetailViewController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
