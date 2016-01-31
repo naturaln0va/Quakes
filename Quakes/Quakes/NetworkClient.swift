@@ -6,6 +6,7 @@ typealias DetailURLCompletionBlock = (urlString: String?, error: NSError?) -> Vo
 typealias NearbyCityCompletionBlock = (cities: [ParsedNearbyCity]?, error: NSError?) -> Void
 typealias QuakesCompletionBlock = (quakes: [ParsedQuake]?, error: NSError?) -> Void
 typealias CountCompletionBlock = (count: Int?, error: NSError?) -> Void
+typealias ReciptCompletionBlock = (sucess: Bool) -> Void
 
 let kNoResponseError = NSError(domain: "io.ackermann.NetworkClient", code: 10000, userInfo: [NSLocalizedDescriptionKey: "No response from server"])
 let kJSONParseError = NSError(domain: "io.ackermann.NetworkClient", code: 10001, userInfo: [NSLocalizedDescriptionKey: "JSON parse error"])
@@ -66,6 +67,62 @@ class NetworkClient
         return urlString
     }
     
+    func verifyInAppRecipt(completion: ReciptCompletionBlock) {
+        guard let url = NSBundle.mainBundle().appStoreReceiptURL else {
+            completion(sucess: false)
+            return
+        }
+        
+        guard let receiptData = NSData(contentsOfURL: url) else {
+            completion(sucess: false)
+            return
+        }
+        
+        // testing: https://sandbox.itunes.apple.com/verifyReceipt
+        // production: https://buy.itunes.apple.com/verifyReceipt
+        guard let storeURL = NSURL(string: "https://sandbox.itunes.apple.com/verifyReceipt") else {
+            completion(sucess: false)
+            return
+        }
+        
+        let storeRequest = NSMutableURLRequest(URL: storeURL)
+        storeRequest.HTTPMethod = "POST"
+        
+        do {
+            storeRequest.HTTPBody = try NSJSONSerialization.dataWithJSONObject(
+                ["receipt-data" : receiptData.base64EncodedStringWithOptions([])],
+                options: .PrettyPrinted
+            )
+        }
+        
+        catch {
+            completion(sucess: false)
+            return
+        }
+        
+        NetworkUtility.networkOperationStarted()
+        dispatch_async(allRequestsQueue) {
+            NSURLSession.sharedSession().dataTaskWithRequest(storeRequest) { data, response, error in
+                var success = false
+                
+                defer {
+                    NetworkUtility.networkOperationFinished()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        completion(sucess: success)
+                    }
+                }
+                
+                guard error == nil else { return }
+                guard let data = data else { return }
+                guard let receiptInfo = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? [String: AnyObject] ?? [:] else { return }
+                
+                if let status = receiptInfo["status"] as? Int where status == 0 {
+                    success = true
+                }
+            }.resume()
+        }
+    }
+    
     func getNearbyCitiesWithURL(urlForNearbyCities url: NSURL, completion: NearbyCityCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
@@ -74,6 +131,7 @@ class NetworkClient
                 var resultError = error
                 
                 defer {
+                    NetworkUtility.networkOperationFinished()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(cities: nearbyCities, error: resultError)
                     }
@@ -106,7 +164,6 @@ class NetworkClient
                 nearbyCities = responseDicts.map {
                     return ParsedNearbyCity(dict: $0)
                 }
-                NetworkUtility.networkOperationFinished()
             }.resume()
         }
 
@@ -120,6 +177,7 @@ class NetworkClient
                 var resultError = error
                 
                 defer {
+                    NetworkUtility.networkOperationFinished()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(urlString: detailURLString, error: resultError)
                     }
@@ -160,7 +218,6 @@ class NetworkClient
                 }
                 
                 detailURLString = urlString
-                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
@@ -182,6 +239,7 @@ class NetworkClient
                 var resultError = error
                 
                 defer {
+                    NetworkUtility.networkOperationFinished()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(quakes: quakes, error: error)
                     }
@@ -217,7 +275,6 @@ class NetworkClient
                 }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
-                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
@@ -237,6 +294,7 @@ class NetworkClient
                 var resultError = error
                 
                 defer {
+                    NetworkUtility.networkOperationFinished()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(quakes: quakes, error: error)
                     }
@@ -272,7 +330,6 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
-                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
@@ -288,6 +345,7 @@ class NetworkClient
                 var resultError = error
                 
                 defer {
+                    NetworkUtility.networkOperationFinished()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(quakes: quakes, error: error)
                     }
@@ -323,7 +381,6 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
-                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
@@ -345,6 +402,7 @@ class NetworkClient
                 var resultError = error
                 
                 defer {
+                    NetworkUtility.networkOperationFinished()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(count: count, error: error)
                     }
@@ -380,7 +438,6 @@ class NetworkClient
                 if DEBUG_REQUESTS { print("Sent: \(request.URL)\nReceived: \(responseDict)") }
                 
                 count = quakeCount
-                NetworkUtility.networkOperationFinished()
             }.resume()
         }
     }
