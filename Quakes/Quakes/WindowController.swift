@@ -63,6 +63,7 @@ class WindowController: UIResponder, UIApplicationDelegate
     }
     
     internal func postLocalNotificationWithNumberOfNewQuakes(lastPush: NSDate, newQuakes: Int) {
+        SettingsController.sharedController.lastPushDate = NSDate()
         let hoursDifference = NSDate().hoursFrom(lastPush)
         
         SettingsController.sharedController.lastPushDate = NSDate()
