@@ -313,24 +313,29 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
         if annotation is Quake {
-            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(Quake))
-            annotationView.enabled = true
-            annotationView.animatesDrop = false
-            annotationView.canShowCallout = true
-            
-            if nearbyCitiesToDisplay == nil {
-                let detailButton = UIButton(type: .Custom)
-                detailButton.tag = (annotation as! Quake).hashValue
-                detailButton.setImage(UIImage(named: "right-callout-arrow"), forState: .Normal)
-                detailButton.addTarget(self, action: "detailButtonPressed:", forControlEvents: .TouchUpInside)
-                detailButton.sizeToFit()
-
-                annotationView.rightCalloutAccessoryView = detailButton
+            if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(String(annotation.hash)) {
+                return annotationView
             }
-            
-            annotationView.pinTintColor = (annotation as! Quake).severityColor
-            
-            return annotationView
+            else {
+                let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
+                annotationView.enabled = true
+                annotationView.animatesDrop = false
+                annotationView.canShowCallout = true
+                
+                if nearbyCitiesToDisplay == nil {
+                    let detailButton = UIButton(type: .Custom)
+                    detailButton.tag = (annotation as! Quake).hashValue
+                    detailButton.setImage(UIImage(named: "right-callout-arrow"), forState: .Normal)
+                    detailButton.addTarget(self, action: "detailButtonPressed:", forControlEvents: .TouchUpInside)
+                    detailButton.sizeToFit()
+                    
+                    annotationView.rightCalloutAccessoryView = detailButton
+                }
+                
+                annotationView.pinTintColor = (annotation as! Quake).severityColor
+                
+                return annotationView
+            }
         }
         else if annotation is ParsedNearbyCity {
             let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: String(ParsedNearbyCity))
