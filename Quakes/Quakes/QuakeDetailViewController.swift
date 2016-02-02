@@ -96,10 +96,8 @@ class QuakeDetailViewController: UIViewController
         
         mapView.removeAnnotation(quakeToDisplay)
         mapView.addAnnotation(quakeToDisplay)
+        mapView.showAnnotations(mapView.annotations, animated: true)
         tableView.tableHeaderView = mapView
-        
-        let regionForQuake = MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
-        mapView.setRegion(mapView.regionThatFits(regionForQuake), animated: false)
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -306,6 +304,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
 extension QuakeDetailViewController: CLLocationManagerDelegate
 {
     
+    // MARK: - CLLocationManager Delegate
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedWhenInUse {
             mapView.showsUserLocation = true
@@ -317,6 +316,7 @@ extension QuakeDetailViewController: CLLocationManagerDelegate
 extension QuakeDetailViewController: MKMapViewDelegate
 {
     
+    // MARK: - MKMapView Delegate
     func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation)
     {
         guard let userLocation = userLocation.location where userLocation.horizontalAccuracy > 0 else {
@@ -334,11 +334,7 @@ extension QuakeDetailViewController: MKMapViewDelegate
             return
         }
         
-        let userMapPoint = MKMapPointForCoordinate(userLocation.coordinate)
-        let quakeMapPoint = MKMapPointForCoordinate(quakeToDisplay.coordinate)
-        
-        let mapRect = MKMapRectMake(min(userMapPoint.x, quakeMapPoint.x), min(userMapPoint.y, quakeMapPoint.y), abs(userMapPoint.x - quakeMapPoint.x), abs(userMapPoint.y - quakeMapPoint.y))
-        mapView.setVisibleMapRect(mapRect, edgePadding: UIEdgeInsets(top: 55, left: 27, bottom: 55, right: 27), animated: true)
+        mapView.showAnnotations(mapView.annotations, animated: true)
         
         lastUserLocation = userLocation
     }

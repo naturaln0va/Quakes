@@ -171,108 +171,41 @@ class MapViewController: UIViewController
     func recenterMapButtonPressed() {
         refreshMapAnimated(true)
     }
-    
-    func detailButtonPressed(sender: UIButton) {
-        if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hashValue == sender.tag }) {
-            navigationController?.pushViewController(QuakeDetailViewController(quake: quakes[index]), animated: true)
-        }
-    }
-    
+        
     func refreshMapAnimated(animated: Bool) {
-        var quakesToShowOnMap = [Quake]()
+        var annotationsToShowOnMap = [MKAnnotation]()
         
         if let quakes = quakesToDisplay {
-            quakesToShowOnMap.appendContentsOf(quakes)
+            annotationsToShowOnMap.appendContentsOf((quakes as [MKAnnotation]))
         }
         else if let quake = quakeToDisplay {
-            quakesToShowOnMap.append(quake)
+            annotationsToShowOnMap.append(quake)
+        }
+        
+        if let cities = nearbyCitiesToDisplay {
+            annotationsToShowOnMap.appendContentsOf((cities as [MKAnnotation]))
         }
         
         if mapView.annotations.count <= 1 {
-            mapView.addAnnotations(quakesToShowOnMap)
-            if let cities = nearbyCitiesToDisplay {
-                mapView.addAnnotations(cities)
-            }
+            mapView.addAnnotations(annotationsToShowOnMap)
         }
         
-        if let userLocation = mapView.userLocation.location where quakesToShowOnMap.count == 0 {
-            let region = MKCoordinateRegion(center: userLocation.coordinate, span:
-                MKCoordinateSpan(
-                    latitudeDelta: 5.5,
-                    longitudeDelta: 5.5
-                )
-            )
-            
-            mapView.setVisibleMapRect(region.mapRectForCoordinateRegion(), animated: animated)
-            return
+        if SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue {
+            mapView.showAnnotations(mapView.annotations, animated: animated)
         }
-        
-        if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
-            guard let latestQuake = quakesToShowOnMap.sort({ $0.timestamp.timeIntervalSince1970 > $1.timestamp.timeIntervalSince1970 }).first else {
-                print("WARNING: There was not a sorted quake to center on.")
-                return
-            }
-            
-            var coordToCenterUpon = CLLocationCoordinate2D()
-            
+        else if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
             if let userLocation = mapView.userLocation.location {
-                coordToCenterUpon = userLocation.coordinate
+                mapView.setCenterCoordinate(userLocation.coordinate, animated: true)
             }
             else {
-                coordToCenterUpon = latestQuake.coordinate
+                mapView.showAnnotations(annotationsToShowOnMap, animated: animated)
             }
-            
-            mapView.setCenterCoordinate(coordToCenterUpon, animated: true)
         }
         else {
-            var locations = quakesToShowOnMap.map { $0.location }
-            
-            if let cities = nearbyCitiesToDisplay {
-                locations.appendContentsOf(cities.map {$0.location })
-            }
-            
-            var topLeftCoord = CLLocationCoordinate2D(
-                latitude: -90,
-                longitude: 180
-            )
-            var bottomRightCoord = CLLocationCoordinate2D(
-                latitude: 90,
-                longitude: -180
-            )
-            
-            for location in locations {
-                topLeftCoord.latitude = max(
-                    topLeftCoord.latitude,
-                    location.coordinate.latitude
-                )
-                topLeftCoord.longitude = min(
-                    topLeftCoord.longitude,
-                    location.coordinate.longitude
-                )
-                bottomRightCoord.latitude = min(
-                    bottomRightCoord.latitude,
-                    location.coordinate.latitude
-                )
-                bottomRightCoord.longitude = max(
-                    bottomRightCoord.longitude,
-                    location.coordinate.longitude
-                )
-            }
-            
-            let topLeftPoint = MKMapPointForCoordinate(topLeftCoord)
-            let bottomRightPoint = MKMapPointForCoordinate(bottomRightCoord)
-            
-            let mapRect = MKMapRectMake(
-                min(topLeftPoint.x, bottomRightPoint.x),
-                min(topLeftPoint.y, bottomRightPoint.y),
-                abs(topLeftPoint.x - bottomRightPoint.x),
-                abs(topLeftPoint.y - bottomRightPoint.y)
-            )
-            
-            let fittedRect = mapView.mapRectThatFits(mapRect, edgePadding: UIEdgeInsets(top: 55, left: 27, bottom: 55, right: 27))
-            mapView.setVisibleMapRect(fittedRect, animated: animated)
+            mapView.showAnnotations(annotationsToShowOnMap, animated: animated)
         }
     }
+    
 }
 
 extension MapViewController: MKMapViewDelegate {
@@ -312,33 +245,32 @@ extension MapViewController: MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
+        if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(String(annotation.hash)) {
+            return annotationView
+        }
+
+        
         if annotation is Quake {
-            if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(String(annotation.hash)) {
-                return annotationView
+            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
+            annotationView.enabled = true
+            annotationView.animatesDrop = false
+            annotationView.canShowCallout = true
+            
+            if nearbyCitiesToDisplay == nil {
+                let detailButton = UIButton(type: .Custom)
+                detailButton.tag = (annotation as! Quake).hashValue
+                detailButton.setImage(UIImage(named: "detail-arrow"), forState: .Normal)
+                detailButton.sizeToFit()
+                
+                annotationView.rightCalloutAccessoryView = detailButton
             }
-            else {
-                let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
-                annotationView.enabled = true
-                annotationView.animatesDrop = false
-                annotationView.canShowCallout = true
-                
-                if nearbyCitiesToDisplay == nil {
-                    let detailButton = UIButton(type: .Custom)
-                    detailButton.tag = (annotation as! Quake).hashValue
-                    detailButton.setImage(UIImage(named: "right-callout-arrow"), forState: .Normal)
-                    detailButton.addTarget(self, action: "detailButtonPressed:", forControlEvents: .TouchUpInside)
-                    detailButton.sizeToFit()
-                    
-                    annotationView.rightCalloutAccessoryView = detailButton
-                }
-                
-                annotationView.pinTintColor = (annotation as! Quake).severityColor
-                
-                return annotationView
-            }
+            
+            annotationView.pinTintColor = (annotation as! Quake).severityColor
+            
+            return annotationView
         }
         else if annotation is ParsedNearbyCity {
-            let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: String(ParsedNearbyCity))
+            let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
             
             annotationView.enabled = true
             annotationView.canShowCallout = true
@@ -350,6 +282,12 @@ extension MapViewController: MKMapViewDelegate {
         else {
             print("The annotaion view that was parsed was an unexpected type: \(annotation.dynamicType)")
             return nil
+        }
+    }
+    
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hashValue == control.tag }) {
+            navigationController?.pushViewController(QuakeDetailViewController(quake: quakes[index]), animated: true)
         }
     }
     

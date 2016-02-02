@@ -18,7 +18,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dnz-J2-buz">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="617"/>
                 </mapView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oys-bC-xPi">
                     <rect key="frame" x="0.0" y="617" width="375" height="50"/>
@@ -43,13 +43,19 @@
                 <constraint firstAttribute="bottom" secondItem="dnz-J2-buz" secondAttribute="bottom" id="9aq-V0-RmO"/>
                 <constraint firstItem="dnz-J2-buz" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="NMC-P3-Rsr"/>
                 <constraint firstItem="Oys-bC-xPi" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="QXA-sV-L53"/>
+                <constraint firstItem="Oys-bC-xPi" firstAttribute="top" secondItem="dnz-J2-buz" secondAttribute="bottom" id="Yfb-DM-Q6U"/>
                 <constraint firstAttribute="trailing" secondItem="Oys-bC-xPi" secondAttribute="trailing" id="e9i-nm-R4d"/>
                 <constraint firstAttribute="trailing" secondItem="dnz-J2-buz" secondAttribute="trailing" id="p6m-h5-SzX"/>
                 <constraint firstAttribute="bottom" secondItem="Oys-bC-xPi" secondAttribute="bottom" id="qyU-tC-tbY"/>
                 <constraint firstItem="dnz-J2-buz" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="sTN-1h-ab8"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-            <point key="canvasLocation" x="323.5" y="379.5"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="9aq-V0-RmO"/>
+                </mask>
+            </variation>
+            <point key="canvasLocation" x="-262.5" y="397.5"/>
         </view>
     </objects>
     <resources>
