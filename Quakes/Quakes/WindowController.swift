@@ -47,23 +47,26 @@ class WindowController: UIResponder, UIApplicationDelegate
     }
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        guard NetworkUtility.internetReachable() else { return }
-        guard SettingsController.sharedController.notificationsActive else { return }
-        guard let lastPush = SettingsController.sharedController.lastPushDate else { return }
-        guard NSDate().hoursFrom(lastPush) > SettingsController.sharedController.numberOfHoursPerNotification() else { return }
+        guard NetworkUtility.internetReachable() else { completionHandler(.Failed); return }
+        guard SettingsController.sharedController.notificationsActive else { completionHandler(.NoData); return }
+        guard let lastPush = SettingsController.sharedController.lastPushDate else { completionHandler(.NoData); return }
+        guard NSDate().hoursFrom(lastPush) > SettingsController.sharedController.numberOfHoursPerNotification() else { completionHandler(.NoData); return }
 
         NetworkUtility.networkOperationStarted()
         NetworkClient.sharedClient.getNotificationCountFromStartDate(lastPush) { count, error in
             NetworkUtility.networkOperationFinished()
             
             if let count = count where error == nil {
+                completionHandler(.NewData)
                 self.postLocalNotificationWithNumberOfNewQuakes(lastPush, newQuakes: count)
+            }
+            else {
+                completionHandler(.Failed)
             }
         }
     }
     
     internal func postLocalNotificationWithNumberOfNewQuakes(lastPush: NSDate, newQuakes: Int) {
-        SettingsController.sharedController.lastPushDate = NSDate()
         let hoursDifference = NSDate().hoursFrom(lastPush)
         
         SettingsController.sharedController.lastPushDate = NSDate()

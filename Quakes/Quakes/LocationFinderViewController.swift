@@ -21,6 +21,7 @@ class LocationFinderViewController: UIViewController
     @IBOutlet weak var filterViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var filterSegmentTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var controlContainerView: UIView!
     
     let manager = CLLocationManager()
     var delegate: LocationFinderViewControllerDelegate?
@@ -44,8 +45,9 @@ class LocationFinderViewController: UIViewController
         super.viewDidLoad()
         
         title = "Choose a Type"
-        view.backgroundColor = StyleController.backgroundColor
-        searchTextField.backgroundColor = StyleController.darkerMainAppColor
+        view.backgroundColor = UIColor.whiteColor()
+        searchTextField.backgroundColor = StyleController.searchBarColor
+        controlContainerView.backgroundColor = StyleController.backgroundColor
         
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)

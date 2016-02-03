@@ -54,7 +54,7 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             finderVC.searchTextField.alpha = 0.0
             
             let buttonView = UIView(frame: originFrame)
-            buttonView.backgroundColor = StyleController.darkerMainAppColor
+            buttonView.backgroundColor = StyleController.searchBarColor
             buttonView.layer.cornerRadius = 4.0
             containerView.addSubview(buttonView)
             
@@ -85,7 +85,7 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             containerView.bringSubviewToFront(finderVC.view)
             
             let buttonView = UIView(frame: finderVC.searchTextField.frame)
-            buttonView.backgroundColor = StyleController.darkerMainAppColor
+            buttonView.backgroundColor = StyleController.searchBarColor
             buttonView.layer.cornerRadius = 0.0
             containerView.addSubview(buttonView)
             

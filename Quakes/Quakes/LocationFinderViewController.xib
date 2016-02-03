@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LocationFinderViewController" customModule="Quakes" customModuleProvider="target">
             <connections>
                 <outlet property="cancelButton" destination="JNT-B0-z3l" id="aCC-3K-j2L"/>
+                <outlet property="controlContainerView" destination="fyp-kc-jvt" id="6uj-97-uIt"/>
                 <outlet property="filterSegment" destination="RKV-SB-6J1" id="QJ9-1B-bOp"/>
-                <outlet property="filterSegmentTrailingConstraint" destination="Czy-EU-zQZ" id="6db-2z-i0l"/>
                 <outlet property="filterViewBottomConstraint" destination="Add-ws-aCg" id="plP-cq-olw"/>
                 <outlet property="searchTextField" destination="u0K-Dt-gs5" id="pZj-Xv-kmY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -26,25 +26,12 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="60" id="I5w-f4-A2Z"/>
                     </constraints>
-                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
                     <textInputTraits key="textInputTraits" returnKeyType="search" enablesReturnKeyAutomatically="YES"/>
                 </textField>
                 <view contentMode="scaleToFill" verticalHuggingPriority="255" verticalCompressionResistancePriority="755" translatesAutoresizingMaskIntoConstraints="NO" id="fyp-kc-jvt">
                     <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                     <subviews>
-                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="RKV-SB-6J1">
-                            <rect key="frame" x="179" y="8" width="176" height="29"/>
-                            <segments>
-                                <segment title="Nearby"/>
-                                <segment title="World"/>
-                                <segment title="Major"/>
-                            </segments>
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            <connections>
-                                <action selector="filterSegmentWasChanged:" destination="-1" eventType="valueChanged" id="zjW-rm-f1w"/>
-                            </connections>
-                        </segmentedControl>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JNT-B0-z3l">
                             <rect key="frame" x="20" y="7" width="48" height="30"/>
                             <state key="normal" title="Cancel">
@@ -57,43 +44,52 @@
                     </subviews>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
+                        <constraint firstAttribute="height" constant="44" id="7Zd-6V-pV7"/>
                         <constraint firstItem="JNT-B0-z3l" firstAttribute="leading" secondItem="fyp-kc-jvt" secondAttribute="leading" constant="20" id="91C-k3-w1W"/>
-                        <constraint firstAttribute="trailing" secondItem="RKV-SB-6J1" secondAttribute="trailing" constant="20" id="Czy-EU-zQZ"/>
-                        <constraint firstAttribute="bottom" secondItem="RKV-SB-6J1" secondAttribute="bottom" constant="8" id="SoR-d9-xee"/>
-                        <constraint firstItem="RKV-SB-6J1" firstAttribute="top" secondItem="fyp-kc-jvt" secondAttribute="top" constant="8" id="nEA-0d-9qq"/>
                         <constraint firstItem="JNT-B0-z3l" firstAttribute="centerY" secondItem="fyp-kc-jvt" secondAttribute="centerY" id="nUd-IV-0cT"/>
-                        <constraint firstItem="RKV-SB-6J1" firstAttribute="centerX" secondItem="fyp-kc-jvt" secondAttribute="centerX" id="uIR-Tt-vya"/>
                     </constraints>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="uIR-Tt-vya"/>
-                        </mask>
-                    </variation>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search for a city or a zipcode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LnI-3p-nMk">
                     <rect key="frame" x="27" y="134" width="321" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="RKV-SB-6J1">
+                    <rect key="frame" x="26.5" y="250" width="321" height="29"/>
+                    <segments>
+                        <segment title="Nearby"/>
+                        <segment title="World"/>
+                        <segment title="Major"/>
+                    </segments>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <action selector="filterSegmentWasChanged:" destination="-1" eventType="valueChanged" id="zjW-rm-f1w"/>
+                    </connections>
+                </segmentedControl>
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
+                <constraint firstItem="fyp-kc-jvt" firstAttribute="top" relation="greaterThanOrEqual" secondItem="RKV-SB-6J1" secondAttribute="bottom" constant="32" id="5o0-u6-dVm"/>
                 <constraint firstAttribute="bottom" secondItem="fyp-kc-jvt" secondAttribute="bottom" id="Add-ws-aCg"/>
+                <constraint firstItem="RKV-SB-6J1" firstAttribute="centerX" secondItem="u0K-Dt-gs5" secondAttribute="centerX" id="EiO-WB-G4b"/>
                 <constraint firstItem="LnI-3p-nMk" firstAttribute="leading" secondItem="u0K-Dt-gs5" secondAttribute="leading" id="JZ4-O5-w6B"/>
                 <constraint firstItem="LnI-3p-nMk" firstAttribute="trailing" secondItem="u0K-Dt-gs5" secondAttribute="trailing" id="KZa-lv-lGP"/>
                 <constraint firstItem="fyp-kc-jvt" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="TGN-6o-ECJ"/>
                 <constraint firstAttribute="trailing" secondItem="fyp-kc-jvt" secondAttribute="trailing" id="UiV-S0-oOF"/>
+                <constraint firstItem="RKV-SB-6J1" firstAttribute="width" secondItem="u0K-Dt-gs5" secondAttribute="width" id="W3b-Hn-Sg1"/>
                 <constraint firstAttribute="trailing" secondItem="u0K-Dt-gs5" secondAttribute="trailing" constant="27" id="X8r-0H-YUC"/>
                 <constraint firstItem="fyp-kc-jvt" firstAttribute="top" relation="greaterThanOrEqual" secondItem="u0K-Dt-gs5" secondAttribute="bottom" constant="32" id="ZTX-ZG-H8E"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="27" id="cCK-QK-1VR"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" priority="250" constant="175" id="p5S-Xm-yHB"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="LnI-3p-nMk" secondAttribute="bottom" constant="175" id="tMy-ef-Qj7"/>
+                <constraint firstItem="RKV-SB-6J1" firstAttribute="top" secondItem="u0K-Dt-gs5" secondAttribute="bottom" constant="15" id="wGK-3N-bcM"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="LnI-3p-nMk" secondAttribute="bottom" constant="20" id="ykz-7K-kat"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
             <variation key="default">
                 <mask key="constraints">
                     <exclude reference="tMy-ef-Qj7"/>
+                    <exclude reference="ZTX-ZG-H8E"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="-211.5" y="228.5"/>

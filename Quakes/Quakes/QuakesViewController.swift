@@ -29,9 +29,9 @@ class QuakesViewController: UITableViewController
     lazy var titleViewButton: UIButton = {
         let button = UIButton(type: .Custom)
         
-        button.backgroundColor = StyleController.darkerMainAppColor
+        button.backgroundColor = StyleController.searchBarColor
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button.addTarget(self, action: "titleButtonPressed", forControlEvents: .TouchUpInside)
         button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
         button.layer.cornerRadius = 4.0
