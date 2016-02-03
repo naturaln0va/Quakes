@@ -167,7 +167,10 @@ class NetworkClient
                 }
             }.resume()
         }
-
+    }
+    
+    func cancelAllCurrentRequests() {
+        NSURLSession.sharedSession().invalidateAndCancel()
     }
     
     func getDetailForQuakeWithURL(urlForDetail url: NSURL, completion: DetailURLCompletionBlock) {

@@ -14,9 +14,10 @@ class MapViewController: UIViewController
     @IBOutlet weak var searchAreaButton: UIButton!
     @IBOutlet weak var searchAreaButtonBottomConstraint: NSLayoutConstraint!
     
-    var quakesToDisplay: [Quake]?
-    var quakeToDisplay: Quake?
-    var nearbyCitiesToDisplay: [ParsedNearbyCity]?
+    private var quakesToDisplay: [Quake]?
+    private var quakeToDisplay: Quake?
+    private var nearbyCitiesToDisplay: [ParsedNearbyCity]?
+    private var currentlySearching = false
     
     var delegate: MapViewControllerDelegate?
     
@@ -78,6 +79,8 @@ class MapViewController: UIViewController
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        NetworkClient.sharedClient.cancelAllCurrentRequests()
+        
         if geocoder.geocoding {
             geocoder.cancelGeocode()
         }
@@ -99,6 +102,7 @@ class MapViewController: UIViewController
     
     private func fetchNewQuakesForPlace(placemark: CLPlacemark) {
         guard NetworkUtility.internetReachable() else {
+            self.currentlySearching = false
             self.searchAreaButton.setTitle("No Internet Connection", forState: .Normal)
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
@@ -123,6 +127,7 @@ class MapViewController: UIViewController
             }
             
             self.delegate?.mapViewControllerDidFinishFetch(sucess, withPlace: placemark)
+            self.currentlySearching = false
             
             if sucess {
                 self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
@@ -140,8 +145,10 @@ class MapViewController: UIViewController
     // MARK: - Actions
     @IBAction func searchButtonPressed() {
         guard NetworkUtility.internetReachable() else { return }
+        guard !currentlySearching else { return }
         
         self.searchAreaButton.setTitle("Searching...", forState: .Normal)
+        currentlySearching = true
         
         NetworkUtility.networkOperationStarted()
         geocoder.reverseGeocodeLocation(CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)) { places, error in
@@ -151,6 +158,7 @@ class MapViewController: UIViewController
                     self.fetchNewQuakesForPlace(place)
                 }
                 else {
+                    self.currentlySearching = false
                     self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
                     
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
@@ -159,6 +167,7 @@ class MapViewController: UIViewController
                 }
             }
             else {
+                self.currentlySearching = false
                 self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
@@ -190,7 +199,7 @@ class MapViewController: UIViewController
             mapView.addAnnotations(annotationsToShowOnMap)
         }
         
-        if SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue {
+        if SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue && nearbyCitiesToDisplay == nil {
             mapView.showAnnotations(mapView.annotations, animated: animated)
         }
         else if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
@@ -248,7 +257,6 @@ extension MapViewController: MKMapViewDelegate {
         if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(String(annotation.hash)) {
             return annotationView
         }
-
         
         if annotation is Quake {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
@@ -258,7 +266,7 @@ extension MapViewController: MKMapViewDelegate {
             
             if nearbyCitiesToDisplay == nil {
                 let detailButton = UIButton(type: .Custom)
-                detailButton.tag = (annotation as! Quake).hashValue
+                detailButton.tag = annotation.hash
                 detailButton.setImage(UIImage(named: "detail-arrow"), forState: .Normal)
                 detailButton.sizeToFit()
                 
@@ -286,7 +294,7 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hashValue == control.tag }) {
+        if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hash == control.tag }) {
             navigationController?.pushViewController(QuakeDetailViewController(quake: quakes[index]), animated: true)
         }
     }

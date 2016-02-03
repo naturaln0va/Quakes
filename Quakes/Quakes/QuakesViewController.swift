@@ -103,6 +103,11 @@ class QuakesViewController: UITableViewController
         canDisplayBannerAds = !SettingsController.sharedController.hasPaidToRemoveAds
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        NetworkClient.sharedClient.cancelAllCurrentRequests()
+    }
+    
     private func preformFetch() {
         if fetchedResultsController.delegate == nil {
             fetchedResultsController.delegate = self

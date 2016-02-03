@@ -136,6 +136,8 @@ class QuakeDetailViewController: UIViewController
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        NetworkClient.sharedClient.cancelAllCurrentRequests()
+        
         if titleIndicatorView.superview != nil {
             titleIndicatorView.removeFromSuperview()
             navigationItem.titleView = nil
