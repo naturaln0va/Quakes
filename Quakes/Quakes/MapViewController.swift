@@ -17,6 +17,7 @@ class MapViewController: UIViewController
     private var quakesToDisplay: [Quake]?
     private var quakeToDisplay: Quake?
     private var nearbyCitiesToDisplay: [ParsedNearbyCity]?
+    private var coordinateToCenterOn: CLLocationCoordinate2D?
     private var currentlySearching = false
     
     var delegate: MapViewControllerDelegate?
@@ -38,7 +39,13 @@ class MapViewController: UIViewController
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    init(centeredOnLocation location: CLLocationCoordinate2D) {
+        super.init(nibName: String(MapViewController), bundle: nil)
+        title = "Map"
+        coordinateToCenterOn = location
+    }
+    
+    internal required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -79,7 +86,7 @@ class MapViewController: UIViewController
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NetworkClient.sharedClient.cancelAllCurrentRequests()
+        NetworkUtility.cancelCurrentNetworkRequests()
         
         if geocoder.geocoding {
             geocoder.cancelGeocode()
@@ -122,6 +129,10 @@ class MapViewController: UIViewController
                 if quakes.count > 0 {
                     self.mapView.removeAnnotations(self.mapView.annotations)
                     PersistentController.sharedController.deleteAllThenSaveQuakes(quakes)
+                    
+                    SettingsController.sharedController.lastSearchedPlace = placemark
+                    SettingsController.sharedController.lastLocationOption = nil
+                    
                     self.fetchQuakesAndDisplay()
                 }
             }
@@ -178,7 +189,13 @@ class MapViewController: UIViewController
     }
     
     func recenterMapButtonPressed() {
-        refreshMapAnimated(true)
+        if coordinateToCenterOn != nil {
+            coordinateToCenterOn = nil
+            refreshMapAnimated(true)
+        }
+        else if let userLocation = mapView.userLocation.location {
+            mapView.setCenterCoordinate(userLocation.coordinate, animated: true)
+        }
     }
         
     func refreshMapAnimated(animated: Bool) {
@@ -199,16 +216,16 @@ class MapViewController: UIViewController
             mapView.addAnnotations(annotationsToShowOnMap)
         }
         
+        if let indexOfAnnotation = annotationsToShowOnMap.indexOf({ $0.coordinate.latitude == coordinateToCenterOn?.latitude && $0.coordinate.longitude == coordinateToCenterOn?.longitude }) where coordinateToCenterOn != nil {
+            mapView.showAnnotations([annotationsToShowOnMap[indexOfAnnotation]], animated: true)
+            return
+        }
+        
         if SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue && nearbyCitiesToDisplay == nil {
             mapView.showAnnotations(mapView.annotations, animated: animated)
         }
-        else if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
-            if let userLocation = mapView.userLocation.location {
-                mapView.setCenterCoordinate(userLocation.coordinate, animated: true)
-            }
-            else {
-                mapView.showAnnotations(annotationsToShowOnMap, animated: animated)
-            }
+        else if SettingsController.sharedController.isLocationOptionWorldOrMajor() && nearbyCitiesToDisplay == nil {
+            mapView.showAnnotations(annotationsToShowOnMap, animated: animated)
         }
         else {
             mapView.showAnnotations(annotationsToShowOnMap, animated: animated)
@@ -288,13 +305,13 @@ extension MapViewController: MKMapViewDelegate {
             return annotationView
         }
         else {
-            print("The annotaion view that was parsed was an unexpected type: \(annotation.dynamicType)")
             return nil
         }
     }
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hash == control.tag }) {
+            navigationController?.popToRootViewControllerAnimated(true)
             navigationController?.pushViewController(QuakeDetailViewController(quake: quakes[index]), animated: true)
         }
     }

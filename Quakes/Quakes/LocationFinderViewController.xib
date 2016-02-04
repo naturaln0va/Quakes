@@ -9,6 +9,7 @@
                 <outlet property="cancelButton" destination="JNT-B0-z3l" id="aCC-3K-j2L"/>
                 <outlet property="controlContainerView" destination="fyp-kc-jvt" id="6uj-97-uIt"/>
                 <outlet property="filterSegment" destination="RKV-SB-6J1" id="QJ9-1B-bOp"/>
+                <outlet property="filterSegmentTopConstraint" destination="wGK-3N-bcM" id="niG-SM-9wc"/>
                 <outlet property="filterViewBottomConstraint" destination="Add-ws-aCg" id="plP-cq-olw"/>
                 <outlet property="searchTextField" destination="u0K-Dt-gs5" id="pZj-Xv-kmY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -19,6 +20,18 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="RKV-SB-6J1">
+                    <rect key="frame" x="27" y="200" width="321" height="29"/>
+                    <segments>
+                        <segment title="Nearby"/>
+                        <segment title="World"/>
+                        <segment title="Major"/>
+                    </segments>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <action selector="filterSegmentWasChanged:" destination="-1" eventType="valueChanged" id="zjW-rm-f1w"/>
+                    </connections>
+                </segmentedControl>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Search for a location" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="u0K-Dt-gs5">
                     <rect key="frame" x="27" y="175" width="321" height="60"/>
                     <color key="backgroundColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.55686274509803924" alpha="1" colorSpace="calibratedRGB"/>
@@ -49,23 +62,11 @@
                         <constraint firstItem="JNT-B0-z3l" firstAttribute="centerY" secondItem="fyp-kc-jvt" secondAttribute="centerY" id="nUd-IV-0cT"/>
                     </constraints>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search for a city or a zipcode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LnI-3p-nMk">
-                    <rect key="frame" x="27" y="134" width="321" height="20.5"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search for a city or a zipcode" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LnI-3p-nMk">
+                    <rect key="frame" x="27" y="139.5" width="321" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="RKV-SB-6J1">
-                    <rect key="frame" x="26.5" y="250" width="321" height="29"/>
-                    <segments>
-                        <segment title="Nearby"/>
-                        <segment title="World"/>
-                        <segment title="Major"/>
-                    </segments>
-                    <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    <connections>
-                        <action selector="filterSegmentWasChanged:" destination="-1" eventType="valueChanged" id="zjW-rm-f1w"/>
-                    </connections>
-                </segmentedControl>
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
@@ -82,8 +83,8 @@
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="27" id="cCK-QK-1VR"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" priority="250" constant="175" id="p5S-Xm-yHB"/>
                 <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="LnI-3p-nMk" secondAttribute="bottom" constant="175" id="tMy-ef-Qj7"/>
-                <constraint firstItem="RKV-SB-6J1" firstAttribute="top" secondItem="u0K-Dt-gs5" secondAttribute="bottom" constant="15" id="wGK-3N-bcM"/>
-                <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="LnI-3p-nMk" secondAttribute="bottom" constant="20" id="ykz-7K-kat"/>
+                <constraint firstItem="RKV-SB-6J1" firstAttribute="top" secondItem="u0K-Dt-gs5" secondAttribute="bottom" constant="-35" id="wGK-3N-bcM"/>
+                <constraint firstItem="u0K-Dt-gs5" firstAttribute="top" secondItem="LnI-3p-nMk" secondAttribute="bottom" constant="15" id="ykz-7K-kat"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
             <variation key="default">

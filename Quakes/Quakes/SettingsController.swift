@@ -89,12 +89,7 @@ class SettingsController
     private static let kLastLocationOptionKey = "lastLocationOption"
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
     private static let kLastPushKey = "lastPush"
-    private static let kLastWorldFetchedKey = "lastFetch"
     private static let kPaidToRemoveKey = "alreadyPaid"
-    private static let kNotificationsActiveKey = "notificationsActive"
-    private static let kNotificationsTypeKey = "notificationsType"
-    private static let kNotificationsAmountKey = "notificationsAmount"
-    private static let kNotificationsLocationKey = "notificationLocationKey"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -102,43 +97,23 @@ class SettingsController
         return [
             kSearchRadiusKey: SearchRadiusSize.Medium.rawValue,
             kFetchSizeLimitKey: APIFetchSize.Medium.rawValue,
-            kNotificationsActiveKey: false,
-            kNotificationsTypeKey: 2,
-            kNotificationsAmountKey: 0,
+            kLastPushKey: NSDate.distantPast(),
             kPaidToRemoveKey: false,
             kUnitStyleKey: true
         ]
     }()
     
     // MARK: - Init
-    init()
-    {
+    init() {
         loadSettings()
     }
     
     // MARK: - Private
-    private func loadSettings()
-    {
+    private func loadSettings() {
         defaults.registerDefaults(baseDefaults)
     }
     
     // MARK: - Helper
-    func numberOfHoursPerNotification() -> Int {
-        switch notificationAmount {
-        case NotificationAmmount.NoLimit.rawValue:
-            return 0
-        case NotificationAmmount.Hourly.rawValue:
-            return 1
-        case NotificationAmmount.Daily.rawValue:
-            return 23
-        case NotificationAmmount.Weekly.rawValue:
-            return 24 * 7
-        default:
-            print("Error parsing limit setting")
-            return 5
-        }
-    }
-    
     func isLocationOptionWorldOrMajor() -> Bool {
         return lastLocationOption == LocationOption.World.rawValue || lastLocationOption == LocationOption.Major.rawValue
     }
@@ -162,59 +137,6 @@ class SettingsController
             }
             else {
                 defaults.setObject(nil, forKey: SettingsController.kCachedPlacemarkKey)
-                defaults.synchronize()
-            }
-        }
-    }
-    
-    var notificationsActive: Bool {
-        get {
-            return defaults.boolForKey(SettingsController.kNotificationsActiveKey)
-        }
-        set {
-            defaults.setBool(newValue, forKey: SettingsController.kNotificationsActiveKey)
-            defaults.synchronize()
-        }
-    }
-    
-    var notificationType: Int {
-        get {
-            return defaults.integerForKey(SettingsController.kNotificationsTypeKey)
-        }
-        set {
-            defaults.setInteger(newValue, forKey: SettingsController.kNotificationsTypeKey)
-            defaults.synchronize()
-        }
-    }
-    
-    var notificationAmount: Int {
-        get {
-            return defaults.integerForKey(SettingsController.kNotificationsAmountKey)
-        }
-        set {
-            defaults.setInteger(newValue, forKey: SettingsController.kNotificationsAmountKey)
-            defaults.synchronize()
-        }
-    }
-    
-    var notificationLocation: CLPlacemark? {
-        get {
-            if let data = defaults.objectForKey(SettingsController.kNotificationsLocationKey) as? NSData,
-                let place = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? CLPlacemark {
-                    return place
-            }
-            else {
-                return nil
-            }
-        }
-        set {
-            if let newPlace = newValue {
-                let data = NSKeyedArchiver.archivedDataWithRootObject(newPlace)
-                defaults.setObject(data, forKey: SettingsController.kNotificationsLocationKey)
-                defaults.synchronize()
-            }
-            else {
-                defaults.setObject(nil, forKey: SettingsController.kNotificationsLocationKey)
                 defaults.synchronize()
             }
         }
@@ -314,29 +236,14 @@ class SettingsController
         }
     }
     
-    var lastPushDate: NSDate? {
+    var lastPushDate: NSDate {
         get {
             let interval = defaults.doubleForKey(SettingsController.kLastPushKey)
-            return interval == 0 ? NSDate() : NSDate(timeIntervalSince1970: interval)
+            return interval == 0 ? NSDate.distantPast() : NSDate(timeIntervalSince1970: interval)
         }
         set {
-            if let newDate = newValue {
-                defaults.setDouble(newDate.timeIntervalSince1970, forKey: SettingsController.kLastPushKey)
-                defaults.synchronize()
-            }
-        }
-    }
-    
-    var lastWorldFetchDate: NSDate? {
-        get {
-            let interval = defaults.doubleForKey(SettingsController.kLastWorldFetchedKey)
-            return interval == 0 ? nil : NSDate(timeIntervalSince1970: interval)
-        }
-        set {
-            if let newDate = newValue {
-                defaults.setDouble(newDate.timeIntervalSince1970, forKey: SettingsController.kLastWorldFetchedKey)
-                defaults.synchronize()
-            }
+            defaults.setDouble(newValue.timeIntervalSince1970, forKey: SettingsController.kLastPushKey)
+            defaults.synchronize()
         }
     }
     

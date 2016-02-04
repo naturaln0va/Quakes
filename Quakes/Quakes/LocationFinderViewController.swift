@@ -20,26 +20,12 @@ class LocationFinderViewController: UIViewController
     @IBOutlet weak var filterSegment: UISegmentedControl!
     @IBOutlet weak var filterViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var cancelButton: UIButton!
-    @IBOutlet weak var filterSegmentTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var filterSegmentTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var controlContainerView: UIView!
     
+    private var shouldDismiss = false
     let manager = CLLocationManager()
     var delegate: LocationFinderViewControllerDelegate?
-    let type: FinderType
-    
-    enum FinderType {
-        case Fetch
-        case Notification
-    }
-    
-    init(type: FinderType) {
-        self.type = type
-        super.init(nibName: String(LocationFinderViewController), bundle: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +34,7 @@ class LocationFinderViewController: UIViewController
         view.backgroundColor = UIColor.whiteColor()
         searchTextField.backgroundColor = StyleController.searchBarColor
         controlContainerView.backgroundColor = StyleController.backgroundColor
+        filterSegment.alpha = 0
         
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
@@ -56,15 +43,7 @@ class LocationFinderViewController: UIViewController
         searchTextField.delegate = self
         searchTextField.text = ""
         
-        if type == .Notification {
-            filterSegment.removeSegmentAtIndex(0, animated: false)
-            filterSegment.removeConstraint(filterSegmentTrailingConstraint)
-            view.addConstraint(NSLayoutConstraint(item: filterSegment, attribute: .CenterX, relatedBy: .Equal, toItem: filterSegment.superview, attribute: .CenterX, multiplier: 1, constant: 0))
-            
-            cancelButton.removeFromSuperview()
-        }
-        
-        if let lastOption = SettingsController.sharedController.lastLocationOption where type == .Fetch {
+        if let lastOption = SettingsController.sharedController.lastLocationOption {
             switch lastOption {
             case LocationOption.Nearby.rawValue:
                 filterSegment.selectedSegmentIndex = 0
@@ -100,7 +79,7 @@ class LocationFinderViewController: UIViewController
     
     private func dismiss() {
         view.endEditing(true)
-        presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        shouldDismiss = true
     }
     
     // MARK: Notifications
@@ -109,21 +88,28 @@ class LocationFinderViewController: UIViewController
         let keyboardHeight = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue().height
         
         filterViewBottomConstraint.constant = keyboardHeight
+        filterSegmentTopConstraint.constant = 15
         
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
         UIView.animateWithDuration(duration) {
             self.view.layoutIfNeeded()
+            self.filterSegment.alpha = 1
         }
     }
     
     func keyboardWillHide(notification: NSNotification) {
         let userInfo = notification.userInfo!
+        
         filterViewBottomConstraint.constant = 0.0
+        filterSegmentTopConstraint.constant = -35
         
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        UIView.animateWithDuration(duration) {
+        UIView.animateWithDuration(duration, animations: {
             self.view.layoutIfNeeded()
-        }
+            self.filterSegment.alpha = 0
+        }, completion: { _ in
+            self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        })
     }
     
     // MARK: - Actions
@@ -133,11 +119,6 @@ class LocationFinderViewController: UIViewController
     
     @IBAction func filterSegmentWasChanged(sender: UISegmentedControl) {
         if sender.selectedSegmentIndex == 0 {
-            if type == .Notification {
-                delegate?.locationFinderViewControllerDidSelectOption(.World)
-                return
-            }
-            
             var errorMessage = ""
             switch CLLocationManager.authorizationStatus() {
             case .AuthorizedWhenInUse:
@@ -172,7 +153,7 @@ class LocationFinderViewController: UIViewController
             }
         }
         else if sender.selectedSegmentIndex == 1 {
-            delegate?.locationFinderViewControllerDidSelectOption(type == .Notification ? .Major : .World)
+            delegate?.locationFinderViewControllerDidSelectOption(.World)
         }
         else if sender.selectedSegmentIndex == 2 {
             delegate?.locationFinderViewControllerDidSelectOption(.Major)

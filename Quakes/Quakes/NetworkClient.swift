@@ -169,10 +169,6 @@ class NetworkClient
         }
     }
     
-    func cancelAllCurrentRequests() {
-        NSURLSession.sharedSession().invalidateAndCancel()
-    }
-    
     func getDetailForQuakeWithURL(urlForDetail url: NSURL, completion: DetailURLCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         dispatch_async(allRequestsQueue) {
@@ -396,19 +392,27 @@ class NetworkClient
             
             var params: [(String, String)]? = []
             
-            if SettingsController.sharedController.notificationType == NotificationType.Major.rawValue {
+            if let lastSearchedLocation = SettingsController.sharedController.lastSearchedPlace {
+                params = [
+                    (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
+                    (ParamTypes.LocationLatitude.rawValue, "\(lastSearchedLocation.location!.coordinate.latitude)"),
+                    (ParamTypes.LocationLongitude.rawValue, "\(lastSearchedLocation.location!.coordinate.longitude)"),
+                    (ParamTypes.LocationMaxRadiusKM.rawValue, "\(SettingsController.sharedController.searchRadius.rawValue)")
+                ]
+            }
+            else if SettingsController.sharedController.lastLocationOption == LocationOption.Major.rawValue {
                 params = [
                     (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
                     (ParamTypes.MagnitudeMin.rawValue, "\(3.8)")
                 ]
             }
-            else if SettingsController.sharedController.notificationType == NotificationType.World.rawValue {
+            else if SettingsController.sharedController.lastLocationOption == LocationOption.World.rawValue {
                 params = [
                     (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue)
                 ]
             }
             else {
-                guard let notificationLocation = SettingsController.sharedController.notificationLocation?.location else {
+                guard let cachedAddressLocation = SettingsController.sharedController.cachedAddress?.location else {
                     print("WARNING: tried to fetch quake count for an invalid location.")
                     completion(count: nil, error: kInvalidDataError)
                     return
@@ -416,8 +420,8 @@ class NetworkClient
                 
                 params = [
                     (FormatParam.ParameterName.rawValue, FormatParam.GeoJsonValue.rawValue),
-                    (ParamTypes.LocationLatitude.rawValue, "\(notificationLocation.coordinate.latitude)"),
-                    (ParamTypes.LocationLongitude.rawValue, "\(notificationLocation.coordinate.longitude)"),
+                    (ParamTypes.LocationLatitude.rawValue, "\(cachedAddressLocation.coordinate.latitude)"),
+                    (ParamTypes.LocationLongitude.rawValue, "\(cachedAddressLocation.coordinate.longitude)"),
                     (ParamTypes.LocationMaxRadiusKM.rawValue, "\(SettingsController.sharedController.searchRadius.rawValue)")
                 ]
             }

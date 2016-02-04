@@ -8,7 +8,6 @@ class NetworkUtility
     private static var loadingCount = 0
     
     static func networkOperationStarted() {
-        
         if loadingCount == 0 {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         }
@@ -22,6 +21,13 @@ class NetworkUtility
         if loadingCount == 0 {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
+    }
+    
+    static func cancelCurrentNetworkRequests() {
+        guard loadingCount > 0 else { return }
+        loadingCount = 0
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        NSURLSession.sharedSession().invalidateAndCancel()
     }
     
     static func internetReachable() -> Bool {

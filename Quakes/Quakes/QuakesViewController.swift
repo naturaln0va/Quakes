@@ -105,7 +105,7 @@ class QuakesViewController: UITableViewController
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        NetworkClient.sharedClient.cancelAllCurrentRequests()
+        NetworkUtility.cancelCurrentNetworkRequests()
     }
     
     private func preformFetch() {
@@ -137,7 +137,7 @@ class QuakesViewController: UITableViewController
             self.titleViewButton.hidden = false
         })
         
-        let finderVC = LocationFinderViewController(type: .Fetch)
+        let finderVC = LocationFinderViewController()
         finderVC.delegate = self
         finderVC.transitioningDelegate = self
         presentViewController(finderVC, animated: true, completion: nil)
@@ -353,7 +353,7 @@ extension QuakesViewController: CLLocationManagerDelegate
             stopLocationManager()
             
             if let cachedAddress = SettingsController.sharedController.cachedAddress,
-                let cachedLocation = cachedAddress.location where lastLocation.distanceFromLocation(cachedLocation) > 2500 {
+                let cachedLocation = cachedAddress.location where lastLocation.distanceFromLocation(cachedLocation) > 5 * 1000 {
                     geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] places, error in
                         if let placemark = places?.first where error == nil {
                             SettingsController.sharedController.cachedAddress = placemark
@@ -474,9 +474,6 @@ extension QuakesViewController: MapViewControllerDelegate
     func mapViewControllerDidFinishFetch(sucess: Bool, withPlace placemark: CLPlacemark) {
         if sucess {
             setTitleButtonText("\(placemark.cityStateString())")
-            
-            SettingsController.sharedController.lastSearchedPlace = placemark
-            SettingsController.sharedController.lastLocationOption = nil
         }
         
         if !sucess && fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {

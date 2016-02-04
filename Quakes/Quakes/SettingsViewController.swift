@@ -22,7 +22,6 @@ class SettingsViewController: UITableViewController
     
     enum TableSections: Int {
         case UserSection
-        case NotificationSection
         case GeneralSection
         case TotalSections
     }
@@ -83,9 +82,6 @@ class SettingsViewController: UITableViewController
         if section == TableSections.GeneralSection.rawValue {
             return GeneralSectionRows.TotalRows.rawValue
         }
-        else if section == TableSections.NotificationSection.rawValue {
-            return 1
-        }
         else if section == TableSections.UserSection.rawValue {
             return UserSectionRows.TotalRows.rawValue
         }
@@ -135,10 +131,6 @@ class SettingsViewController: UITableViewController
             default:
                 break
             }
-        }
-        else if indexPath.section == TableSections.NotificationSection.rawValue {
-            cell.textLabel?.text = "Notification Settings"
-            cell.accessoryType = .DisclosureIndicator
         }
         else if indexPath.section == TableSections.GeneralSection.rawValue {
             switch indexPath.row {
@@ -194,9 +186,6 @@ class SettingsViewController: UITableViewController
             default:
                 break
             }
-        }
-        else if indexPath.section == TableSections.NotificationSection.rawValue {
-            navigationController?.pushViewController(NotificationSettingsViewController(), animated: true)
         }
         else if indexPath.section == TableSections.UserSection.rawValue {
             switch indexPath.row {

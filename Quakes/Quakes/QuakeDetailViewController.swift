@@ -94,6 +94,7 @@ class QuakeDetailViewController: UIViewController
             manager.requestWhenInUseAuthorization()
         }
         
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped:"))
         mapView.removeAnnotation(quakeToDisplay)
         mapView.addAnnotation(quakeToDisplay)
         mapView.showAnnotations(mapView.annotations, animated: true)
@@ -136,7 +137,7 @@ class QuakeDetailViewController: UIViewController
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NetworkClient.sharedClient.cancelAllCurrentRequests()
+        NetworkUtility.cancelCurrentNetworkRequests()
         
         if titleIndicatorView.superview != nil {
             titleIndicatorView.removeFromSuperview()
@@ -145,6 +146,22 @@ class QuakeDetailViewController: UIViewController
         
         if geocoder.geocoding {
             geocoder.cancelGeocode()
+        }
+    }
+    
+    // MARK: - Actions
+    internal func viewTapped(gesture: UITapGestureRecognizer) {
+        let locationInView = gesture.locationInView(gesture.view)
+        
+        if CGRectContainsPoint(mapView.frame, locationInView) {
+            if let rootVC = navigationController?.viewControllers.first as? QuakesViewController {
+                navigationController?.popViewControllerAnimated(true)
+                
+                let mapVC = MapViewController(centeredOnLocation: quakeToDisplay.coordinate)
+                mapVC.delegate = rootVC
+                
+                navigationController?.pushViewController(mapVC, animated: true)
+            }
         }
     }
     
@@ -240,6 +257,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
         }
         else {
             cell.textLabel?.text = "Open in USGS.gov"
+            cell.textLabel?.textAlignment = .Center
             cell.accessoryType = .DisclosureIndicator
         }
         
