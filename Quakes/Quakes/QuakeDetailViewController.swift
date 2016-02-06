@@ -174,7 +174,7 @@ class QuakeDetailViewController: UIViewController
         options.mapType = .Hybrid
         
         MKMapSnapshotter(options: options).startWithCompletionHandler { snapshot, error in
-            let prompt = "A \(Quake.magnitudeFormatter.stringFromNumber(self.quakeToDisplay.magnitude)!) magnitude earthquake happened \(relativeStringForDate(self.quakeToDisplay.timestamp)) ago near \(self.quakeToDisplay.name.componentsSeparatedByString(" of ").last!)."
+            let prompt = "A \(Quake.magnitudeFormatter.stringFromNumber(self.quakeToDisplay.magnitude)!) magnitude earthquake happened \(self.quakeToDisplay.timestamp.relativeString()) ago near \(self.quakeToDisplay.name.componentsSeparatedByString(" of ").last!)."
             var items = [prompt, url, self.quakeToDisplay.location]
             
             if let shot = snapshot where error == nil {

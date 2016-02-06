@@ -20,7 +20,6 @@ class WindowController: UIResponder, UIApplicationDelegate
         self.window = window
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert], categories: nil))
         
         if !SettingsController.sharedController.hasPaidToRemoveAds {
             NetworkClient.sharedClient.verifyInAppRecipt { sucess in
@@ -35,8 +34,13 @@ class WindowController: UIResponder, UIApplicationDelegate
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         guard NetworkUtility.internetReachable() else { completionHandler(.Failed); return }
-        guard NSDate().hoursFrom(SettingsController.sharedController.lastPushDate) > 1 else { completionHandler(.NoData); return }
-
+        guard SettingsController.sharedController.hasAttemptedNotificationPermission else { return }
+        guard NSDate().hoursFrom(SettingsController.sharedController.lastPushDate) > Int.random(0...12) else { completionHandler(.NoData); return }
+        
+        if let notificationSettings = application.currentUserNotificationSettings() where notificationSettings.types != .None {
+            return
+        }
+        
         NetworkUtility.networkOperationStarted()
         NetworkClient.sharedClient.getNotificationCountFromStartDate(SettingsController.sharedController.lastPushDate) { count, error in
             NetworkUtility.networkOperationFinished()
@@ -55,7 +59,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         let hoursDifference = NSDate().hoursFrom(SettingsController.sharedController.lastPushDate)
         SettingsController.sharedController.lastPushDate = NSDate()
         
-        var partOne = newQuakes == 1 ? "A quake happened" : "\(newQuakes) quakes happened"
+        var partOne = newQuakes == 1 ? "1 quake happened" : "\(newQuakes) quakes happened"
         var partTwo = ""
         if let lastSearchedLocation = SettingsController.sharedController.lastSearchedPlace {
             partTwo = "near \(lastSearchedLocation.cityStateString())"

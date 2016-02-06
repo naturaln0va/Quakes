@@ -31,8 +31,7 @@ enum PickerType {
     case NotificationAmount
 }
 
-protocol PickerViewControllerDelegate
-{
+protocol PickerViewControllerDelegate: class {
     func pickerViewController(pvc: PickerViewController, didPickObject object: AnyObject)
 }
 
@@ -42,7 +41,7 @@ class PickerViewController: UITableViewController
     
     let type: PickerType
     var dataForPicker: PickerData!
-    var delegate: PickerViewControllerDelegate?
+    weak var delegate: PickerViewControllerDelegate?
     
     init(type: PickerType, data: PickerData, title: String)
     {

@@ -3,7 +3,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-protocol MapViewControllerDelegate {
+protocol MapViewControllerDelegate: class {
     func mapViewControllerDidFinishFetch(sucess: Bool, withPlace placemark: CLPlacemark)
 }
 
@@ -20,7 +20,7 @@ class MapViewController: UIViewController
     private var coordinateToCenterOn: CLLocationCoordinate2D?
     private var currentlySearching = false
     
-    var delegate: MapViewControllerDelegate?
+    weak var delegate: MapViewControllerDelegate?
     
     var shouldContinueUpdatingUserLocation = true
     let manager = CLLocationManager()

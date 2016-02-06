@@ -18,7 +18,7 @@ class QuakeCell: UITableViewCell
     func configure(quake: Quake) {
         quakeToDisplay = quake
         
-        timestampLabel.text = relativeStringForDate(quake.timestamp)
+        timestampLabel.text = quake.timestamp.relativeString()
         magnitudeLabel.text = Quake.magnitudeFormatter.stringFromNumber(quake.magnitude)
         
         additionalInfoLabel.text = quake.nameString

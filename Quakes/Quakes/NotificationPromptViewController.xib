@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NotificationPromptViewController" customModule="Quakes" customModuleProvider="target">
+            <connections>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" image="iphone-notification" translatesAutoresizingMaskIntoConstraints="NO" id="vn1-SW-vjF">
+                    <rect key="frame" x="20" y="125" width="335" height="319"/>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="lessThanOrEqual" priority="250" constant="256" id="aJc-HL-1sX"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notifications" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TXb-JD-SAa">
+                    <rect key="frame" x="20" y="464" width="335" height="31.5"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="26"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can be notified about recent quakes" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MBx-Tg-HOy">
+                    <rect key="frame" x="45" y="515.5" width="285" height="43"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vmc-Qh-ULo">
+                    <rect key="frame" x="0.0" y="612" width="375" height="55"/>
+                    <color key="backgroundColor" red="0.91764705882352937" green="0.062745098039215685" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="55" id="1ee-2G-A2T"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                    <state key="normal" title="Allow Notifications"/>
+                    <state key="highlighted">
+                        <color key="titleColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="allowNotificationsButtonPressed:" destination="-1" eventType="touchUpInside" id="8Xg-vp-MfL"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r3m-OF-7MM">
+                    <rect key="frame" x="8" y="8" width="56" height="56"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="56" id="1uq-2d-O2Q"/>
+                        <constraint firstAttribute="height" constant="56" id="5va-VZ-17z"/>
+                    </constraints>
+                    <state key="normal" image="close-button"/>
+                    <connections>
+                        <action selector="closeButtonPressed:" destination="-1" eventType="touchUpInside" id="Iuh-D7-42t"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="r3m-OF-7MM" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="2Sa-z4-gqb"/>
+                <constraint firstItem="vn1-SW-vjF" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="50j-Ya-TZF"/>
+                <constraint firstItem="TXb-JD-SAa" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="9Tm-Fy-iJd"/>
+                <constraint firstItem="TXb-JD-SAa" firstAttribute="top" secondItem="vn1-SW-vjF" secondAttribute="bottom" constant="20" id="CW9-1a-QIu"/>
+                <constraint firstAttribute="trailing" secondItem="vn1-SW-vjF" secondAttribute="trailing" constant="20" id="DvD-Q3-s0u"/>
+                <constraint firstItem="Vmc-Qh-ULo" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="GGE-0M-tsn"/>
+                <constraint firstItem="MBx-Tg-HOy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="45" id="RqY-b7-nWT"/>
+                <constraint firstAttribute="trailing" secondItem="Vmc-Qh-ULo" secondAttribute="trailing" id="U9J-YS-lJa"/>
+                <constraint firstAttribute="trailing" secondItem="TXb-JD-SAa" secondAttribute="trailing" constant="20" id="XcP-gl-jbS"/>
+                <constraint firstAttribute="trailing" secondItem="MBx-Tg-HOy" secondAttribute="trailing" constant="45" id="cfa-Pk-78j"/>
+                <constraint firstAttribute="bottom" secondItem="Vmc-Qh-ULo" secondAttribute="bottom" id="dzI-Pr-K4k"/>
+                <constraint firstItem="Vmc-Qh-ULo" firstAttribute="top" relation="greaterThanOrEqual" secondItem="MBx-Tg-HOy" secondAttribute="bottom" constant="45" id="g16-5g-jCf"/>
+                <constraint firstItem="r3m-OF-7MM" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="8" id="rDc-V6-jh4"/>
+                <constraint firstItem="MBx-Tg-HOy" firstAttribute="top" secondItem="TXb-JD-SAa" secondAttribute="bottom" constant="20" id="tSG-iP-r1A"/>
+                <constraint firstItem="vn1-SW-vjF" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="125" id="txa-mZ-PzN"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+            <point key="canvasLocation" x="236.5" y="366.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="close-button" width="56" height="56"/>
+        <image name="iphone-notification" width="281" height="319"/>
+    </resources>
+</document>

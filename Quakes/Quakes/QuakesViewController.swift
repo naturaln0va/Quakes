@@ -103,6 +103,11 @@ class QuakesViewController: UITableViewController
         canDisplayBannerAds = !SettingsController.sharedController.hasPaidToRemoveAds
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NetworkUtility.cancelCurrentNetworkRequests()
@@ -153,6 +158,14 @@ class QuakesViewController: UITableViewController
         
         if let refresher = refreshControl where refresher.refreshing {
             refresher.endRefreshing()
+        }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(3 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+            if !SettingsController.sharedController.hasAttemptedNotificationPermission {
+                let notificationsVC = NotificationPromptViewController()
+                notificationsVC.delegate = self
+                self.presentViewController(notificationsVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -360,7 +373,11 @@ extension QuakesViewController: CLLocationManagerDelegate
                             self.setTitleButtonText("\(placemark.cityStateString())")
                         }
                         else {
-                            self.title = lastLocation.coordinate.formatedString()
+                            self.setTitleButtonText("Location Error")
+                            
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                                self.presentFinder()
+                            }
                         }
                         
                         self.fetchQuakes()
@@ -368,23 +385,27 @@ extension QuakesViewController: CLLocationManagerDelegate
             }
             else {
                 if let cachedAddress = SettingsController.sharedController.cachedAddress {
-                    titleViewButton.setTitle("\(cachedAddress.cityStateString())", forState: .Normal)
-                    titleViewButton.sizeToFit()
+                    setTitleButtonText(cachedAddress.cityStateString())
                     fetchQuakes()
                 }
                 else {
                     NetworkUtility.networkOperationStarted()
                     geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
+                        NetworkUtility.networkOperationFinished()
+                        
                         if let placemark = place?.first where error == nil {
                             SettingsController.sharedController.cachedAddress = placemark
                             self.setTitleButtonText("\(placemark.cityStateString())")
                         }
                         else {
-                            self.title = lastLocation.coordinate.formatedString()
+                            self.setTitleButtonText("Location Error")
+                            
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                                self.presentFinder()
+                            }
                         }
                         
                         self.fetchQuakes()
-                        NetworkUtility.networkOperationFinished()
                     }
                 }
             }
@@ -394,6 +415,17 @@ extension QuakesViewController: CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         if error.code == CLError.LocationUnknown.rawValue {
             return
+        }
+        
+        if let cachedAddress = SettingsController.sharedController.cachedAddress {
+            setTitleButtonText(cachedAddress.cityStateString())
+        }
+        else {
+            setTitleButtonText("Location Error")
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                self.presentFinder()
+            }
         }
         
         stopLocationManager()
@@ -484,6 +516,20 @@ extension QuakesViewController: MapViewControllerDelegate
             if noResultsLabel.superview != nil {
                 noResultsLabel.removeFromSuperview()
             }
+        }
+    }
+    
+}
+
+extension QuakesViewController: NotificationPromptViewControllerDelegate
+{
+    
+    // MARK: NotificationPromptViewController Delegate
+    func notificationPromptViewControllerDidAllowNotifications() {
+        dismissViewControllerAnimated(true) {
+            UIApplication.sharedApplication().registerUserNotificationSettings(
+                UIUserNotificationSettings(forTypes: .Alert, categories: nil)
+            )
         }
     }
     

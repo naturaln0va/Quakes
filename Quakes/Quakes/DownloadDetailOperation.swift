@@ -1,8 +1,7 @@
 
 import UIKit
 
-protocol DetailDataProvider
-{
+protocol DetailDataProvider {
     var urlString: String? { get }
 }
 

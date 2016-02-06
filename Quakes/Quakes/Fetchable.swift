@@ -2,9 +2,7 @@
 import CoreData
 
 
-protocol Fetchable
-{
-    
+protocol Fetchable {
     typealias FetchableType: NSManagedObject
     
     static func entityName() -> String

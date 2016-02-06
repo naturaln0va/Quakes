@@ -8,7 +8,7 @@ enum LocationOption: String {
     case Major
 }
 
-protocol LocationFinderViewControllerDelegate {
+protocol LocationFinderViewControllerDelegate: class {
     func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark)
     func locationFinderViewControllerDidSelectOption(option: LocationOption)
 }
@@ -25,7 +25,7 @@ class LocationFinderViewController: UIViewController
     
     private var shouldDismiss = false
     let manager = CLLocationManager()
-    var delegate: LocationFinderViewControllerDelegate?
+    weak var delegate: LocationFinderViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()

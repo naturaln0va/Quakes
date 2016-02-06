@@ -90,6 +90,7 @@ class SettingsController
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
     private static let kLastPushKey = "lastPush"
     private static let kPaidToRemoveKey = "alreadyPaid"
+    private static let kHasAttemptedNotificationKey = "attemptedNotification"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -98,6 +99,7 @@ class SettingsController
             kSearchRadiusKey: SearchRadiusSize.Medium.rawValue,
             kFetchSizeLimitKey: APIFetchSize.Medium.rawValue,
             kLastPushKey: NSDate.distantPast(),
+            kHasAttemptedNotificationKey: false,
             kPaidToRemoveKey: false,
             kUnitStyleKey: true
         ]
@@ -139,6 +141,16 @@ class SettingsController
                 defaults.setObject(nil, forKey: SettingsController.kCachedPlacemarkKey)
                 defaults.synchronize()
             }
+        }
+    }
+    
+    var hasAttemptedNotificationPermission: Bool {
+        get {
+            return defaults.boolForKey(SettingsController.kHasAttemptedNotificationKey)
+        }
+        set {
+            defaults.setBool(newValue, forKey: SettingsController.kHasAttemptedNotificationKey)
+            defaults.synchronize()
         }
     }
     
