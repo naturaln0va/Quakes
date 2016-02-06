@@ -12,10 +12,22 @@ class QuakeDetailViewController: UIViewController
     @IBOutlet var tableView: UITableView!
     
     private lazy var mapView: MKMapView = {
-        let map = MKMapView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: 220.0))
+        let map = MKMapView()
         map.userInteractionEnabled = false
         map.delegate = self
         return map
+    }()
+    
+    private lazy var openInMapButton: UIButton = {
+        let button = UIButton(type: .Custom)
+        button.setTitle("View on Map", forState: .Normal)
+        button.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        button.titleLabel?.textAlignment = .Center
+        button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
+        button.addTarget(self, action: "openInMapButtonPressed", forControlEvents: .TouchUpInside)
+        button.backgroundColor = StyleController.backgroundColor
+        button.sizeToFit()
+        return button
     }()
     
     let geocoder = CLGeocoder()
@@ -94,11 +106,9 @@ class QuakeDetailViewController: UIViewController
             manager.requestWhenInUseAuthorization()
         }
         
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped:"))
         mapView.removeAnnotation(quakeToDisplay)
         mapView.addAnnotation(quakeToDisplay)
         mapView.showAnnotations(mapView.annotations, animated: true)
-        tableView.tableHeaderView = mapView
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -149,19 +159,38 @@ class QuakeDetailViewController: UIViewController
         }
     }
     
-    // MARK: - Actions
-    internal func viewTapped(gesture: UITapGestureRecognizer) {
-        let locationInView = gesture.locationInView(gesture.view)
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
         
-        if CGRectContainsPoint(mapView.frame, locationInView) {
-            if let rootVC = navigationController?.viewControllers.first as? QuakesViewController {
-                navigationController?.popViewControllerAnimated(true)
-                
-                let mapVC = MapViewController(centeredOnLocation: quakeToDisplay.coordinate)
-                mapVC.delegate = rootVC
-                
-                navigationController?.pushViewController(mapVC, animated: true)
-            }
+        if tableView.tableHeaderView == nil {
+            let headerContainerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 240))
+            headerContainerView.translatesAutoresizingMaskIntoConstraints = true
+            headerContainerView.clipsToBounds = true
+            
+            mapView.translatesAutoresizingMaskIntoConstraints = false
+            openInMapButton.translatesAutoresizingMaskIntoConstraints = false
+            
+            headerContainerView.addSubview(mapView)
+            headerContainerView.addSubview(openInMapButton)
+            
+            let views = ["map": mapView, "button": openInMapButton]
+            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[button]|", options: [], metrics: nil, views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][button(==44)]|", options: [], metrics: nil, views: views))
+            
+            tableView.tableHeaderView = headerContainerView
+        }
+    }
+    
+    // MARK: - Actions
+    internal func openInMapButtonPressed() {
+        if let rootVC = navigationController?.viewControllers.first as? QuakesViewController {
+            navigationController?.popViewControllerAnimated(true)
+            
+            let mapVC = MapViewController(centeredOnLocation: quakeToDisplay.coordinate)
+            mapVC.delegate = rootVC
+            
+            navigationController?.pushViewController(mapVC, animated: true)
         }
     }
     
