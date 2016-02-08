@@ -34,12 +34,9 @@ class WindowController: UIResponder, UIApplicationDelegate
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         guard NetworkUtility.internetReachable() else { completionHandler(.Failed); return }
-        guard SettingsController.sharedController.hasAttemptedNotificationPermission else { return }
-        guard NSDate().hoursFrom(SettingsController.sharedController.lastPushDate) > Int.random(0...12) else { completionHandler(.NoData); return }
-        
-        if let notificationSettings = application.currentUserNotificationSettings() where notificationSettings.types != .None {
-            return
-        }
+        guard SettingsController.sharedController.hasAttemptedNotificationPermission else { completionHandler(.Failed); return }
+        guard let notificationSettings = application.currentUserNotificationSettings() where notificationSettings.types != .None else { completionHandler(.Failed); return }
+        guard NSDate().hoursFrom(SettingsController.sharedController.lastPushDate) > SettingsController.sharedController.notificationLimitForType() else { completionHandler(.NoData); return }
         
         NetworkUtility.networkOperationStarted()
         NetworkClient.sharedClient.getNotificationCountFromStartDate(SettingsController.sharedController.lastPushDate) { count, error in
@@ -64,7 +61,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         if let lastSearchedLocation = SettingsController.sharedController.lastSearchedPlace {
             partTwo = "near \(lastSearchedLocation.cityStateString())"
         }
-        else if SettingsController.sharedController.lastLocationOption == LocationOption.Major.rawValue {
+        else if SettingsController.sharedController.lastLocationOption == LocationOption.World.rawValue {
             if newQuakes > 1 {
                 partTwo = "worldwide"
             }
@@ -72,7 +69,7 @@ class WindowController: UIResponder, UIApplicationDelegate
                 return
             }
         }
-        else if SettingsController.sharedController.lastLocationOption == LocationOption.World.rawValue {
+        else if SettingsController.sharedController.lastLocationOption == LocationOption.Major.rawValue {
             partOne = newQuakes == 1 ? "A major quake happened" : "\(newQuakes) major quakes happened"
             
             if newQuakes > 1 {
@@ -94,10 +91,10 @@ class WindowController: UIResponder, UIApplicationDelegate
                 partThree = hoursDifference == 1 ? "within the last hour." : "in the past \(hoursDifference) hours."
         }
         else if hoursDifference < 24 * 7 {
-            partThree = " yesterday."
+            partThree = "yesterday."
         }
         else {
-            partThree = " last week."
+            partThree = "last week."
         }
         
         let notification = UILocalNotification()

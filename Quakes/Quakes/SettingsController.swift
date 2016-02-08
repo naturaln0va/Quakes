@@ -120,6 +120,19 @@ class SettingsController
         return lastLocationOption == LocationOption.World.rawValue || lastLocationOption == LocationOption.Major.rawValue
     }
     
+    func notificationLimitForType() -> Int {
+        guard let lastOption = lastLocationOption else {
+            return 0
+        }
+        
+        switch lastOption {
+        case LocationOption.World.rawValue, LocationOption.Major.rawValue:
+            return Int.random(4...6)
+        default:
+            return Int.random(0...4)
+        }
+    }
+    
     // MARK: - Public
     var cachedAddress: CLPlacemark? {
         get {
