@@ -163,7 +163,7 @@ class QuakeDetailViewController: UIViewController
         super.viewWillLayoutSubviews()
         
         if tableView.tableHeaderView == nil {
-            let headerContainerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 240))
+            let headerContainerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 275))
             headerContainerView.translatesAutoresizingMaskIntoConstraints = true
             headerContainerView.clipsToBounds = true
             
