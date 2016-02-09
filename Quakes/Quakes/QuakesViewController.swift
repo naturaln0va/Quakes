@@ -97,6 +97,13 @@ class QuakesViewController: UITableViewController
             object: nil
         )
         
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "applicationDidEnterForeground",
+            name: UIApplicationDidBecomeActiveNotification,
+            object: nil
+        )
+        
         preformFetch()
         fetchQuakes()
         
@@ -170,6 +177,10 @@ class QuakesViewController: UITableViewController
     }
     
     // MARK: - Notifications
+    func applicationDidEnterForeground() {
+        fetchQuakes()
+    }
+    
     func settingsDidPurchaseAdRemoval() {
         canDisplayBannerAds = !SettingsController.sharedController.hasPaidToRemoveAds
     }
