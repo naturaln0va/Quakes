@@ -169,7 +169,9 @@ class LocationFinderViewController: UIViewController
             if let place = places?.first where error == nil {
                 
                 if let _ = place.location {
-                    self.delegate?.locationFinderViewControllerDidSelectPlace(place)
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.delegate?.locationFinderViewControllerDidSelectPlace(place)
+                    }
                 }
                 else {
                     self.searchTextField.text = "Invalid Location"

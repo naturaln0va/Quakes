@@ -20,7 +20,7 @@ class QuakesViewController: UITableViewController
     private lazy var noResultsLabel: UILabel = {
         let label = UILabel()
         label.text = "No Recent Quakes"
-        label.font = UIFont.systemFontOfSize(27.0, weight: UIFontWeightMedium)
+        label.font = UIFont.systemFontOfSize(22.0, weight: UIFontWeightMedium)
         label.textColor = UIColor(white: 0.0, alpha: 0.25)
         label.sizeToFit()
         return label
@@ -157,7 +157,7 @@ class QuakesViewController: UITableViewController
     
     private func commonFetchedQuakes(quakes: [ParsedQuake]) {
         if quakes.count == 0 && fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
-            noResultsLabel.center = CGPoint(x: view.center.x, y: 65.0)
+            noResultsLabel.center = CGPoint(x: view.center.x, y: 115.0)
             tableView.addSubview(noResultsLabel)
         }
         
@@ -167,8 +167,8 @@ class QuakesViewController: UITableViewController
             refresher.endRefreshing()
         }
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(3 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-            if !SettingsController.sharedController.hasAttemptedNotificationPermission {
+        if !SettingsController.sharedController.hasAttemptedNotificationPermission {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(3 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
                 let notificationsVC = NotificationPromptViewController()
                 notificationsVC.delegate = self
                 self.presentViewController(notificationsVC, animated: true, completion: nil)
@@ -485,7 +485,7 @@ extension QuakesViewController: NSFetchedResultsControllerDelegate
 extension QuakesViewController: LocationFinderViewControllerDelegate
 {
     
-    // MARK: - LocationSelectionViewController Delegate
+    // MARK: - LocationFinderViewController Delegate
     func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark) {
         dismissViewControllerAnimated(true, completion: nil)
         

@@ -30,6 +30,15 @@ class QuakeDetailViewController: UIViewController
         return button
     }()
     
+    private lazy var titleImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "WW"))
+        imageView.layer.shadowColor = UIColor.blackColor().CGColor
+        imageView.layer.shadowOpacity = 0.5
+        imageView.layer.shadowRadius = 1.75
+        imageView.layer.shadowOffset = CGSize.zero
+        return imageView
+    }()
+    
     let geocoder = CLGeocoder()
     let titleIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     let mainQueue = NSOperationQueue.mainQueue()
@@ -88,7 +97,8 @@ class QuakeDetailViewController: UIViewController
         
         title = "Detail"
         if let countryCode = quakeToDisplay.countryCode {
-            navigationItem.titleView = UIImageView(image: UIImage(named: countryCode) ?? UIImage(named: "WW"))
+            titleImageView.image = UIImage(named: countryCode) ?? UIImage(named: "WW")
+            navigationItem.titleView = titleImageView
         }
         else {
             navigationItem.titleView = titleIndicatorView
@@ -134,10 +144,11 @@ class QuakeDetailViewController: UIViewController
                 dispatch_async(dispatch_get_main_queue()) {
                     if let mark = marks?.first, let code = mark.ISOcountryCode where error == nil {
                         PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: nil, withCountry: code)
-                        self.navigationItem.titleView = UIImageView(image: UIImage(named: code) ?? UIImage(named: "WW"))
+                        self.titleImageView.image = UIImage(named: code) ?? UIImage(named: "WW")
+                        self.navigationItem.titleView = self.titleImageView
                     }
                     else {
-                        self.navigationItem.titleView = UIImageView(image: UIImage(named: "WW"))
+                        self.navigationItem.titleView = self.titleImageView
                     }
                 }
             }
