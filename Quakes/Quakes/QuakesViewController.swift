@@ -561,6 +561,16 @@ extension QuakesViewController: UIViewControllerTransitioningDelegate
     
 }
 
+extension QuakesViewController: ADBannerViewDelegate
+{
+    
+    // MARK: - ADBannerView Delegate
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        // intentionally blank
+    }
+    
+}
+
 extension QuakesViewController: UIViewControllerPreviewingDelegate
 {
     

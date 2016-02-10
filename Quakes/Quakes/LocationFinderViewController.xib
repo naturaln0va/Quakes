@@ -70,7 +70,7 @@
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="fyp-kc-jvt" firstAttribute="top" relation="greaterThanOrEqual" secondItem="RKV-SB-6J1" secondAttribute="bottom" constant="32" id="5o0-u6-dVm"/>
+                <constraint firstItem="fyp-kc-jvt" firstAttribute="top" relation="greaterThanOrEqual" secondItem="RKV-SB-6J1" secondAttribute="bottom" constant="20" id="5o0-u6-dVm"/>
                 <constraint firstAttribute="bottom" secondItem="fyp-kc-jvt" secondAttribute="bottom" id="Add-ws-aCg"/>
                 <constraint firstItem="RKV-SB-6J1" firstAttribute="centerX" secondItem="u0K-Dt-gs5" secondAttribute="centerX" id="EiO-WB-G4b"/>
                 <constraint firstItem="LnI-3p-nMk" firstAttribute="leading" secondItem="u0K-Dt-gs5" secondAttribute="leading" id="JZ4-O5-w6B"/>

@@ -1,7 +1,8 @@
 
 import UIKit
-import MessageUI
 import MapKit
+import MessageUI
+import SafariServices
 
 class SettingsViewController: UITableViewController
 {
@@ -170,13 +171,29 @@ class SettingsViewController: UITableViewController
                 break
                 
             case GeneralSectionRows.ContactRow.rawValue:
-                let mailVC = MFMailComposeViewController()
-                mailVC.setSubject("Quakes Feedback")
-                mailVC.setToRecipients(["support@ackermann.io"])
-                let devInfo = "• iOS Version: \(UIDevice.currentDevice().deviceIOSVersion)<br>• Hardware: \(UIDevice.currentDevice().deviceModel)<br>• App Version: \(UIDevice.currentDevice().appVersionAndBuildString)"
-                mailVC.setMessageBody("<br><br><br><br><br><br><br><br><br><br><br><br><hr> <center>Developer Info</center> <br>\(devInfo)<hr>", isHTML: true)
-                mailVC.mailComposeDelegate = self
-                presentViewController(mailVC, animated: true, completion: nil)
+                let alertVC = UIAlertController(title: "Get in Touch", message: nil, preferredStyle: .ActionSheet)
+                alertVC.addAction(
+                    UIAlertAction(title: "Visit the Website", style: .Default, handler: { action in
+                        let safariVC = SFSafariViewController(URL: NSURL(string: "http://www.ackermann.io/quakes")!)
+                        safariVC.view.tintColor = StyleController.darkerMainAppColor
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.presentViewController(safariVC, animated: true, completion: nil)
+                        }
+                    })
+                )
+                alertVC.addAction(
+                    UIAlertAction(title: "Email the Developer", style: .Default, handler: { action in
+                        let mailVC = MFMailComposeViewController()
+                        mailVC.setSubject("Quakes Feedback")
+                        mailVC.setToRecipients(["support@ackermann.io"])
+                        let devInfo = "• iOS Version: \(UIDevice.currentDevice().deviceIOSVersion)<br>• Hardware: \(UIDevice.currentDevice().deviceModel)<br>• App Version: \(UIDevice.currentDevice().appVersionAndBuildString)"
+                        mailVC.setMessageBody("<br><br><br><br><br><br><br><br><br><br><br><br><hr> <center>Developer Info</center> <br>\(devInfo)<hr>", isHTML: true)
+                        mailVC.mailComposeDelegate = self
+                        self.presentViewController(mailVC, animated: true, completion: nil)
+                    })
+                )
+                alertVC.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                presentViewController(alertVC, animated: true, completion: nil)
                 break
                 
             case GeneralSectionRows.RemoveAdsRow.rawValue:

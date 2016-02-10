@@ -98,7 +98,7 @@ class SettingsController
         return [
             kSearchRadiusKey: SearchRadiusSize.Medium.rawValue,
             kFetchSizeLimitKey: APIFetchSize.Medium.rawValue,
-            kLastPushKey: NSDate(),
+            kLastPushKey: NSDate.distantPast(),
             kHasAttemptedNotificationKey: false,
             kPaidToRemoveKey: false,
             kUnitStyleKey: true
@@ -264,7 +264,7 @@ class SettingsController
     var lastPushDate: NSDate {
         get {
             let interval = defaults.doubleForKey(SettingsController.kLastPushKey)
-            return interval == 0 ? NSDate() : NSDate(timeIntervalSince1970: interval)
+            return interval == 0 ? NSDate.distantPast() : NSDate(timeIntervalSince1970: interval)
         }
         set {
             defaults.setDouble(newValue.timeIntervalSince1970, forKey: SettingsController.kLastPushKey)
