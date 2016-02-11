@@ -178,6 +178,7 @@ class QuakesViewController: UITableViewController
     
     // MARK: - Notifications
     func applicationDidEnterForeground() {
+        tableView.reloadData()
         fetchQuakes()
     }
     
