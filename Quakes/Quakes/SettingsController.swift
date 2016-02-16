@@ -129,7 +129,7 @@ class SettingsController
         case LocationOption.World.rawValue, LocationOption.Major.rawValue:
             return Int.random(4...6)
         default:
-            return Int.random(0...4)
+            return Int.random(1...4)
         }
     }
     

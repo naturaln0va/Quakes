@@ -36,7 +36,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         guard NetworkUtility.internetReachable() else { completionHandler(.Failed); return }
         guard SettingsController.sharedController.hasAttemptedNotificationPermission else { completionHandler(.Failed); return }
         guard let notificationSettings = application.currentUserNotificationSettings() where notificationSettings.types != .None else { completionHandler(.Failed); return }
-        guard NSDate().hoursFrom(SettingsController.sharedController.lastPushDate) > SettingsController.sharedController.notificationLimitForType() else { completionHandler(.NoData); return }
+        guard NSDate().hoursSince(SettingsController.sharedController.lastPushDate) > SettingsController.sharedController.notificationLimitForType() else { completionHandler(.NoData); return }
         
         NetworkUtility.networkOperationStarted()
         NetworkClient.sharedClient.getNotificationCountFromStartDate(SettingsController.sharedController.lastPushDate) { count, error in
@@ -53,7 +53,7 @@ class WindowController: UIResponder, UIApplicationDelegate
     }
     
     internal func postLocalNotificationWithNumberOfNewQuakes(newQuakes: Int) {
-        let hoursDifference = NSDate().hoursFrom(SettingsController.sharedController.lastPushDate)
+        let hoursDifference = NSDate().hoursSince(SettingsController.sharedController.lastPushDate)
         SettingsController.sharedController.lastPushDate = NSDate()
         
         var partOne = newQuakes == 1 ? "1 quake happened" : "\(newQuakes) quakes happened"

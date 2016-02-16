@@ -26,12 +26,12 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>www.ackermann.io</key>
+			<key>earthquake.usgs.gov</key>
 			<dict>
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
-			<key>earthquake.usgs.gov</key>
+			<key>www.ackermann.io</key>
 			<dict>
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
@@ -39,7 +39,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Quakes uses your location to show how close you are to the epicenter of an earthquake.</string>
+	<string>Quakes uses your location to show how close you are to the epicenter of an earthquake and allows you to search for quakes by your location.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

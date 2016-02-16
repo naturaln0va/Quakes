@@ -2,11 +2,14 @@
 import UIKit
 import CoreData
 import CoreLocation
-import iAd
+import GoogleMobileAds
 
-
-class QuakesViewController: UITableViewController
+class QuakesViewController: UIViewController
 {
+    
+    @IBOutlet var tableView: UITableView!
+    @IBOutlet var bannerView: GADBannerView!
+    @IBOutlet var bannerViewBottomConstraint: NSLayoutConstraint!
     
     private lazy var fetchedResultsController: NSFetchedResultsController = {
         let moc = PersistentController.sharedController.moc
@@ -40,9 +43,10 @@ class QuakesViewController: UITableViewController
         return button
     }()
     
-    private let locationManager = CLLocationManager()
-    private let defaults = NSUserDefaults.standardUserDefaults()
-    private let geocoder = CLGeocoder()
+    private lazy var refresher = UIRefreshControl()
+    private lazy var locationManager = CLLocationManager()
+    private lazy var defaults = NSUserDefaults.standardUserDefaults()
+    private lazy var geocoder = CLGeocoder()
     private var transitionAnimator: TextBarAnimator?
 
     var currentLocation: CLLocation?
@@ -72,16 +76,28 @@ class QuakesViewController: UITableViewController
         )
         navigationItem.rightBarButtonItem?.enabled = false
         
-        tableView = UITableView(frame: view.bounds, style: .Grouped)
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.estimatedRowHeight = QuakeCell.cellHeight
         tableView.backgroundColor = StyleController.backgroundColor
         tableView.registerNib(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
         
-        let refresher = UIRefreshControl()
         refresher.tintColor = StyleController.contrastColor
         refresher.backgroundColor = StyleController.backgroundColor
         refresher.addTarget(self, action: "fetchQuakes", forControlEvents: .ValueChanged)
-        refreshControl = refresher
+        tableView.addSubview(refresher)
+        
+        bannerView.adUnitID = "ca-app-pub-6493864895252732/6300764804"
+        bannerView.delegate = self
+        bannerView.rootViewController = self
+        bannerView.backgroundColor = StyleController.backgroundColor
+        
+        if !SettingsController.sharedController.hasSupported {
+            let request = GADRequest()
+            request.testDevices = [kGADSimulatorID]
+            
+            bannerView.loadRequest(request)
+        }
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -106,8 +122,6 @@ class QuakesViewController: UITableViewController
         
         preformFetch()
         fetchQuakes()
-        
-        canDisplayBannerAds = !SettingsController.sharedController.hasSupported
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -163,7 +177,7 @@ class QuakesViewController: UITableViewController
         
         PersistentController.sharedController.saveQuakes(quakes)
         
-        if let refresher = refreshControl where refresher.refreshing {
+        if refresher.refreshing {
             refresher.endRefreshing()
         }
         
@@ -183,7 +197,12 @@ class QuakesViewController: UITableViewController
     }
     
     func settingsDidPurchaseAdRemoval() {
-        canDisplayBannerAds = !SettingsController.sharedController.hasSupported
+        if bannerViewBottomConstraint.constant == 0 {
+            UIView.animateWithDuration(0.23) {
+                self.bannerViewBottomConstraint.constant = -self.bannerView.frame.height
+                self.view.layoutIfNeeded()
+            }
+        }
     }
     
     func settingsDidChangeUnitStyle() {
@@ -211,7 +230,7 @@ class QuakesViewController: UITableViewController
     
     func fetchQuakes() {
         guard NetworkUtility.internetReachable() else {
-            if let refresher = refreshControl where refresher.refreshing {
+            if refresher.refreshing {
                 refresher.endRefreshing()
             }
             return
@@ -303,12 +322,17 @@ class QuakesViewController: UITableViewController
         }
     }
     
-    // MARK: - UITableViewDelegate
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+}
+
+extension QuakesViewController: UITableViewDelegate, UITableViewDataSource
+{
+    
+    // MARK: - UITableView Delegate
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return QuakeCell.cellHeight
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCellWithIdentifier(QuakeCell.reuseIdentifier) as? QuakeCell else {
             fatalError("Expected to dequeue a 'QuakeCell'.")
         }
@@ -320,15 +344,15 @@ class QuakesViewController: UITableViewController
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.0001
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.0001
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
@@ -337,8 +361,8 @@ class QuakesViewController: UITableViewController
         }
     }
     
-    // MARK: - UITableViewDataSource
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    // MARK: - UITableView DataSource
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         let section = fetchedResultsController.sections?[section]
         
@@ -562,46 +586,25 @@ extension QuakesViewController: UIViewControllerTransitioningDelegate
     
 }
 
-extension QuakesViewController: ADBannerViewDelegate
+extension QuakesViewController: GADBannerViewDelegate
 {
     
-    // MARK: - ADBannerView Delegate
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
-        // intentionally blank
+    // MARK: - GADBannerView Delegate
+    func adView(bannerView: GADBannerView!, didFailToReceiveAdWithError error: GADRequestError!) {
+        if bannerViewBottomConstraint.constant == 0 {
+            UIView.animateWithDuration(0.23) {
+                self.bannerViewBottomConstraint.constant = -bannerView.frame.height
+                self.view.layoutIfNeeded()
+            }
+        }
     }
     
-}
-
-extension QuakesViewController: UIViewControllerPreviewingDelegate
-{
-    
-    // MARK: - UIViewControllerPreviewing Delegate
-    func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let indexPath = tableView.indexPathForRowAtPoint(location) else {
-            print("Unable to parse an indexPath for location: \(location)")
-            return nil
-        }
-        
-        guard let cell = tableView.cellForRowAtIndexPath(indexPath) else { return nil }
-        
-        if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
-            previewingContext.sourceRect = cell.frame
-            
-            let peekVC = PeekableDetailViewController(quake: quake)
-            peekVC.preferredContentSize = CGSize(width: 0.0, height: 300.0)
-            
-            return peekVC
-        }
-        
-        return nil
-    }
-    
-    func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
-        if viewControllerToCommit is PeekableDetailViewController {
-            navigationController?.pushViewController(QuakeDetailViewController(quake: (viewControllerToCommit as! PeekableDetailViewController).quakeToDisplay), animated: true)
-        }
-        else {
-            print("the view controller to commit is a unsupported type: \(viewControllerToCommit.dynamicType)")
+    func adViewDidReceiveAd(bannerView: GADBannerView!) {
+        if bannerViewBottomConstraint.constant != 0 && !SettingsController.sharedController.hasSupported {
+            UIView.animateWithDuration(0.23) {
+                self.bannerViewBottomConstraint.constant = 0
+                self.view.layoutIfNeeded()
+            }
         }
     }
     

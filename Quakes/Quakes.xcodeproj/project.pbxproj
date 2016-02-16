@@ -58,6 +58,9 @@
 		69D163511C5C52E6000294A5 /* confetti.png in Resources */ = {isa = PBXBuildFile; fileRef = 69D1634F1C5C52E6000294A5 /* confetti.png */; };
 		69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D163501C5C52E6000294A5 /* SAConfettiView.swift */; };
 		69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D235361C3D75E100C9AA50 /* ParsedQuake.swift */; };
+		69D590F41C73827600481E44 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69D590F31C73827600481E44 /* GoogleMobileAds.framework */; };
+		69D590F61C73828C00481E44 /* libAdapterIAd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69D590F51C73828C00481E44 /* libAdapterIAd.a */; };
+		69D590F81C73855000481E44 /* QuakesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69D590F71C73855000481E44 /* QuakesViewController.xib */; };
 		69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB431C5AAA990028AD81 /* Reachability.swift */; };
 		69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */; };
 /* End PBXBuildFile section */
@@ -116,6 +119,9 @@
 		69D1634F1C5C52E6000294A5 /* confetti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = confetti.png; sourceTree = "<group>"; };
 		69D163501C5C52E6000294A5 /* SAConfettiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAConfettiView.swift; sourceTree = "<group>"; };
 		69D235361C3D75E100C9AA50 /* ParsedQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedQuake.swift; sourceTree = "<group>"; };
+		69D590F31C73827600481E44 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
+		69D590F51C73828C00481E44 /* libAdapterIAd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAdapterIAd.a; sourceTree = "<group>"; };
+		69D590F71C73855000481E44 /* QuakesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakesViewController.xib; sourceTree = "<group>"; };
 		69F9CB431C5AAA990028AD81 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../Reachability.swift; sourceTree = "<group>"; };
 		69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkUtility.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
@@ -125,6 +131,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69D590F61C73828C00481E44 /* libAdapterIAd.a in Frameworks */,
+				69D590F41C73827600481E44 /* GoogleMobileAds.framework in Frameworks */,
 				48190D351C558838009712F6 /* iAd.framework in Frameworks */,
 				4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */,
 			);
@@ -154,6 +162,8 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				69D590F51C73828C00481E44 /* libAdapterIAd.a */,
+				69D590F31C73827600481E44 /* GoogleMobileAds.framework */,
 				69D1634E1C5C52E6000294A5 /* SAConfetti */,
 				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
 				48190D341C558838009712F6 /* iAd.framework */,
@@ -288,6 +298,7 @@
 				696031C11C595BD200F71B93 /* QuakeDetailViewController.swift */,
 				696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */,
 				699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */,
+				69D590F71C73855000481E44 /* QuakesViewController.xib */,
 				4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */,
 				4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */,
 				48C000661C543B960046CC8F /* SettingsViewController.swift */,
@@ -380,6 +391,7 @@
 				696031C81C596C4000F71B93 /* countrytocode.txt in Resources */,
 				696031BA1C593D3000F71B93 /* PeekableDetailViewController.xib in Resources */,
 				696031C71C596C4000F71B93 /* convert.py in Resources */,
+				69D590F81C73855000481E44 /* QuakesViewController.xib in Resources */,
 				69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */,
 				696031BE1C5953F000F71B93 /* country-to-code.plist in Resources */,
 				69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */,
@@ -556,9 +568,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Quakes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -571,9 +592,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Quakes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

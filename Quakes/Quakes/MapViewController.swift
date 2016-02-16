@@ -60,12 +60,7 @@ class MapViewController: UIViewController
         mapView.showsCompass = true
         mapView.delegate = self
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "center-bar-button"),
-            style: .Plain,
-            target: self,
-            action: "recenterMapButtonPressed"
-        )
+        navigationItem.rightBarButtonItem = MKUserTrackingBarButtonItem(mapView: mapView)
         
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true
@@ -187,17 +182,7 @@ class MapViewController: UIViewController
             }
         }
     }
-    
-    func recenterMapButtonPressed() {
-        if coordinateToCenterOn != nil {
-            coordinateToCenterOn = nil
-            refreshMapAnimated(true)
-        }
-        else if let userLocation = mapView.userLocation.location {
-            mapView.setCenterCoordinate(userLocation.coordinate, animated: true)
-        }
-    }
-        
+            
     func refreshMapAnimated(animated: Bool) {
         var annotationsToShowOnMap = [MKAnnotation]()
         

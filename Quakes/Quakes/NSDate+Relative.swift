@@ -5,36 +5,46 @@ import Foundation
 extension NSDate
 {
     
-    func hoursFrom(date: NSDate) -> Int {
+    func hoursSince(date: NSDate) -> Int {
         return NSCalendar.currentCalendar().components(.Hour, fromDate: date, toDate: self, options: []).hour
     }
     
-    func relativeString() -> String
-    {
-        let units:NSCalendarUnit = [
-            .Minute, .Hour, .Day, .WeekOfYear, .Month, .Year
-        ]
+    func daysSince(date: NSDate) -> Int {
+        return NSCalendar.currentCalendar().components(.Day, fromDate: date, toDate: self, options: []).day
+    }
+    
+    func isMoreThanAWeekOld() -> Bool {
+        return NSCalendar.currentCalendar().components(.Day, fromDate: self, toDate: NSDate(), options: []).day > 7
+    }
+    
+    func relativeString() -> String {
+        let intervalDifference = NSDate().timeIntervalSinceDate(self)
         
-        // if "date" is before "now" (i.e. in the past) then the components will be positive
-        let components: NSDateComponents = NSCalendar.currentCalendar().components(units, fromDate: self, toDate: NSDate(), options: [])
+        if intervalDifference <= NSTimeInterval(60 * 2) {
+            return "now"
+        }
+        else if intervalDifference <= NSTimeInterval(60 * 60) {
+            return "\(Int(intervalDifference / 60))m"
+        }
         
-        if components.weekOfYear > 0 {
-            return "\(components.weekOfYear)w"
+        let daysAgo = NSDate().daysSince(self)
+        let hoursAgo = Int(intervalDifference / NSTimeInterval(60 * 60))
+        
+        if daysAgo <= 1 {
+            return "\(hoursAgo)h"
         }
-        else if components.day > 0 {
-            return "\(components.day)d"
+        else if daysAgo <= 6 {
+            return "\(daysAgo)d"
         }
-        else {
-            if components.hour > 0 {
-                return "\(components.hour)h"
-            }
-            else if components.minute > 1 {
-                return "\(components.minute)m"
-            }
-            else {
-                return "now"
-            }
+        
+        let weeksAgo = daysAgo / 7
+        if weeksAgo < 52 {
+            return "\(weeksAgo)w"
         }
+        
+        return NSDateFormatter.localizedStringFromDate(
+            self, dateStyle: .ShortStyle, timeStyle: .NoStyle
+        )
     }
     
 }

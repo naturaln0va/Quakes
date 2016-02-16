@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QuakesViewController" customModule="Quakes" customModuleProvider="target">
+            <connections>
+                <outlet property="bannerView" destination="95A-VI-rxh" id="SHb-cb-Nv0"/>
+                <outlet property="bannerViewBottomConstraint" destination="o8b-X2-eq3" id="egM-S2-mSK"/>
+                <outlet property="tableView" destination="cEw-Bf-WKk" id="hOv-qQ-FPg"/>
+                <outlet property="view" destination="JSm-c8-zeT" id="EkH-JG-uNC"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="JSm-c8-zeT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="cEw-Bf-WKk">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="95A-VI-rxh" customClass="GADBannerView">
+                    <rect key="frame" x="0.0" y="667" width="375" height="50"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="pF6-hi-LYI"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="cEw-Bf-WKk" firstAttribute="leading" secondItem="JSm-c8-zeT" secondAttribute="leading" id="2G5-N2-G3N"/>
+                <constraint firstItem="95A-VI-rxh" firstAttribute="leading" secondItem="JSm-c8-zeT" secondAttribute="leading" id="36N-gF-JdZ"/>
+                <constraint firstItem="cEw-Bf-WKk" firstAttribute="top" secondItem="JSm-c8-zeT" secondAttribute="top" id="Gw8-RZ-tnk"/>
+                <constraint firstAttribute="trailing" secondItem="95A-VI-rxh" secondAttribute="trailing" id="M6U-L4-Oag"/>
+                <constraint firstAttribute="trailing" secondItem="cEw-Bf-WKk" secondAttribute="trailing" id="kxw-tu-WPj"/>
+                <constraint firstAttribute="bottom" secondItem="95A-VI-rxh" secondAttribute="bottom" constant="-50" id="o8b-X2-eq3"/>
+                <constraint firstItem="95A-VI-rxh" firstAttribute="top" secondItem="cEw-Bf-WKk" secondAttribute="bottom" id="trw-oY-uwP"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+            <point key="canvasLocation" x="399.5" y="-45.5"/>
+        </view>
+    </objects>
+</document>

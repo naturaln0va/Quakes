@@ -126,10 +126,10 @@ extension IAPUtility: SKPaymentTransactionObserver
     }
     
     private func failedTransaction(transaction: SKPaymentTransaction) {
-        if transaction.error?.code != SKErrorPaymentCancelled {
-            print("Transaction error: \(transaction.error?.localizedDescription)")
+        if transaction.error?.code == SKErrorClientInvalid || transaction.error?.code == SKErrorPaymentNotAllowed || transaction.error?.code == SKErrorPaymentInvalid {
+            print("Transaction error: \(transaction.error)")
+            NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.IAPHelperFailedNotification, object: nil)
         }
-        NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.IAPHelperFailedNotification, object: nil)
         SKPaymentQueue.defaultQueue().finishTransaction(transaction)
     }
     
