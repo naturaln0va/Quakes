@@ -21,10 +21,10 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         
-        if !SettingsController.sharedController.hasPaidToRemoveAds {
+        if !SettingsController.sharedController.hasSupported {
             NetworkClient.sharedClient.verifyInAppRecipt { sucess in
                 if sucess {
-                    SettingsController.sharedController.hasPaidToRemoveAds = true
+                    SettingsController.sharedController.hasSupported = true
                 }
             }
         }

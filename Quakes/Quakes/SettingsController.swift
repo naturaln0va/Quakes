@@ -167,7 +167,7 @@ class SettingsController
         }
     }
     
-    var hasPaidToRemoveAds: Bool {
+    var hasSupported: Bool {
         get {
             return defaults.boolForKey(SettingsController.kPaidToRemoveKey)
         }

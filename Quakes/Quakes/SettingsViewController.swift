@@ -141,7 +141,7 @@ class SettingsViewController: UITableViewController
                 break
                 
             case GeneralSectionRows.RemoveAdsRow.rawValue:
-                cell.textLabel?.text = "Remove Ads"
+                cell.textLabel?.text = "Support the App"
                 cell.accessoryType = .DisclosureIndicator
                 break
                 
@@ -186,7 +186,7 @@ class SettingsViewController: UITableViewController
                         let mailVC = MFMailComposeViewController()
                         mailVC.setSubject("Quakes Feedback")
                         mailVC.setToRecipients(["support@ackermann.io"])
-                        let devInfo = "• iOS Version: \(UIDevice.currentDevice().deviceIOSVersion)<br>• Hardware: \(UIDevice.currentDevice().deviceModel)<br>• App Version: \(UIDevice.currentDevice().appVersionAndBuildString)"
+                        let devInfo = "• iOS Version: \(UIDevice.currentDevice().deviceIOSVersion)<br>• Hardware: \(UIDevice.currentDevice().deviceModel)<br>• App Version: \(UIDevice.currentDevice().appVersionAndBuildString)<br>• Has Supported: \(SettingsController.sharedController.hasSupported ? "Yes" : "No")"
                         mailVC.setMessageBody("<br><br><br><br><br><br><br><br><br><br><br><br><hr> <center>Developer Info</center> <br>\(devInfo)<hr>", isHTML: true)
                         mailVC.mailComposeDelegate = self
                         self.presentViewController(mailVC, animated: true, completion: nil)

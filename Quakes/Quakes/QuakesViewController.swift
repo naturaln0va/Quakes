@@ -107,7 +107,7 @@ class QuakesViewController: UITableViewController
         preformFetch()
         fetchQuakes()
         
-        canDisplayBannerAds = !SettingsController.sharedController.hasPaidToRemoveAds
+        canDisplayBannerAds = !SettingsController.sharedController.hasSupported
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -183,7 +183,7 @@ class QuakesViewController: UITableViewController
     }
     
     func settingsDidPurchaseAdRemoval() {
-        canDisplayBannerAds = !SettingsController.sharedController.hasPaidToRemoveAds
+        canDisplayBannerAds = !SettingsController.sharedController.hasSupported
     }
     
     func settingsDidChangeUnitStyle() {

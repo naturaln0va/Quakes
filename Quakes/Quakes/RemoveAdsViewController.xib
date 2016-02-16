@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RemoveAdsViewController" customModule="Quakes" customModuleProvider="target">
             <connections>
                 <outlet property="confetti" destination="Sy3-Wd-ErX" id="LaJ-Ov-epI"/>
+                <outlet property="dividingOrLabel" destination="d3n-vZ-x3i" id="EZ2-3A-45o"/>
                 <outlet property="headerLabel" destination="Zb5-tt-2gr" id="vt1-yc-BxW"/>
                 <outlet property="loadingActivityIndicator" destination="b9J-s6-6Ax" id="vwa-ae-mhZ"/>
                 <outlet property="messageLabel" destination="aTh-6V-eco" id="jnI-SM-vv9"/>
                 <outlet property="removeAdsButton" destination="rCm-cA-RKA" id="eAp-Ao-hGt"/>
+                <outlet property="shareAppButton" destination="cgS-vw-1jp" id="hAj-bE-pGg"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -20,9 +22,9 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OTI-5n-vAS">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="60.5"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Do you find ads annoying?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb5-tt-2gr">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Support Quakes" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb5-tt-2gr">
                             <rect key="frame" x="20" y="8" width="335" height="32.5"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -44,14 +46,14 @@
                     </variation>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jma-gz-Bgc">
-                    <rect key="frame" x="20" y="80.5" width="335" height="101.5"/>
+                    <rect key="frame" x="20" y="80" width="335" height="101.5"/>
                     <string key="text">Ads help fund the development of this app. By choosing to remove ads with a one time payment you are supporting this app and will help improve and keep this app updated and relevant.</string>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rCm-cA-RKA">
-                    <rect key="frame" x="65" y="232" width="245" height="48"/>
+                    <rect key="frame" x="65" y="231.5" width="245" height="48"/>
                     <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="27" minY="15" maxX="27" maxY="15"/>
@@ -67,8 +69,25 @@
                         <action selector="removeAdsButtonPressed:" destination="-1" eventType="touchUpInside" id="qoz-Hy-nMl"/>
                     </connections>
                 </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cgS-vw-1jp">
+                    <rect key="frame" x="65" y="346" width="245" height="48"/>
+                    <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                    <inset key="contentEdgeInsets" minX="27" minY="15" maxX="27" maxY="15"/>
+                    <state key="normal" title="Share the App">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="shareButtonPressed:" destination="-1" eventType="touchUpInside" id="bxI-cO-4NJ"/>
+                    </connections>
+                </button>
                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="b9J-s6-6Ax">
-                    <rect key="frame" x="177" y="246" width="20" height="20"/>
+                    <rect key="frame" x="177" y="245.5" width="20" height="20"/>
                 </activityIndicatorView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTh-6V-eco">
                     <rect key="frame" x="20" y="629" width="335" height="18"/>
@@ -76,8 +95,14 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d3n-vZ-x3i">
+                    <rect key="frame" x="178" y="299.5" width="19" height="20.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <view opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sy3-Wd-ErX" customClass="SAConfettiView" customModule="Quakes" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="60" width="375" height="606.5"/>
+                    <rect key="frame" x="0.0" y="59.5" width="375" height="607"/>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -89,16 +114,21 @@
                 <constraint firstAttribute="trailing" secondItem="Jma-gz-Bgc" secondAttribute="trailing" constant="20" id="PhO-Ft-0Cn"/>
                 <constraint firstAttribute="trailing" secondItem="OTI-5n-vAS" secondAttribute="trailing" id="Pkn-aA-RP5"/>
                 <constraint firstItem="Jma-gz-Bgc" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="V2F-S4-lFA"/>
+                <constraint firstItem="d3n-vZ-x3i" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="YAa-PS-bvP"/>
                 <constraint firstItem="aTh-6V-eco" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="YIb-W2-s62"/>
                 <constraint firstItem="b9J-s6-6Ax" firstAttribute="centerX" secondItem="rCm-cA-RKA" secondAttribute="centerX" id="YS0-mb-q7j"/>
                 <constraint firstAttribute="trailing" secondItem="aTh-6V-eco" secondAttribute="trailing" constant="20" id="bQo-jY-Dix"/>
                 <constraint firstItem="Jma-gz-Bgc" firstAttribute="top" secondItem="OTI-5n-vAS" secondAttribute="bottom" constant="20" id="dPT-12-6L9"/>
+                <constraint firstItem="cgS-vw-1jp" firstAttribute="width" secondItem="rCm-cA-RKA" secondAttribute="width" id="iVH-s8-tXj"/>
+                <constraint firstItem="cgS-vw-1jp" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="jOr-ZG-ycu"/>
                 <constraint firstItem="OTI-5n-vAS" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="nts-aK-Q3S"/>
                 <constraint firstAttribute="trailing" secondItem="Sy3-Wd-ErX" secondAttribute="trailing" id="oX0-UX-WLO"/>
+                <constraint firstItem="d3n-vZ-x3i" firstAttribute="top" secondItem="rCm-cA-RKA" secondAttribute="bottom" constant="20" id="oif-EV-PMv"/>
                 <constraint firstItem="rCm-cA-RKA" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="qhR-eb-irH"/>
                 <constraint firstItem="Sy3-Wd-ErX" firstAttribute="top" secondItem="OTI-5n-vAS" secondAttribute="bottom" id="qis-2g-Mab"/>
                 <constraint firstItem="Sy3-Wd-ErX" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="rdc-0n-AWf"/>
                 <constraint firstItem="rCm-cA-RKA" firstAttribute="top" secondItem="Jma-gz-Bgc" secondAttribute="bottom" constant="50" id="szf-e3-vAz"/>
+                <constraint firstItem="cgS-vw-1jp" firstAttribute="top" secondItem="d3n-vZ-x3i" secondAttribute="bottom" constant="26" id="tU3-sf-3qK"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
             <point key="canvasLocation" x="129.5" y="214.5"/>
