@@ -108,7 +108,7 @@ class LocationFinderViewController: UIViewController
             self.view.layoutIfNeeded()
             self.filterSegment.alpha = 0
         }, completion: { _ in
-            self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+            if self.shouldDismiss { self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil) }
         })
     }
     
