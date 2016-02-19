@@ -12,7 +12,7 @@ class Quake: NSManagedObject {
         let timestampFormatter = NSDateFormatter()
         
         timestampFormatter.dateStyle = .MediumStyle
-        timestampFormatter.timeStyle = .MediumStyle
+        timestampFormatter.timeStyle = .ShortStyle
         
         return timestampFormatter
     }()
@@ -25,14 +25,6 @@ class Quake: NSManagedObject {
         magnitudeFormatter.minimumFractionDigits = 1
         
         return magnitudeFormatter
-    }()
-    
-    static let depthFormatter: NSLengthFormatter = {
-        
-        let depthFormatter = NSLengthFormatter()
-        depthFormatter.forPersonHeightUse = false
-        
-        return depthFormatter
     }()
     
     static let distanceFormatter: MKDistanceFormatter = {

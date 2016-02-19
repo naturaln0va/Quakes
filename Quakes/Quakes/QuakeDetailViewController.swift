@@ -265,7 +265,8 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
             }
             else if indexPath.row == 1 {
                 cell.textLabel?.text = "Depth"
-                cell.detailTextLabel?.text = Quake.depthFormatter.stringFromValue(quakeToDisplay.depth, unit: SettingsController.sharedController.isUnitStyleImperial ? .Mile : .Kilometer)
+                Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+                cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(quakeToDisplay.depth)
             }
             else if indexPath.row == 2 {
                 cell.textLabel?.text = "Location"
@@ -296,9 +297,18 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
             }
         }
         else {
-            cell.textLabel?.text = "Open in USGS.gov"
-            cell.textLabel?.textAlignment = .Center
-            cell.accessoryType = .DisclosureIndicator
+            let websiteLabel = UILabel()
+            websiteLabel.translatesAutoresizingMaskIntoConstraints = false
+            websiteLabel.textColor = UIColor(red: 0.188,  green: 0.478,  blue: 1.0, alpha: 1.0)
+            websiteLabel.text = "Open in USGS"
+            websiteLabel.textAlignment = .Center
+            
+            cell.translatesAutoresizingMaskIntoConstraints = true
+            cell.addSubview(websiteLabel)
+            
+            let views = ["label": websiteLabel]
+            cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: [], metrics: nil, views: views))
+            cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: [], metrics: nil, views: views))
         }
         
         return cell
