@@ -111,7 +111,7 @@ class RemoveAdsViewController: UIViewController
     // MARK: Actions
     @IBAction func shareButtonPressed(sender: UIButton) {
         let shareVC = UIActivityViewController(
-            activityItems: ["Quakes the best way to view details about earthquakes around the world! Check it out:\n", NSURL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8")!],
+            activityItems: ["Quakes: the best way to view details about earthquakes around the world! Check it out:\n", NSURL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8")!],
             applicationActivities: nil
         )
         shareVC.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
