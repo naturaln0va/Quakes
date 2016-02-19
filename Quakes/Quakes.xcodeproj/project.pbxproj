@@ -16,7 +16,6 @@
 		48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D391C55A02F009712F6 /* UIDevice+Additions.swift */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
-		4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4871B7A81C4AC96800C466DD /* MapViewController.xib */; };
 		4872AB991C55C15300B6CF37 /* RemoveAdsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */; };
 		4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */; };
 		4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */; };
@@ -75,7 +74,6 @@
 		48190D391C55A02F009712F6 /* UIDevice+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Additions.swift"; sourceTree = "<group>"; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Format.swift"; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		4871B7A81C4AC96800C466DD /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
 		4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveAdsViewController.swift; sourceTree = "<group>"; };
 		4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RemoveAdsViewController.xib; sourceTree = "<group>"; };
 		4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPUtility.swift; sourceTree = "<group>"; };
@@ -291,7 +289,6 @@
 				48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */,
 				48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */,
 				4871B7A71C4AC96800C466DD /* MapViewController.swift */,
-				4871B7A81C4AC96800C466DD /* MapViewController.xib */,
 				696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */,
 				696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */,
 				48190D371C559601009712F6 /* PickerViewController.swift */,
@@ -397,7 +394,6 @@
 				69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */,
 				48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */,
 				692FA24D1C6662C300E4C7E5 /* NotificationPromptViewController.xib in Resources */,
-				4871B7AA1C4AC96800C466DD /* MapViewController.xib in Resources */,
 				69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */,
 				4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */,
 				696031C41C595BD200F71B93 /* QuakeDetailViewController.xib in Resources */,

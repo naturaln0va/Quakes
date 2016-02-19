@@ -11,6 +11,7 @@ class StyledNavigationController: UINavigationController
         let navbarSzie = CGSize(width: navigationBar.frame.size.width, height: navigationBar.frame.size.height + UIApplication.sharedApplication().statusBarFrame.height)
         navigationBar.setBackgroundImage(UIImage.imageOfColor(StyleController.mainAppColor, size: navbarSzie), forBarMetrics: .Default)
         
+        toolbar.tintColor = StyleController.contrastColor
         navigationBar.barTintColor = StyleController.mainAppColor
         navigationBar.tintColor = StyleController.contrastColor
         navigationBar.translucent = false

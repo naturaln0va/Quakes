@@ -10,9 +10,22 @@ protocol MapViewControllerDelegate: class {
 class MapViewController: UIViewController
 {
     
-    @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var searchAreaButton: UIButton!
-    @IBOutlet weak var searchAreaButtonBottomConstraint: NSLayoutConstraint!
+    private lazy var mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.showsScale = true
+        mapView.showsCompass = true
+        return mapView
+    }()
+    
+    private lazy var spaceBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+    }()
+    private lazy var locationBarButtonItem: MKUserTrackingBarButtonItem = {
+        return MKUserTrackingBarButtonItem(mapView: self.mapView)
+    }()
     
     private var quakesToDisplay: [Quake]?
     private var quakeToDisplay: Quake?
@@ -27,7 +40,7 @@ class MapViewController: UIViewController
     let geocoder = CLGeocoder()
     
     init(quakeToDisplay quake: Quake?, nearbyCities: [ParsedNearbyCity]?) {
-        super.init(nibName: String(MapViewController), bundle: nil)
+        super.init(nibName: nil, bundle: nil)
         
         if nearbyCities != nil && quake != nil {
             quakeToDisplay = quake
@@ -40,7 +53,7 @@ class MapViewController: UIViewController
     }
     
     init(centeredOnLocation location: CLLocationCoordinate2D) {
-        super.init(nibName: String(MapViewController), bundle: nil)
+        super.init(nibName: nil, bundle: nil)
         title = "Map"
         coordinateToCenterOn = location
     }
@@ -53,14 +66,12 @@ class MapViewController: UIViewController
     {
         super.viewDidLoad()
         
-        searchAreaButtonBottomConstraint.constant = -50
-        view.layoutIfNeeded()
+        navigationController?.toolbarHidden = false
+        toolbarItems = [locationBarButtonItem, spaceBarButtonItem]
         
-        mapView.showsScale = true
-        mapView.showsCompass = true
-        mapView.delegate = self
-        
-        navigationItem.rightBarButtonItem = MKUserTrackingBarButtonItem(mapView: mapView)
+        view.addSubview(mapView)
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
         
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true
@@ -82,6 +93,7 @@ class MapViewController: UIViewController
         super.viewWillDisappear(animated)
         
         NetworkUtility.cancelCurrentNetworkRequests()
+        navigationController?.toolbarHidden = true
         
         if geocoder.geocoding {
             geocoder.cancelGeocode()
@@ -102,14 +114,14 @@ class MapViewController: UIViewController
         }
     }
     
+    private func showMessageWithText(text: String) {
+        // create a label centered in the tooldbar like whereabouts
+    }
+    
     private func fetchNewQuakesForPlace(placemark: CLPlacemark) {
         guard NetworkUtility.internetReachable() else {
             self.currentlySearching = false
-            self.searchAreaButton.setTitle("No Internet Connection", forState: .Normal)
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
-            }
+            showMessageWithText("No Internet Connection")
             return
         }
         
@@ -135,15 +147,8 @@ class MapViewController: UIViewController
             self.delegate?.mapViewControllerDidFinishFetch(sucess, withPlace: placemark)
             self.currentlySearching = false
             
-            if sucess {
-                self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
-            }
-            else {
-                self.searchAreaButton.setTitle("No Quakes In This Area", forState: .Normal)
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                    self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
-                }
+            if !sucess {
+                self.showMessageWithText("No Quakes")
             }
         }
     }
@@ -153,7 +158,7 @@ class MapViewController: UIViewController
         guard NetworkUtility.internetReachable() else { return }
         guard !currentlySearching else { return }
         
-        self.searchAreaButton.setTitle("Searching...", forState: .Normal)
+        showMessageWithText("Searching...")
         currentlySearching = true
         
         NetworkUtility.networkOperationStarted()
@@ -165,20 +170,12 @@ class MapViewController: UIViewController
                 }
                 else {
                     self.currentlySearching = false
-                    self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
-                    
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                        self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
-                    }
+                    self.showMessageWithText("Failed Searching Location")
                 }
             }
             else {
                 self.currentlySearching = false
-                self.searchAreaButton.setTitle("Failed Searching Location", forState: .Normal)
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                    self.searchAreaButton.setTitle("Search This Area", forState: .Normal)
-                }
+                self.showMessageWithText("Failed Searching Location")
             }
         }
     }
@@ -232,16 +229,10 @@ extension MapViewController: MKMapViewDelegate {
         }
         
         if mapView.region.span.latitudeDelta < 7 {
-            searchAreaButtonBottomConstraint.constant = 0
-            UIView.animateWithDuration(0.345) {
-                self.view.layoutIfNeeded()
-            }
+            //show the search icon
         }
         else {
-            searchAreaButtonBottomConstraint.constant = -50
-            UIView.animateWithDuration(0.345) {
-                self.view.layoutIfNeeded()
-            }
+            //hide the search icon
         }
     }
     
