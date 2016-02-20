@@ -298,6 +298,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
         }
         else {
             let websiteLabel = UILabel()
+            websiteLabel.font = UIFont.systemFontOfSize(18.0, weight: UIFontWeightMedium)
             websiteLabel.translatesAutoresizingMaskIntoConstraints = false
             websiteLabel.textColor = UIColor(red: 0.188,  green: 0.478,  blue: 1.0, alpha: 1.0)
             websiteLabel.text = "Open in USGS"

@@ -26,6 +26,44 @@ class MapViewController: UIViewController
     private lazy var locationBarButtonItem: MKUserTrackingBarButtonItem = {
         return MKUserTrackingBarButtonItem(mapView: self.mapView)
     }()
+    private lazy var searchBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "searchButtonPressed")
+    }()
+    private lazy var messageLabelBarButtonItem: UIBarButtonItem = {
+        let messageLabel = UILabel()
+        messageLabel.font = UIFont.systemFontOfSize(11.0, weight: UIFontWeightRegular)
+        messageLabel.numberOfLines = 2
+        messageLabel.textAlignment = .Center
+        messageLabel.sizeToFit()
+        return UIBarButtonItem(customView: messageLabel)
+    }()
+    
+    private lazy var filterHeaderView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = UIColor.whiteColor()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.clipsToBounds = true
+        return containerView
+    }()
+    private lazy var filterTitleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFontOfSize(20.0, weight: UIFontWeightLight)
+        label.numberOfLines = 1
+        label.textAlignment = .Center
+        label.sizeToFit()
+        return label
+    }()
+    private lazy var filterSlider: UISlider = {
+        let slider = UISlider()
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.minimumValue = 1
+        slider.maximumValue = 30
+        slider.value = 30
+        slider.addTarget(self, action: "filterSliderChanged:", forControlEvents: .ValueChanged)
+        slider.addTarget(self, action: "filterSliderEnded:", forControlEvents: .TouchUpInside)
+        return slider
+    }()
     
     private var quakesToDisplay: [Quake]?
     private var quakeToDisplay: Quake?
@@ -69,9 +107,30 @@ class MapViewController: UIViewController
         navigationController?.toolbarHidden = false
         toolbarItems = [locationBarButtonItem, spaceBarButtonItem]
         
-        view.addSubview(mapView)
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+        if nearbyCitiesToDisplay == nil && quakeToDisplay == nil {
+            filterTitleLabel.text = "Quakes from the last month"
+            
+            filterHeaderView.addSubview(filterTitleLabel)
+            filterHeaderView.addSubview(filterSlider)
+            
+            let views = ["slider": filterSlider, "label": filterTitleLabel]
+            filterHeaderView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-30-[slider]-30-|", options: [], metrics: nil, views: views))
+            filterHeaderView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-15-[label]-15-|", options: [], metrics: nil, views: views))
+            filterHeaderView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-8-[label]-4-[slider]-8-|", options: [], metrics: nil, views: views))
+            
+            view.addSubview(filterHeaderView)
+            view.addSubview(mapView)
+            
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[container]|", options: [], metrics: nil, views: ["container": filterHeaderView]))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[container][map]|", options: [], metrics: nil, views: ["container": filterHeaderView, "map": mapView]))
+        }
+        else {
+            view.addSubview(mapView)
+            
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+        }
         
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true
@@ -114,14 +173,38 @@ class MapViewController: UIViewController
         }
     }
     
-    private func showMessageWithText(text: String) {
-        // create a label centered in the tooldbar like whereabouts
+    private func showMessageWithText(text: String, shouldAutoDismiss dismiss: Bool) {
+        let messageLabel = UILabel()
+        messageLabel.font = UIFont.systemFontOfSize(11.0, weight: UIFontWeightRegular)
+        messageLabel.numberOfLines = 2
+        messageLabel.textAlignment = .Center
+        messageLabel.text = text
+        messageLabel.sizeToFit()
+        messageLabelBarButtonItem = UIBarButtonItem(customView: messageLabel)
+        
+        if let items = navigationController?.toolbar.items where items.contains(searchBarButtonItem) {
+            navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem, messageLabelBarButtonItem, spaceBarButtonItem, searchBarButtonItem], animated: true)
+        }
+        else {
+            navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem, messageLabelBarButtonItem, spaceBarButtonItem], animated: true)
+        }
+        
+        if dismiss {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                if let items = self.navigationController?.toolbar.items where items.contains(self.searchBarButtonItem) {
+                    self.navigationController?.toolbar.setItems([self.locationBarButtonItem, self.spaceBarButtonItem, self.searchBarButtonItem], animated: true)
+                }
+                else {
+                    self.navigationController?.toolbar.setItems([self.locationBarButtonItem, self.spaceBarButtonItem], animated: true)
+                }
+            }
+        }
     }
     
     private func fetchNewQuakesForPlace(placemark: CLPlacemark) {
         guard NetworkUtility.internetReachable() else {
             self.currentlySearching = false
-            showMessageWithText("No Internet Connection")
+            showMessageWithText("No Internet Connection", shouldAutoDismiss: false)
             return
         }
         
@@ -148,18 +231,29 @@ class MapViewController: UIViewController
             self.currentlySearching = false
             
             if !sucess {
-                self.showMessageWithText("No Quakes")
+                self.showMessageWithText("No Quakes", shouldAutoDismiss: true)
             }
         }
     }
     
     // MARK: - Actions
-    @IBAction func searchButtonPressed() {
+    func searchButtonPressed() {
         guard NetworkUtility.internetReachable() else { return }
         guard !currentlySearching else { return }
         
-        showMessageWithText("Searching...")
         currentlySearching = true
+        
+        let loadingActivityView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        loadingActivityView.color = StyleController.contrastColor
+        loadingActivityView.startAnimating()
+        
+        let loadingBarButton = UIBarButtonItem(customView: loadingActivityView)
+        if let items = navigationController?.toolbar.items where items.contains(messageLabelBarButtonItem) {
+            navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem, messageLabelBarButtonItem, spaceBarButtonItem, loadingBarButton], animated: false)
+        }
+        else {
+            navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem, loadingBarButton], animated: false)
+        }
         
         NetworkUtility.networkOperationStarted()
         geocoder.reverseGeocodeLocation(CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)) { places, error in
@@ -167,16 +261,55 @@ class MapViewController: UIViewController
             if let place = places?.first where error == nil {
                 if let _ = place.location {
                     self.fetchNewQuakesForPlace(place)
+                    if let items = self.navigationController?.toolbar.items where items.contains(self.messageLabelBarButtonItem) {
+                        self.navigationController?.toolbar.setItems([self.locationBarButtonItem, self.spaceBarButtonItem, self.messageLabelBarButtonItem, self.spaceBarButtonItem, self.searchBarButtonItem], animated: true)
+                    }
+                    else {
+                        self.navigationController?.toolbar.setItems([self.locationBarButtonItem, self.spaceBarButtonItem, self.searchBarButtonItem], animated: true)
+                    }
                 }
                 else {
                     self.currentlySearching = false
-                    self.showMessageWithText("Failed Searching Location")
+                    self.showMessageWithText("Failed Searching Location", shouldAutoDismiss: true)
                 }
             }
             else {
                 self.currentlySearching = false
-                self.showMessageWithText("Failed Searching Location")
+                self.showMessageWithText("Failed Searching Location", shouldAutoDismiss: true)
             }
+        }
+    }
+    
+    func filterSliderChanged(sender: UISlider) {
+        let wholeValue = Int(sender.value)
+        
+        if wholeValue == 30 {
+            filterTitleLabel.text = "Quakes from last month"
+        }
+        else if wholeValue == 21 {
+            filterTitleLabel.text = "Quakes from the last 3 weeks"
+        }
+        else if wholeValue == 14 {
+            filterTitleLabel.text = "Quakes from the last 2 weeks"
+        }
+        else if wholeValue == 7 {
+            filterTitleLabel.text = "Quakes from last week"
+        }
+        else if wholeValue == 2 {
+            filterTitleLabel.text = "Quakes from yesterday"
+        }
+        else if wholeValue == 1 {
+            filterTitleLabel.text = "Quakes from today"
+        }
+        else {
+            filterTitleLabel.text = "Quakes from the last \(wholeValue) days"
+        }
+    }
+    
+    func filterSliderEnded(sender: UISlider) {
+        if let quakes = quakesToDisplay {
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.addAnnotations(quakes.filter{ NSDate().daysSince($0.timestamp) < Int(sender.value) })
         }
     }
             
@@ -216,8 +349,10 @@ class MapViewController: UIViewController
     
 }
 
-extension MapViewController: MKMapViewDelegate {
+extension MapViewController: MKMapViewDelegate
+{
     
+    // MARK: - MKMapView Delegate
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool)
     {
         guard NetworkUtility.internetReachable() else {
@@ -228,11 +363,11 @@ extension MapViewController: MKMapViewDelegate {
             return
         }
         
-        if mapView.region.span.latitudeDelta < 7 {
-            //show the search icon
+        if mapView.region.span.latitudeDelta < 6.125 {
+            navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem, searchBarButtonItem], animated: true)
         }
         else {
-            //hide the search icon
+            navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem], animated: true)
         }
     }
     
@@ -297,6 +432,7 @@ extension MapViewController: MKMapViewDelegate {
 extension MapViewController: CLLocationManagerDelegate
 {
     
+    // MARK: - CLLocationManager Delegate
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedWhenInUse {
             mapView.showsUserLocation = true
