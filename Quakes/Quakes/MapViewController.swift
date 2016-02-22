@@ -69,13 +69,16 @@ class MapViewController: UIViewController
     private var quakeToDisplay: Quake?
     private var nearbyCitiesToDisplay: [ParsedNearbyCity]?
     private var coordinateToCenterOn: CLLocationCoordinate2D?
-    private var currentlySearching = false
+    private var filterContainerViewTopConstraint: NSLayoutConstraint?
     
     weak var delegate: MapViewControllerDelegate?
     
-    var shouldContinueUpdatingUserLocation = true
-    let manager = CLLocationManager()
-    let geocoder = CLGeocoder()
+    private var firstLayout = true
+    private var currentlySearching = false
+    private var shouldContinueUpdatingUserLocation = true
+    
+    private lazy var manager = CLLocationManager()
+    private lazy var geocoder = CLGeocoder()
     
     init(quakeToDisplay quake: Quake?, nearbyCities: [ParsedNearbyCity]?) {
         super.init(nibName: nil, bundle: nil)
@@ -107,9 +110,17 @@ class MapViewController: UIViewController
         navigationController?.toolbarHidden = false
         toolbarItems = [locationBarButtonItem, spaceBarButtonItem]
         
-        if nearbyCitiesToDisplay == nil && quakeToDisplay == nil {
-            filterTitleLabel.text = "Quakes from last month"
-            
+        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
+            mapView.showsUserLocation = true
+        }
+        else if CLLocationManager.authorizationStatus() == .NotDetermined {
+            manager.delegate = self
+            manager.requestWhenInUseAuthorization()
+        }
+        
+        refreshFilterLabel()
+        
+        if nearbyCitiesToDisplay == nil && quakeToDisplay == nil && SettingsController.sharedController.lastLocationOption != LocationOption.World.rawValue {
             filterHeaderView.addSubview(filterTitleLabel)
             filterHeaderView.addSubview(filterSlider)
             
@@ -123,28 +134,18 @@ class MapViewController: UIViewController
             
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[container]|", options: [], metrics: nil, views: ["container": filterHeaderView]))
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[container][map]|", options: [], metrics: nil, views: ["container": filterHeaderView, "map": mapView]))
+            
+            filterContainerViewTopConstraint = NSLayoutConstraint(item: filterHeaderView, attribute: .Top, relatedBy: .Equal, toItem: topLayoutGuide, attribute: .Bottom, multiplier: 1, constant: 0)
+            view.addConstraint(filterContainerViewTopConstraint!)
+            
+            view.addConstraint(NSLayoutConstraint(item: filterHeaderView, attribute: .Bottom, relatedBy: .Equal, toItem: mapView, attribute: .Top, multiplier: 1, constant: 0))
+            view.addConstraint(NSLayoutConstraint(item: mapView, attribute: .Bottom, relatedBy: .Equal, toItem: mapView.superview, attribute: .Bottom, multiplier: 1, constant: 0))
         }
         else {
             view.addSubview(mapView)
             
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
-        }
-        
-        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
-            mapView.showsUserLocation = true
-        }
-        else if CLLocationManager.authorizationStatus() == .NotDetermined {
-            manager.delegate = self
-            manager.requestWhenInUseAuthorization()
-        }
-        
-        if nearbyCitiesToDisplay != nil {
-            refreshMapAnimated(true)
-        }
-        else {
-            fetchQuakesAndDisplay()
         }
     }
     
@@ -159,8 +160,20 @@ class MapViewController: UIViewController
         }
     }
     
-    private func fetchQuakesAndDisplay()
-    {
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        if firstLayout {
+            if nearbyCitiesToDisplay != nil {
+                refreshMapAnimated(true)
+            }
+            else {
+                fetchQuakesAndDisplay()
+            }
+        }
+    }
+    
+    private func fetchQuakesAndDisplay() {
         do {
             quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
             
@@ -173,7 +186,18 @@ class MapViewController: UIViewController
                 }
                 if let lastSortedQuake = sortedQuakes.last {
                     let minDays = NSDate().daysSince(lastSortedQuake.timestamp)
-                    if minDays < 29 {
+                    if minDays == 1 {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.filterContainerViewTopConstraint?.constant = -self.filterHeaderView.frame.height
+                            self.view.layoutIfNeeded()
+                        }
+                    }
+                    else if minDays < 29 {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.filterContainerViewTopConstraint?.constant = 0
+                            self.view.layoutIfNeeded()
+                        }
+                        
                         filterSlider.maximumValue = Float(minDays)
                     }
                 }
@@ -293,7 +317,18 @@ class MapViewController: UIViewController
     }
     
     func filterSliderChanged(sender: UISlider) {
-        let wholeValue = Int(sender.value)
+        refreshFilterLabel()
+    }
+    
+    func filterSliderEnded(sender: UISlider) {
+        if let quakes = quakesToDisplay {
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.addAnnotations(quakes.filter{ NSDate().daysSince($0.timestamp) < Int(sender.value) })
+        }
+    }
+    
+    private func refreshFilterLabel() {
+        let wholeValue = Int(filterSlider.value)
         
         if wholeValue == 30 {
             filterTitleLabel.text = "Quakes from last month"
@@ -317,15 +352,8 @@ class MapViewController: UIViewController
             filterTitleLabel.text = "Quakes from the last \(wholeValue) days"
         }
     }
-    
-    func filterSliderEnded(sender: UISlider) {
-        if let quakes = quakesToDisplay {
-            mapView.removeAnnotations(mapView.annotations)
-            mapView.addAnnotations(quakes.filter{ NSDate().daysSince($0.timestamp) < Int(sender.value) })
-        }
-    }
             
-    func refreshMapAnimated(animated: Bool) {
+    private func refreshMapAnimated(animated: Bool) {
         var annotationsToShowOnMap = [MKAnnotation]()
         
         if let quakes = quakesToDisplay {
