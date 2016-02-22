@@ -108,7 +108,7 @@ class MapViewController: UIViewController
         toolbarItems = [locationBarButtonItem, spaceBarButtonItem]
         
         if nearbyCitiesToDisplay == nil && quakeToDisplay == nil {
-            filterTitleLabel.text = "Quakes from the last month"
+            filterTitleLabel.text = "Quakes from last month"
             
             filterHeaderView.addSubview(filterTitleLabel)
             filterHeaderView.addSubview(filterSlider)
@@ -164,12 +164,24 @@ class MapViewController: UIViewController
         do {
             quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
             
-            if quakesToDisplay != nil {
+            if let quakes = quakesToDisplay {
+                let sortedQuakes = quakes.sort { quakeTuple in
+                    let quakeOne = quakeTuple.0
+                    let quakeTwo = quakeTuple.1
+                    
+                    return NSDate().daysSince(quakeOne.timestamp) < NSDate().daysSince(quakeTwo.timestamp)
+                }
+                if let lastSortedQuake = sortedQuakes.last {
+                    let minDays = NSDate().daysSince(lastSortedQuake.timestamp)
+                    if minDays < 29 {
+                        filterSlider.maximumValue = Float(minDays)
+                    }
+                }
                 refreshMapAnimated(true)
             }
         }
         catch {
-            print("Error loading quakes from world persistent store \(error)")
+            print("Error loading quakes from persistent store \(error)")
         }
     }
     
