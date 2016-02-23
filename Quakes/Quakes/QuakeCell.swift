@@ -7,11 +7,12 @@ class QuakeCell: UITableViewCell
     static let reuseIdentifier = "QuakeCell"
     static let cellHeight: CGFloat = 85.0
     
-    @IBOutlet var magnitudeLabel: UILabel!
-    @IBOutlet var cityLabel: UILabel!
-    @IBOutlet var additionalInfoLabel: UILabel!
-    @IBOutlet var timestampLabel: UILabel!
-    @IBOutlet var colorView: UIView!
+    @IBOutlet weak var magnitudeLabel: UILabel!
+    @IBOutlet weak var cityLabel: UILabel!
+    @IBOutlet weak var additionalInfoLabel: UILabel!
+    @IBOutlet weak var timestampLabel: UILabel!
+    @IBOutlet weak var feltLabel: UILabel!
+    @IBOutlet weak var colorView: UIView!
     
     var quakeToDisplay: Quake!
     
@@ -22,6 +23,8 @@ class QuakeCell: UITableViewCell
         magnitudeLabel.text = Quake.magnitudeFormatter.stringFromNumber(quake.magnitude)
         
         additionalInfoLabel.text = quake.nameString
+        
+        feltLabel.text = quake.felt > 0 ? "\(Int(quake.felt)) felt" : ""
         
         cityLabel.text = quake.name.componentsSeparatedByString(" of ").last!
         

@@ -30,6 +30,18 @@ class QuakeDetailViewController: UIViewController
         return button
     }()
     
+    private lazy var feltButton: UIButton = {
+        let button = UIButton(type: .Custom)
+        button.setTitle("I Felt This", forState: .Normal)
+        button.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        button.titleLabel?.textAlignment = .Center
+        button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
+        button.addTarget(self, action: "feltButtonPressed", forControlEvents: .TouchUpInside)
+        button.backgroundColor = StyleController.backgroundColor
+        button.sizeToFit()
+        return button
+    }()
+    
     private lazy var titleImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "WW"))
         imageView.layer.shadowColor = UIColor.blackColor().CGColor
@@ -180,14 +192,17 @@ class QuakeDetailViewController: UIViewController
             
             mapView.translatesAutoresizingMaskIntoConstraints = false
             openInMapButton.translatesAutoresizingMaskIntoConstraints = false
+            feltButton.translatesAutoresizingMaskIntoConstraints = false
             
             headerContainerView.addSubview(mapView)
             headerContainerView.addSubview(openInMapButton)
+            headerContainerView.addSubview(feltButton)
             
-            let views = ["map": mapView, "button": openInMapButton]
+            let views = ["map": mapView, "open": openInMapButton, "feels": feltButton]
             headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: views))
-            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[button]|", options: [], metrics: nil, views: views))
-            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][button(==44)]|", options: [], metrics: nil, views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[open(==size)][feels(==size)]|", options: [], metrics: ["size": view.frame.width / 2], views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][open(==44)]|", options: [], metrics: nil, views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][feels(==44)]|", options: [], metrics: nil, views: views))
             
             tableView.tableHeaderView = headerContainerView
         }
@@ -202,6 +217,16 @@ class QuakeDetailViewController: UIViewController
             mapVC.delegate = rootVC
             
             navigationController?.pushViewController(mapVC, animated: true)
+        }
+    }
+    
+    internal func feltButtonPressed() {
+        if let url = NSURL(string: "\(quakeToDisplay.weblink)#impact_tellus") {
+            let safariVC = SFSafariViewController(URL: url)
+            safariVC.view.tintColor = quakeToDisplay.severityColor
+            dispatch_async(dispatch_get_main_queue()) {
+                self.presentViewController(safariVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -269,18 +294,22 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
                 cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(quakeToDisplay.depth)
             }
             else if indexPath.row == 2 {
+                cell.textLabel?.text = "Felt By"
+                cell.detailTextLabel?.text = "\(Int(quakeToDisplay.felt)) people"
+            }
+            else if indexPath.row == 3 {
                 cell.textLabel?.text = "Location"
                 cell.detailTextLabel?.text = quakeToDisplay.name
             }
-            else if indexPath.row == 3 {
+            else if indexPath.row == 4 {
                 cell.textLabel?.text = "Coordinate"
                 cell.detailTextLabel?.text = quakeToDisplay.coordinate.formatedString()
             }
-            else if indexPath.row == 4 {
+            else if indexPath.row == 5 {
                 cell.textLabel?.text = "Date & Time"
                 cell.detailTextLabel?.text = Quake.timestampFormatter.stringFromDate(quakeToDisplay.timestamp)
             }
-            else if indexPath.row == 5 {
+            else if indexPath.row == 6 {
                 Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
                 cell.textLabel?.text = "Distance"
                 cell.detailTextLabel?.text = distanceFromQuake == nil ? "N/A" : Quake.distanceFormatter.stringFromDistance(distanceFromQuake!)
@@ -292,15 +321,26 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
                 cell.accessoryType = .DisclosureIndicator
             }
             else {
-                cell.textLabel?.text = "Open in USGS.gov"
-                cell.accessoryType = .DisclosureIndicator
+                let websiteLabel = UILabel()
+                websiteLabel.font = UIFont.systemFontOfSize(18.0, weight: UIFontWeightMedium)
+                websiteLabel.translatesAutoresizingMaskIntoConstraints = false
+                websiteLabel.textColor = quakeToDisplay.severityColor
+                websiteLabel.text = "Open in USGS"
+                websiteLabel.textAlignment = .Center
+                
+                cell.translatesAutoresizingMaskIntoConstraints = true
+                cell.addSubview(websiteLabel)
+                
+                let views = ["label": websiteLabel]
+                cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: [], metrics: nil, views: views))
+                cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: [], metrics: nil, views: views))
             }
         }
         else {
             let websiteLabel = UILabel()
             websiteLabel.font = UIFont.systemFontOfSize(18.0, weight: UIFontWeightMedium)
             websiteLabel.translatesAutoresizingMaskIntoConstraints = false
-            websiteLabel.textColor = UIColor(red: 0.188,  green: 0.478,  blue: 1.0, alpha: 1.0)
+            websiteLabel.textColor = quakeToDisplay.severityColor
             websiteLabel.text = "Open in USGS"
             websiteLabel.textAlignment = .Center
             
@@ -337,7 +377,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
         
         if let url = NSURL(string: quakeToDisplay.weblink) where hasNearbyCityInfo ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(URL: url)
-            safariVC.view.tintColor = StyleController.darkerMainAppColor
+            safariVC.view.tintColor = quakeToDisplay.severityColor
             dispatch_async(dispatch_get_main_queue()) {
                 self.presentViewController(safariVC, animated: true, completion: nil)
             }
@@ -360,7 +400,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 6
+            return 7
         }
         else if section == 1 {
             return hasNearbyCityInfo ? parsedNearbyCities!.count : 1
@@ -399,7 +439,7 @@ extension QuakeDetailViewController: MKMapViewDelegate
         }
         
         distanceFromQuake = userLocation.distanceFromLocation(quakeToDisplay.location)
-        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 5, inSection: 0)], withRowAnimation: .Automatic)
+        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 6, inSection: 0)], withRowAnimation: .Automatic)
         
         if userLocation.distanceFromLocation(quakeToDisplay.location) > (1000 * 900) {
             return

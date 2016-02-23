@@ -57,6 +57,7 @@ class MapViewController: UIViewController
     private lazy var filterSlider: UISlider = {
         let slider = UISlider()
         slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.tintColor = UIColor.blackColor()
         slider.minimumValue = 1
         slider.maximumValue = 30
         slider.value = 30

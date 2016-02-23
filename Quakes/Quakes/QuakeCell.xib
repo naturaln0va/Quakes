@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -13,11 +13,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="84.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3PY-ot-OaL">
+                    <view contentMode="scaleToFill" horizontalHuggingPriority="255" translatesAutoresizingMaskIntoConstraints="NO" id="3PY-ot-OaL">
                         <rect key="frame" x="15" y="18" width="50" height="50"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="255" verticalHuggingPriority="251" horizontalCompressionResistancePriority="755" text="4.2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p1G-ZI-UHM">
-                                <rect key="frame" x="7" y="12" width="35" height="27"/>
+                                <rect key="frame" x="7" y="12" width="35" height="26.5"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -31,14 +31,14 @@
                             <constraint firstItem="p1G-ZI-UHM" firstAttribute="centerX" secondItem="3PY-ot-OaL" secondAttribute="centerX" id="kVd-Bf-uAj"/>
                         </constraints>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is the city of the quake" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zuF-sx-iAr">
-                        <rect key="frame" x="77" y="21" width="228" height="24"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="245" verticalHuggingPriority="251" horizontalCompressionResistancePriority="745" text="This is the city of the quake" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zuF-sx-iAr">
+                        <rect key="frame" x="77" y="21" width="196" height="24"/>
                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="timestamp" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KhD-6L-aaz">
-                        <rect key="frame" x="250" y="61" width="60" height="14"/>
+                        <rect key="frame" x="250" y="60" width="60" height="14.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
@@ -48,25 +48,40 @@
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4 felt" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c9l-L2-yrm">
+                        <rect key="frame" x="280.5" y="18" width="29.5" height="14.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                 <constraints>
                     <constraint firstItem="3PY-ot-OaL" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="70m-0S-WzU"/>
+                    <constraint firstItem="c9l-L2-yrm" firstAttribute="top" secondItem="3PY-ot-OaL" secondAttribute="top" id="8Hc-4Q-tHU"/>
                     <constraint firstAttribute="bottom" secondItem="KhD-6L-aaz" secondAttribute="bottom" constant="10" id="8f1-vC-byf"/>
                     <constraint firstItem="3PY-ot-OaL" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="BoC-GY-h7V"/>
                     <constraint firstAttribute="bottom" secondItem="0Gp-xr-MQo" secondAttribute="bottom" constant="21" id="Lds-d9-TBc"/>
+                    <constraint firstItem="c9l-L2-yrm" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="LmU-0w-Aru"/>
                     <constraint firstItem="zuF-sx-iAr" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="21" id="LyP-BM-cWb"/>
+                    <constraint firstAttribute="trailing" secondItem="c9l-L2-yrm" secondAttribute="trailing" constant="10" id="MYF-x1-Kyp"/>
+                    <constraint firstItem="c9l-L2-yrm" firstAttribute="leading" secondItem="zuF-sx-iAr" secondAttribute="trailing" constant="8" id="QJu-k6-fxP"/>
                     <constraint firstAttribute="trailing" secondItem="KhD-6L-aaz" secondAttribute="trailing" constant="10" id="ajn-PR-ifQ"/>
                     <constraint firstItem="zuF-sx-iAr" firstAttribute="leading" secondItem="3PY-ot-OaL" secondAttribute="trailing" constant="12" id="ij0-O3-NWZ"/>
-                    <constraint firstAttribute="trailing" secondItem="zuF-sx-iAr" secondAttribute="trailing" constant="15" id="jgt-pX-LzT"/>
                     <constraint firstItem="KhD-6L-aaz" firstAttribute="leading" secondItem="0Gp-xr-MQo" secondAttribute="trailing" constant="8" id="unz-9b-P5Q"/>
                     <constraint firstItem="0Gp-xr-MQo" firstAttribute="leading" secondItem="3PY-ot-OaL" secondAttribute="trailing" constant="12" id="ziU-Q5-8EI"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="LmU-0w-Aru"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <connections>
                 <outlet property="additionalInfoLabel" destination="0Gp-xr-MQo" id="E7v-ia-PwP"/>
                 <outlet property="cityLabel" destination="zuF-sx-iAr" id="nNE-7d-Tlc"/>
                 <outlet property="colorView" destination="3PY-ot-OaL" id="00z-m0-owY"/>
+                <outlet property="feltLabel" destination="c9l-L2-yrm" id="j5A-sV-HsU"/>
                 <outlet property="magnitudeLabel" destination="p1G-ZI-UHM" id="GSt-fD-U8u"/>
                 <outlet property="timestampLabel" destination="KhD-6L-aaz" id="wLr-NY-5Qv"/>
             </connections>

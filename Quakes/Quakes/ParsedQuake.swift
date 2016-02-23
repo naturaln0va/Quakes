@@ -9,7 +9,7 @@ struct ParsedQuake
     
     let identifier, name, link, detailURL: String
     
-    let depth, latitude, longitude, magnitude, distance: Double
+    let depth, latitude, longitude, magnitude, distance, felt: Double
 
     init?(dict: [String: AnyObject]) {
         guard let earthquakeID = dict["id"] as? String where !earthquakeID.isEmpty else { return nil }
@@ -22,6 +22,8 @@ struct ParsedQuake
         magnitude = properties["mag"] as? Double ?? 0.0
         
         detailURL = properties["detail"] as? String ?? ""
+        
+        felt = properties["felt"] as? Double ?? 0.0
         
         if let offset = properties["time"] as? Double {
             date = NSDate(timeIntervalSince1970: offset / 1000)

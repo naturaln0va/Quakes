@@ -144,6 +144,7 @@ class PersistentController
             dataToSave.identifier = quake.identifier
             dataToSave.detailURL = quake.detailURL
             dataToSave.distance = quake.distance
+            dataToSave.felt = quake.felt
             
             newQuakeCount++
         }
