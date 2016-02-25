@@ -75,6 +75,7 @@ class MapViewController: UIViewController
     weak var delegate: MapViewControllerDelegate?
     
     private var firstLayout = true
+    private var firstMapLoad = true
     private var currentlySearching = false
     private var shouldContinueUpdatingUserLocation = true
     
@@ -118,8 +119,6 @@ class MapViewController: UIViewController
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
         }
-        
-        refreshFilterLabel()
         
         if nearbyCitiesToDisplay == nil && quakeToDisplay == nil && SettingsController.sharedController.lastLocationOption != LocationOption.World.rawValue {
             filterHeaderView.addSubview(filterTitleLabel)
@@ -171,11 +170,13 @@ class MapViewController: UIViewController
             else {
                 fetchQuakesAndDisplay()
             }
+            firstLayout = false
         }
     }
     
     private func fetchQuakesAndDisplay() {
         do {
+            filterTitleLabel.text = ""
             quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
             
             if let quakes = quakesToDisplay {
@@ -186,22 +187,30 @@ class MapViewController: UIViewController
                     return NSDate().daysSince(quakeOne.timestamp) < NSDate().daysSince(quakeTwo.timestamp)
                 }
                 if let lastSortedQuake = sortedQuakes.last {
-                    let minDays = NSDate().daysSince(lastSortedQuake.timestamp)
-                    if minDays == 1 {
+                    let maxDays = NSDate().daysSince(lastSortedQuake.timestamp)
+                    if maxDays == 1 {
                         dispatch_async(dispatch_get_main_queue()) {
                             self.filterContainerViewTopConstraint?.constant = -self.filterHeaderView.frame.height
                             self.view.layoutIfNeeded()
                         }
                     }
-                    else if minDays < 29 {
+                    else if maxDays < 29 {
                         dispatch_async(dispatch_get_main_queue()) {
                             self.filterContainerViewTopConstraint?.constant = 0
                             self.view.layoutIfNeeded()
                         }
                         
-                        filterSlider.maximumValue = Float(minDays)
+                        filterSlider.maximumValue = Float(maxDays)
                     }
                 }
+                if let firstSortedQuake = sortedQuakes.first {
+                    let minDays = NSDate().daysSince(firstSortedQuake.timestamp)
+                    if minDays > 0 {
+                        filterSlider.minimumValue = Float(minDays)
+                    }
+                }
+                
+                refreshFilterLabel()
                 refreshMapAnimated(true)
             }
         }
@@ -424,13 +433,16 @@ extension MapViewController: MKMapViewDelegate
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
         if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(String(annotation.hash)) {
+            if annotationView is MKPinAnnotationView {
+                (annotationView as! MKPinAnnotationView).animatesDrop = !firstMapLoad
+            }
             return annotationView
         }
         
         if annotation is Quake {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
             annotationView.enabled = true
-            annotationView.animatesDrop = false
+            annotationView.animatesDrop = !firstMapLoad
             annotationView.canShowCallout = true
             
             if nearbyCitiesToDisplay == nil {
@@ -458,6 +470,12 @@ extension MapViewController: MKMapViewDelegate
         }
         else {
             return nil
+        }
+    }
+    
+    func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
+        if views.count == quakesToDisplay?.count {
+            if firstMapLoad { firstMapLoad = false }
         }
     }
     
