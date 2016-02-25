@@ -178,6 +178,8 @@ class MapViewController: UIViewController
         do {
             filterTitleLabel.text = ""
             quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
+            var minDays = 0
+            var maxDays = 0
             
             if let quakes = quakesToDisplay {
                 let sortedQuakes = quakes.sort { quakeTuple in
@@ -187,7 +189,7 @@ class MapViewController: UIViewController
                     return NSDate().daysSince(quakeOne.timestamp) < NSDate().daysSince(quakeTwo.timestamp)
                 }
                 if let lastSortedQuake = sortedQuakes.last {
-                    let maxDays = NSDate().daysSince(lastSortedQuake.timestamp)
+                    maxDays = NSDate().daysSince(lastSortedQuake.timestamp)
                     if maxDays == 1 {
                         dispatch_async(dispatch_get_main_queue()) {
                             self.filterContainerViewTopConstraint?.constant = -self.filterHeaderView.frame.height
@@ -204,9 +206,16 @@ class MapViewController: UIViewController
                     }
                 }
                 if let firstSortedQuake = sortedQuakes.first {
-                    let minDays = NSDate().daysSince(firstSortedQuake.timestamp)
+                    minDays = NSDate().daysSince(firstSortedQuake.timestamp)
                     if minDays > 0 {
                         filterSlider.minimumValue = Float(minDays)
+                    }
+                }
+                
+                if minDays == maxDays {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.filterContainerViewTopConstraint?.constant = -self.filterHeaderView.frame.height
+                        self.view.layoutIfNeeded()
                     }
                 }
                 
