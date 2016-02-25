@@ -45,6 +45,7 @@ class PersistentController
         }
     }()
     
+    // MARK: - Helpers
     func attemptSave() {
         if moc.hasChanges {
             moc.performBlockAndWait { [unowned self] in
@@ -56,6 +57,41 @@ class PersistentController
                     fatalError("\nError saving the managed object context: \(error)\n\n")
                 }
             }
+        }
+    }
+    
+    func attemptCleanup() {
+        let maxQuakesToStore = SettingsController.sharedController.fetchLimit.rawValue
+        
+        if let quakes = try? Quake.objectsInContext(moc, predicate: nil, sortedBy: "timestamp", ascending: false) {
+            var quakesCopy = quakes
+            while quakesCopy.count > maxQuakesToStore {
+                if let lastQuake = quakes.last {
+                    moc.deleteObject(lastQuake)
+                    quakesCopy.removeLast()
+                }
+            }
+            
+            var locationOption: CLLocation?
+            if let nearbyLocation = SettingsController.sharedController.cachedAddress?.location {
+                locationOption = nearbyLocation
+            }
+            else if let searchedLocation = SettingsController.sharedController.lastSearchedPlace?.location {
+                locationOption = searchedLocation
+            }
+            
+            if let location = locationOption {
+                let radius = SettingsController.sharedController.searchRadius.rawValue
+                
+                for quake in quakesCopy {
+                    if quake.location.distanceFromLocation(location) > (Double(radius) * 1000) {
+                        moc.deleteObject(quake)
+                    }
+                }
+            }
+        }
+        else {
+            print("Failed to read quakes from the database.")
         }
     }
     
@@ -147,6 +183,7 @@ class PersistentController
             dataToSave.felt = quake.felt
         }
         
+        attemptCleanup()
         attemptSave()
     }
     
