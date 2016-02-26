@@ -444,9 +444,6 @@ extension MapViewController: MKMapViewDelegate
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
         if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(String(annotation.hash)) {
-            if annotationView is MKPinAnnotationView {
-                (annotationView as! MKPinAnnotationView).animatesDrop = !firstMapLoad
-            }
             return annotationView
         }
         
