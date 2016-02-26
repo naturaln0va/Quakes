@@ -19,6 +19,8 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         self.window = window
         
+        Flurry.startSession(TelemetryController.sharedController.apiKey)
+        
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         
         if !SettingsController.sharedController.hasSupported {

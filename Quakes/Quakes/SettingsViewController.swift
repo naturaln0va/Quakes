@@ -61,10 +61,10 @@ class SettingsViewController: UITableViewController
         switch sender.tag {
             
         case SwitchTag.Unit.rawValue:
+            TelemetryController.sharedController.logUnitStyleToggled()
             SettingsController.sharedController.isUnitStyleImperial = !sender.on
             formatter.units = !sender.on ? .Imperial : .Metric
             tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: .None)
-            
             break
             
         default:
@@ -275,6 +275,7 @@ class SettingsViewController: UITableViewController
 extension SettingsViewController: MFMailComposeViewControllerDelegate
 {
     
+    // MARK: - MFMailComposeViewController Delegate
     func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?)
     {
         dismissViewControllerAnimated(true, completion: nil)
@@ -285,6 +286,7 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate
 extension SettingsViewController: PickerViewControllerDelegate
 {
     
+    // MARK: - PickerViewController Delegate
     func pickerViewController(pvc: PickerViewController, didPickObject object: AnyObject) {
         tableView.reloadData()
         
@@ -292,10 +294,12 @@ extension SettingsViewController: PickerViewControllerDelegate
             
         case .Limit:
             SettingsController.sharedController.fetchLimit = SettingsController.APIFetchSize.closestValueForInteger(object as! Int)
+            TelemetryController.sharedController.logFetchSizeChange(object as! Int)
             break
             
         case .Radius:
             SettingsController.sharedController.searchRadius = SettingsController.SearchRadiusSize.closestValueForInteger(object as! Int)
+            TelemetryController.sharedController.logNearbyRadiusChanged(object as! Int)
             break
             
         default:

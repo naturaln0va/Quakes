@@ -105,9 +105,10 @@ class MapViewController: UIViewController
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad()
-    {
+    override func viewDidLoad() {
         super.viewDidLoad()
+        
+        TelemetryController.sharedController.logQuakeMapOpened()
         
         navigationController?.toolbarHidden = false
         toolbarItems = [locationBarButtonItem, spaceBarButtonItem]
@@ -336,6 +337,7 @@ class MapViewController: UIViewController
     }
     
     func filterSliderChanged(sender: UISlider) {
+        TelemetryController.sharedController.logQuakeMapFiltered()
         refreshFilterLabel()
     }
     

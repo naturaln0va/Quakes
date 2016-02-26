@@ -78,6 +78,8 @@ class QuakeDetailViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        TelemetryController.sharedController.logQuakeDetailViewed(quakeToDisplay.weblink)
+        
         if let nearbyCities = quakeToDisplay.nearbyCities {
             parsedNearbyCities = nearbyCities
             hasNearbyCityInfo = true
@@ -268,7 +270,9 @@ class QuakeDetailViewController: UIViewController
                     activityItems: items,
                     applicationActivities: nil),
                     animated: true,
-                    completion: nil
+                    completion: { _ in
+                        TelemetryController.sharedController.logQuakeShare()
+                    }
                 )
             }
         }
@@ -379,10 +383,13 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
             let safariVC = SFSafariViewController(URL: url)
             safariVC.view.tintColor = quakeToDisplay.severityColor
             dispatch_async(dispatch_get_main_queue()) {
-                self.presentViewController(safariVC, animated: true, completion: nil)
+                self.presentViewController(safariVC, animated: true, completion: { _ in
+                    TelemetryController.sharedController.logQuakeOpenedInBrowser()
+                })
             }
         }
         else if let citiesToDisplay = parsedNearbyCities where indexPath.section == 1 && hasNearbyCityInfo {
+            TelemetryController.sharedController.logQuakeCitiesViewed()
             let selectedCity = citiesToDisplay[indexPath.row]
             let sortedCities = citiesToDisplay.sort({ $0.0.cityName == selectedCity.cityName })
             navigationController?.pushViewController(MapViewController(quakeToDisplay: quakeToDisplay, nearbyCities: sortedCities), animated: true)

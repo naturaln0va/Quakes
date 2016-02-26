@@ -514,6 +514,8 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
     func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark) {
         dismissViewControllerAnimated(true, completion: nil)
         
+        TelemetryController.sharedController.logQuakeFinderDidSelectLocation(placemark.cityStateString())
+        
         SettingsController.sharedController.lastSearchedPlace = placemark
         SettingsController.sharedController.lastLocationOption = nil
         
@@ -524,6 +526,8 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
     
     func locationFinderViewControllerDidSelectOption(option: LocationOption) {
         dismissViewControllerAnimated(true, completion: nil)
+        
+        TelemetryController.sharedController.logQuakeFinderDidSelectLocation(option.rawValue)
         
         SettingsController.sharedController.lastLocationOption = option.rawValue
         SettingsController.sharedController.lastSearchedPlace = nil

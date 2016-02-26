@@ -30,6 +30,8 @@ class LocationFinderViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        TelemetryController.sharedController.logQuakeFinderOpened()
+        
         title = "Choose a Type"
         view.backgroundColor = UIColor.whiteColor()
         searchTextField.backgroundColor = StyleController.searchBarColor

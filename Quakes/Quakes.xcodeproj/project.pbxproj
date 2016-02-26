@@ -34,6 +34,8 @@
 		692FA24D1C6662C300E4C7E5 /* NotificationPromptViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 692FA24B1C6662C300E4C7E5 /* NotificationPromptViewController.xib */; };
 		692FA24F1C66732700E4C7E5 /* Int+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692FA24E1C66732700E4C7E5 /* Int+Random.swift */; };
 		694269EB1C46E55800BAA5C9 /* TextBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */; };
+		69497A821C80796900AB2654 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69497A811C80796900AB2654 /* Security.framework */; };
+		69497A841C80797500AB2654 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69497A831C80797500AB2654 /* SystemConfiguration.framework */; };
 		696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */; };
 		696031BA1C593D3000F71B93 /* PeekableDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */; };
 		696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031BB1C5948EF00F71B93 /* SeverityView.swift */; };
@@ -43,6 +45,10 @@
 		696031C41C595BD200F71B93 /* QuakeDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */; };
 		696031C71C596C4000F71B93 /* convert.py in Resources */ = {isa = PBXBuildFile; fileRef = 696031C51C596C4000F71B93 /* convert.py */; };
 		696031C81C596C4000F71B93 /* countrytocode.txt in Resources */ = {isa = PBXBuildFile; fileRef = 696031C61C596C4000F71B93 /* countrytocode.txt */; };
+		696067261C7FB64700068B72 /* Empty.m in Sources */ = {isa = PBXBuildFile; fileRef = 696067211C7FB64700068B72 /* Empty.m */; };
+		696067271C7FB64700068B72 /* libFlurry_7.5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696067241C7FB64700068B72 /* libFlurry_7.5.1.a */; };
+		696067281C7FB64700068B72 /* libFlurryWatch_7.5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696067251C7FB64700068B72 /* libFlurryWatch_7.5.1.a */; };
+		6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696067291C7FB67900068B72 /* TelemetryController.swift */; };
 		699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */; };
 		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
 		699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA60E1C3C55E10094F48A /* Fetchable.swift */; };
@@ -92,6 +98,8 @@
 		692FA24B1C6662C300E4C7E5 /* NotificationPromptViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationPromptViewController.xib; sourceTree = "<group>"; };
 		692FA24E1C66732700E4C7E5 /* Int+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Random.swift"; sourceTree = "<group>"; };
 		694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextBarAnimator.swift; sourceTree = "<group>"; };
+		69497A811C80796900AB2654 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		69497A831C80797500AB2654 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekableDetailViewController.swift; sourceTree = "<group>"; };
 		696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PeekableDetailViewController.xib; sourceTree = "<group>"; };
 		696031BB1C5948EF00F71B93 /* SeverityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityView.swift; sourceTree = "<group>"; };
@@ -101,6 +109,12 @@
 		696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakeDetailViewController.xib; sourceTree = "<group>"; };
 		696031C51C596C4000F71B93 /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		696031C61C596C4000F71B93 /* countrytocode.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countrytocode.txt; sourceTree = "<group>"; };
+		696067211C7FB64700068B72 /* Empty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Empty.m; sourceTree = "<group>"; };
+		696067221C7FB64700068B72 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		696067231C7FB64700068B72 /* FlurryWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryWatch.h; sourceTree = "<group>"; };
+		696067241C7FB64700068B72 /* libFlurry_7.5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.5.1.a; sourceTree = "<group>"; };
+		696067251C7FB64700068B72 /* libFlurryWatch_7.5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurryWatch_7.5.1.a; sourceTree = "<group>"; };
+		696067291C7FB67900068B72 /* TelemetryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryController.swift; sourceTree = "<group>"; };
 		699CA6051C3C52980094F48A /* Quakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Quakes.xcdatamodel; sourceTree = "<group>"; };
 		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
 		699CA60E1C3C55E10094F48A /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
@@ -120,6 +134,7 @@
 		69D590F31C73827600481E44 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		69D590F51C73828C00481E44 /* libAdapterIAd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAdapterIAd.a; sourceTree = "<group>"; };
 		69D590F71C73855000481E44 /* QuakesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakesViewController.xib; sourceTree = "<group>"; };
+		69F7E2DB1C807E0500D223C9 /* Quakes-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Quakes-Bridging-Header.h"; sourceTree = "<group>"; };
 		69F9CB431C5AAA990028AD81 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../Reachability.swift; sourceTree = "<group>"; };
 		69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkUtility.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
@@ -129,10 +144,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69497A841C80797500AB2654 /* SystemConfiguration.framework in Frameworks */,
+				69497A821C80796900AB2654 /* Security.framework in Frameworks */,
 				69D590F61C73828C00481E44 /* libAdapterIAd.a in Frameworks */,
 				69D590F41C73827600481E44 /* GoogleMobileAds.framework in Frameworks */,
 				48190D351C558838009712F6 /* iAd.framework in Frameworks */,
 				4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */,
+				696067271C7FB64700068B72 /* libFlurry_7.5.1.a in Frameworks */,
+				696067281C7FB64700068B72 /* libFlurryWatch_7.5.1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,8 +179,11 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				69497A831C80797500AB2654 /* SystemConfiguration.framework */,
+				69497A811C80796900AB2654 /* Security.framework */,
 				69D590F51C73828C00481E44 /* libAdapterIAd.a */,
 				69D590F31C73827600481E44 /* GoogleMobileAds.framework */,
+				696067201C7FB64700068B72 /* Flurry */,
 				69D1634E1C5C52E6000294A5 /* SAConfetti */,
 				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
 				48190D341C558838009712F6 /* iAd.framework */,
@@ -199,6 +221,19 @@
 				694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */,
 			);
 			name = Animators;
+			sourceTree = "<group>";
+		};
+		696067201C7FB64700068B72 /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				696067211C7FB64700068B72 /* Empty.m */,
+				696067221C7FB64700068B72 /* Flurry.h */,
+				696067231C7FB64700068B72 /* FlurryWatch.h */,
+				696067241C7FB64700068B72 /* libFlurry_7.5.1.a */,
+				696067251C7FB64700068B72 /* libFlurryWatch_7.5.1.a */,
+			);
+			name = Flurry;
+			path = Quakes/Flurry;
 			sourceTree = "<group>";
 		};
 		699CA6071C3C529F0094F48A /* Model */ = {
@@ -257,6 +292,7 @@
 				696031C51C596C4000F71B93 /* convert.py */,
 				696031C61C596C4000F71B93 /* countrytocode.txt */,
 				696031BD1C5953F000F71B93 /* country-to-code.plist */,
+				69F7E2DB1C807E0500D223C9 /* Quakes-Bridging-Header.h */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -274,11 +310,12 @@
 		69B30FF81C3B121C00241D79 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				69B30FE21C3B051600241D79 /* WindowController.swift */,
+				4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */,
 				699E4EF01C3D69A00049C7F4 /* StyleController.swift */,
 				69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */,
 				48C713191C4090C600196225 /* SettingsController.swift */,
-				4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */,
+				696067291C7FB67900068B72 /* TelemetryController.swift */,
+				69B30FE21C3B051600241D79 /* WindowController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -432,10 +469,12 @@
 				4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */,
 				69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */,
 				690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */,
+				6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */,
 				696031C31C595BD200F71B93 /* QuakeDetailViewController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
+				696067261C7FB64700068B72 /* Empty.m in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
 				48190D2C1C553A96009712F6 /* DownloadDetailOperation.swift in Sources */,
 				699CA60B1C3C543F0094F48A /* Quake.swift in Sources */,
@@ -564,6 +603,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -575,10 +616,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Quakes/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SWIFT_MODULE_NAME)-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -588,6 +632,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -599,10 +645,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Quakes/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SWIFT_MODULE_NAME)-Bridging-Header.h";
 			};
 			name = Release;
 		};
