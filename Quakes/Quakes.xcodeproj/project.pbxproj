@@ -47,7 +47,6 @@
 		696031C81C596C4000F71B93 /* countrytocode.txt in Resources */ = {isa = PBXBuildFile; fileRef = 696031C61C596C4000F71B93 /* countrytocode.txt */; };
 		696067261C7FB64700068B72 /* Empty.m in Sources */ = {isa = PBXBuildFile; fileRef = 696067211C7FB64700068B72 /* Empty.m */; };
 		696067271C7FB64700068B72 /* libFlurry_7.5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696067241C7FB64700068B72 /* libFlurry_7.5.1.a */; };
-		696067281C7FB64700068B72 /* libFlurryWatch_7.5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696067251C7FB64700068B72 /* libFlurryWatch_7.5.1.a */; };
 		6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696067291C7FB67900068B72 /* TelemetryController.swift */; };
 		699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */; };
 		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
@@ -111,9 +110,7 @@
 		696031C61C596C4000F71B93 /* countrytocode.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countrytocode.txt; sourceTree = "<group>"; };
 		696067211C7FB64700068B72 /* Empty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Empty.m; sourceTree = "<group>"; };
 		696067221C7FB64700068B72 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
-		696067231C7FB64700068B72 /* FlurryWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryWatch.h; sourceTree = "<group>"; };
 		696067241C7FB64700068B72 /* libFlurry_7.5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.5.1.a; sourceTree = "<group>"; };
-		696067251C7FB64700068B72 /* libFlurryWatch_7.5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurryWatch_7.5.1.a; sourceTree = "<group>"; };
 		696067291C7FB67900068B72 /* TelemetryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryController.swift; sourceTree = "<group>"; };
 		699CA6051C3C52980094F48A /* Quakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Quakes.xcdatamodel; sourceTree = "<group>"; };
 		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
@@ -151,7 +148,6 @@
 				48190D351C558838009712F6 /* iAd.framework in Frameworks */,
 				4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */,
 				696067271C7FB64700068B72 /* libFlurry_7.5.1.a in Frameworks */,
-				696067281C7FB64700068B72 /* libFlurryWatch_7.5.1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,9 +224,7 @@
 			children = (
 				696067211C7FB64700068B72 /* Empty.m */,
 				696067221C7FB64700068B72 /* Flurry.h */,
-				696067231C7FB64700068B72 /* FlurryWatch.h */,
 				696067241C7FB64700068B72 /* libFlurry_7.5.1.a */,
-				696067251C7FB64700068B72 /* libFlurryWatch_7.5.1.a */,
 			);
 			name = Flurry;
 			path = Quakes/Flurry;

@@ -453,7 +453,7 @@ extension MapViewController: MKMapViewDelegate
         if annotation is Quake {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
             annotationView.enabled = true
-            annotationView.animatesDrop = !firstMapLoad
+            annotationView.animatesDrop = false
             annotationView.canShowCallout = true
             
             if nearbyCitiesToDisplay == nil {
