@@ -61,6 +61,11 @@ class PersistentController
     }
     
     func attemptCleanup() {
+        guard SettingsController.sharedController.lastLocationOption != LocationOption.Major.rawValue ||
+            SettingsController.sharedController.lastLocationOption != LocationOption.World.rawValue else {
+                return
+        }
+        
         let maxQuakesToStore = SettingsController.sharedController.fetchLimit.rawValue
         
         if let quakes = try? Quake.objectsInContext(moc, predicate: nil, sortedBy: "timestamp", ascending: false) {
