@@ -337,11 +337,12 @@ class MapViewController: UIViewController
     }
     
     func filterSliderChanged(sender: UISlider) {
-        TelemetryController.sharedController.logQuakeMapFiltered()
         refreshFilterLabel()
     }
     
     func filterSliderEnded(sender: UISlider) {
+        TelemetryController.sharedController.logQuakeMapFiltered()
+        
         if let quakes = quakesToDisplay {
             mapView.removeAnnotations(mapView.annotations)
             mapView.addAnnotations(quakes.filter{ NSDate().daysSince($0.timestamp) < Int(sender.value) })
