@@ -172,6 +172,9 @@ class SettingsController
             return defaults.boolForKey(SettingsController.kPaidToRemoveKey)
         }
         set {
+            if hasSupported {
+                TelemetryController.sharedController.logSupportedApp()
+            }
             defaults.setBool(newValue, forKey: SettingsController.kPaidToRemoveKey)
             defaults.synchronize()
             NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.kSettingsControllerDidChangePurchaseAdRemovalNotification, object: nil)

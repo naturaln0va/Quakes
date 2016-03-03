@@ -61,8 +61,7 @@ class PersistentController
     }
     
     func attemptCleanup() {
-        guard SettingsController.sharedController.lastLocationOption != LocationOption.Major.rawValue ||
-            SettingsController.sharedController.lastLocationOption != LocationOption.World.rawValue else {
+        if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
                 return
         }
         

@@ -12,6 +12,7 @@ class TelemetryController
         case FetchSize
         case NearbyRadius
         case UnitStyle
+        case SupportedApp
         case QuakeDetail
         case QuakeCity
         case QuakeOpen
@@ -32,6 +33,10 @@ class TelemetryController
     
     func logUnitStyleToggled() {
         Flurry.logEvent(EventName.UnitStyle.rawValue)
+    }
+    
+    func logSupportedApp() {
+        Flurry.logEvent(EventName.SupportedApp.rawValue)
     }
     
     func logQuakeDetailViewed(weblinkString: String) {
