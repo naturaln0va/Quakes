@@ -22,6 +22,7 @@
 		4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4872AB9D1C55C76000B6CF37 /* StoreKit.framework */; };
 		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
+		48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */; };
 		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
 		48C7131A1C4090C600196225 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C713191C4090C600196225 /* SettingsController.swift */; };
 		690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690C289A1C580A750035F47A /* NSDate+Relative.swift */; };
@@ -85,6 +86,7 @@
 		4872AB9D1C55C76000B6CF37 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
+		48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedPolyQuake.swift; sourceTree = "<group>"; };
 		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		48C713191C4090C600196225 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		690C289A1C580A750035F47A /* NSDate+Relative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Relative.swift"; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */,
 				699CA60E1C3C55E10094F48A /* Fetchable.swift */,
 				48190D301C553F81009712F6 /* ParsedNearbyCity.swift */,
+				48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */,
 				69D235361C3D75E100C9AA50 /* ParsedQuake.swift */,
 				699CA6091C3C543F0094F48A /* Quake.swift */,
 			);
@@ -480,6 +483,7 @@
 				699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */,
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
+				48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* QuakesViewController.swift in Sources */,
 				48190D381C559601009712F6 /* PickerViewController.swift in Sources */,
 				692FA24C1C6662C300E4C7E5 /* NotificationPromptViewController.swift in Sources */,
