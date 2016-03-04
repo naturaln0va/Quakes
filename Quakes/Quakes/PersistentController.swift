@@ -77,7 +77,7 @@ class PersistentController
             }
             
             var locationOption: CLLocation?
-            if let nearbyLocation = SettingsController.sharedController.cachedAddress?.location {
+            if let nearbyLocation = SettingsController.sharedController.cachedAddress?.location where SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue {
                 locationOption = nearbyLocation
             }
             else if let searchedLocation = SettingsController.sharedController.lastSearchedPlace?.location {
