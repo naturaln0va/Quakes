@@ -207,12 +207,12 @@ class NetworkClient
                 
                 if DEBUG_REQUESTS { print("Sent: \(response?.URL)\nReceived: \(responseDict)") }
                 
-                guard let firstDetailDict = ((responseDict as AnyObject).valueForKeyPath("properties.products.geoserve") as? [[String: AnyObject]])?.first else {
+                guard let firstDetailDict = ((responseDict as AnyObject).valueForKeyPath("properties.products.nearby-cities") as? [[String: AnyObject]])?.first else {
                     resultError = kInvalidDataError
                     return
                 }
                 
-                guard let urlString = (((firstDetailDict as AnyObject).valueForKeyPath("contents") as? [String: AnyObject])?["geoserve.json"] as? [String: AnyObject])?["url"] as? String else {
+                guard let urlString = (((firstDetailDict as AnyObject).valueForKeyPath("contents") as? [String: AnyObject])?["nearby-cities.json"] as? [String: AnyObject])?["url"] as? String else {
                     resultError = kInvalidDataError
                     return
                 }

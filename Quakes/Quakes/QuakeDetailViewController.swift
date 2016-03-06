@@ -57,14 +57,15 @@ class QuakeDetailViewController: UIViewController
     let manager = CLLocationManager()
     
     var quakeToDisplay: Quake!
-    var parsedNearbyCities: [ParsedNearbyCity]?
-    var lastUserLocation: CLLocation?
-    var distanceFromQuake: Double?
-    var hasNearbyCityInfo: Bool = false {
+    var parsedNearbyCities: [ParsedNearbyCity]? {
         didSet {
-            tableView.reloadData()
+            if let _ = parsedNearbyCities {
+                tableView.reloadData()
+            }
         }
     }
+    var lastUserLocation: CLLocation?
+    var distanceFromQuake: Double?
     
     init(quake: Quake) {
         super.init(nibName: String(QuakeDetailViewController), bundle: nil)
@@ -82,7 +83,6 @@ class QuakeDetailViewController: UIViewController
         
         if let nearbyCities = quakeToDisplay.nearbyCities {
             parsedNearbyCities = nearbyCities
-            hasNearbyCityInfo = true
         }
         else if let url = NSURL(string: quakeToDisplay.detailURL) where quakeToDisplay.nearbyCities == nil {
             NetworkUtility.networkOperationStarted()
@@ -97,7 +97,6 @@ class QuakeDetailViewController: UIViewController
                     
                     dispatch_async(dispatch_get_main_queue()) {
                         self.parsedNearbyCities = cities
-                        self.hasNearbyCityInfo = true
                     }
                 }
             }
@@ -320,8 +319,8 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
             }
         }
         else if indexPath.section == 1 {
-            if hasNearbyCityInfo {
-                cell.textLabel?.text = parsedNearbyCities![indexPath.row].cityName
+            if let cities = parsedNearbyCities {
+                cell.textLabel?.text = cities[indexPath.row].cityName
                 cell.accessoryType = .DisclosureIndicator
             }
             else {
@@ -361,7 +360,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 1 {
-            return hasNearbyCityInfo ? "Nearby Cities" : nil
+            return parsedNearbyCities != nil ? "Nearby Cities" : nil
         }
         else {
             return nil
@@ -379,7 +378,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
             return
         }
         
-        if let url = NSURL(string: quakeToDisplay.weblink) where hasNearbyCityInfo ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
+        if let url = NSURL(string: quakeToDisplay.weblink) where parsedNearbyCities != nil ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(URL: url)
             safariVC.view.tintColor = quakeToDisplay.severityColor
             dispatch_async(dispatch_get_main_queue()) {
@@ -388,7 +387,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
                 })
             }
         }
-        else if let citiesToDisplay = parsedNearbyCities where indexPath.section == 1 && hasNearbyCityInfo {
+        else if let citiesToDisplay = parsedNearbyCities where indexPath.section == 1 && parsedNearbyCities != nil {
             TelemetryController.sharedController.logQuakeCitiesViewed()
             let selectedCity = citiesToDisplay[indexPath.row]
             let sortedCities = citiesToDisplay.sort({ $0.0.cityName == selectedCity.cityName })
@@ -402,7 +401,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
     
     // MARK: - UITableView DataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return hasNearbyCityInfo ? 3 : 2
+        return parsedNearbyCities != nil ? 3 : 2
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -410,7 +409,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
             return 7
         }
         else if section == 1 {
-            return hasNearbyCityInfo ? parsedNearbyCities!.count : 1
+            return parsedNearbyCities != nil ? parsedNearbyCities!.count : 1
         }
         else {
             return 1
