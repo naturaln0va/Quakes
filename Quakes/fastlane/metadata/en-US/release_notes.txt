@@ -1,0 +1,7 @@
+Some bugs were discovered, but fear not they have been annihilated!
+
+• Did you feel it?
+You are now able to see the number of people said they felt a quake. If you felt the quake you are also able to fill out a short form to indicate when and how you felt the quake.
+
+• Filter the map
+You can now see which quakes happened when. Using a slider you can adjust how many quakes happened through out the month.

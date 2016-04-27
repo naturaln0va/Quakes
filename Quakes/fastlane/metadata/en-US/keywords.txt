@@ -1,0 +1,1 @@
+earthquake,alert,warning,safety,severe,geology,hurricane,california,major,nearby,worldwide,free,cool

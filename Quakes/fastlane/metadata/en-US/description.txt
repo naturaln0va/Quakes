@@ -1,0 +1,25 @@
+Quakes is an elegant earthquake utility. A simple easy to use interface will help you stay updated with the latest earthquake activity.
+
+Easily view details of the world’s most recent earthquakes. Narrow your search to a specific area using a map.
+
+Find the quakes near a specific area or view all the recent world quakes. Stay alert with local notifications about the amount of quake activity around you or the world.
+
+Features:
+• View quakes nearby you using your phone's GPS
+• Search for quakes by city or zip code
+• Search for quakes on a map & compare them to your location
+• View recent worldwide & major quakes
+• See the cities nearest to a specific quake
+• Share a satellite image of the area around a quake
+• Open a quake in USGS.gov to view more details 
+• Local notifications to show recent quake activity around you and the world
+
+Designed to work with the iPhone & iPad running iOS 9 or later.
+Optimized for the iPhone 6 & 6+.
+
+Feel free to contact me with comments, questions, or any feedback.
+
+Ratings are highly appreciated.
+
+Twitter:	@naturaln0va
+Email:	support@ackermann.io
