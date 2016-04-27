@@ -3,7 +3,7 @@ import CoreData
 
 
 protocol Fetchable {
-    typealias FetchableType: NSManagedObject
+    associatedtype FetchableType: NSManagedObject
     
     static func entityName() -> String
     static func objectsInContext(context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) throws -> [FetchableType]
