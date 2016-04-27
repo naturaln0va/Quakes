@@ -24,7 +24,7 @@ class QuakeDetailViewController: UIViewController
         button.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button.titleLabel?.textAlignment = .Center
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.addTarget(self, action: "openInMapButtonPressed", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(QuakeDetailViewController.openInMapButtonPressed), forControlEvents: .TouchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
         return button
@@ -36,7 +36,7 @@ class QuakeDetailViewController: UIViewController
         button.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button.titleLabel?.textAlignment = .Center
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.addTarget(self, action: "feltButtonPressed", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(QuakeDetailViewController.feltButtonPressed), forControlEvents: .TouchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
         return button
@@ -119,7 +119,7 @@ class QuakeDetailViewController: UIViewController
         }
         
         nameHeaderLabel.text = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: "shareButtonPressed")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(QuakeDetailViewController.shareButtonPressed))
         
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true

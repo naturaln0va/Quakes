@@ -35,7 +35,7 @@ class QuakesViewController: UIViewController
         button.backgroundColor = StyleController.searchBarColor
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
         button.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        button.addTarget(self, action: "titleButtonPressed", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(QuakesViewController.titleButtonPressed), forControlEvents: .TouchUpInside)
         button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
         button.layer.cornerRadius = 4.0
         button.sizeToFit()
@@ -66,13 +66,13 @@ class QuakesViewController: UIViewController
             landscapeImagePhone: nil,
             style: .Plain,
             target: self,
-            action: "mapButtonPressed"
+            action: #selector(QuakesViewController.mapButtonPressed)
         )
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(named: "settings-gear"),
             style: .Plain,
             target: self,
-            action: "settingsButtonPressed"
+            action: #selector(QuakesViewController.settingsButtonPressed)
         )
         navigationItem.rightBarButtonItem?.enabled = false
         
@@ -84,7 +84,7 @@ class QuakesViewController: UIViewController
         
         refresher.tintColor = StyleController.contrastColor
         refresher.backgroundColor = StyleController.backgroundColor
-        refresher.addTarget(self, action: "fetchQuakes", forControlEvents: .ValueChanged)
+        refresher.addTarget(self, action: #selector(QuakesViewController.fetchQuakes), forControlEvents: .ValueChanged)
         tableView.addSubview(refresher)
         
         bannerView.adUnitID = "ca-app-pub-6493864895252732/6300764804"
@@ -101,21 +101,21 @@ class QuakesViewController: UIViewController
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "settingsDidChangeUnitStyle",
+            selector: #selector(QuakesViewController.settingsDidChangeUnitStyle),
             name: SettingsController.kSettingsControllerDidChangeUnitStyleNotification,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "settingsDidPurchaseAdRemoval",
+            selector: #selector(QuakesViewController.settingsDidPurchaseAdRemoval),
             name: SettingsController.kSettingsControllerDidChangePurchaseAdRemovalNotification,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "applicationDidEnterForeground",
+            selector: #selector(QuakesViewController.applicationDidEnterForeground),
             name: UIApplicationDidBecomeActiveNotification,
             object: nil
         )

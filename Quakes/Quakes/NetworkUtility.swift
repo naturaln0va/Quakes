@@ -11,12 +11,12 @@ class NetworkUtility
         if loadingCount == 0 {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         }
-        loadingCount++
+        loadingCount += 1
     }
     
     static func networkOperationFinished() {
         if loadingCount > 0 {
-            loadingCount--
+            loadingCount -= 1
         }
         if loadingCount == 0 {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false

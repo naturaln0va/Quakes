@@ -47,7 +47,7 @@ class SettingsViewController: UITableViewController
         tableView.delegate = self
         tableView.dataSource = self
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .Plain, target: self, action: "doneButtonPressed")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .Plain, target: self, action: #selector(SettingsViewController.doneButtonPressed))
     }
     
     // MARK: - Actions
@@ -122,7 +122,7 @@ class SettingsViewController: UITableViewController
                 unitSwitch.on = !SettingsController.sharedController.isUnitStyleImperial
                 unitSwitch.addTarget(
                     self,
-                    action: "switchWasToggled:",
+                    action: #selector(SettingsViewController.switchWasToggled(_:)),
                     forControlEvents: .ValueChanged
                 )
                 

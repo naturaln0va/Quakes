@@ -27,7 +27,7 @@ class MapViewController: UIViewController
         return MKUserTrackingBarButtonItem(mapView: self.mapView)
     }()
     private lazy var searchBarButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "searchButtonPressed")
+        return UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: #selector(MapViewController.searchButtonPressed))
     }()
     private lazy var messageLabelBarButtonItem: UIBarButtonItem = {
         let messageLabel = UILabel()
@@ -61,8 +61,8 @@ class MapViewController: UIViewController
         slider.minimumValue = 1
         slider.maximumValue = 30
         slider.value = 30
-        slider.addTarget(self, action: "filterSliderChanged:", forControlEvents: .ValueChanged)
-        slider.addTarget(self, action: "filterSliderEnded:", forControlEvents: .TouchUpInside)
+        slider.addTarget(self, action: #selector(MapViewController.filterSliderChanged(_:)), forControlEvents: .ValueChanged)
+        slider.addTarget(self, action: #selector(MapViewController.filterSliderEnded(_:)), forControlEvents: .TouchUpInside)
         return slider
     }()
     

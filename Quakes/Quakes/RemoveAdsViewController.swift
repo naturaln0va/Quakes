@@ -31,13 +31,13 @@ class RemoveAdsViewController: UIViewController
         else {
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
-                selector: "adRemovalPurchased",
+                selector: #selector(RemoveAdsViewController.adRemovalPurchased),
                 name: IAPUtility.IAPHelperPurchaseNotification,
                 object: nil
             )
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
-                selector: "adRemovalFailed",
+                selector: #selector(RemoveAdsViewController.adRemovalFailed),
                 name: IAPUtility.IAPHelperFailedNotification,
                 object: nil
             )
@@ -46,7 +46,7 @@ class RemoveAdsViewController: UIViewController
             navigationItem.rightBarButtonItem = UIBarButtonItem(
                 barButtonSystemItem: .Refresh,
                 target: self,
-                action: "refreshButtonPressed"
+                action: #selector(RemoveAdsViewController.refreshButtonPressed)
             )
             navigationItem.rightBarButtonItem?.enabled = false
             removeAdsButton.enabled = false
@@ -95,7 +95,7 @@ class RemoveAdsViewController: UIViewController
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .Refresh,
             target: self,
-            action: "refreshButtonPressed"
+            action: #selector(RemoveAdsViewController.refreshButtonPressed)
         )
         
         messageLabel.alpha = 1.0
