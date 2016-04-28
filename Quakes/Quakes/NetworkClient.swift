@@ -240,6 +240,7 @@ class NetworkClient
                 
                 defer {
                     NetworkUtility.networkOperationFinished()
+                    SettingsController.sharedController.lastFetchDate = NSDate()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(quakes: quakes, error: error)
                     }
@@ -295,6 +296,7 @@ class NetworkClient
                 
                 defer {
                     NetworkUtility.networkOperationFinished()
+                    SettingsController.sharedController.lastFetchDate = NSDate()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(quakes: quakes, error: error)
                     }
@@ -346,6 +348,7 @@ class NetworkClient
                 
                 defer {
                     NetworkUtility.networkOperationFinished()
+                    SettingsController.sharedController.lastFetchDate = NSDate()
                     dispatch_async(dispatch_get_main_queue()) {
                         completion(quakes: quakes, error: error)
                     }

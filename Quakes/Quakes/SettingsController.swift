@@ -8,6 +8,7 @@ class SettingsController
     
     static let kSettingsControllerDidChangeUnitStyleNotification = "settingsControllerDidChangeUnitStyle"
     static let kSettingsControllerDidChangePurchaseAdRemovalNotification = "settingsControllerDidChangePurchaseAdRemoval"
+    static let kSettingsControllerDidUpdateLastFetchDateNotification = "settingsControllerDidUpdateLastFetchDate"
     
     enum APIFetchSize: Int {
         case Small = 100
@@ -89,6 +90,7 @@ class SettingsController
     private static let kLastLocationOptionKey = "lastLocationOption"
     private static let kUserFirstLaunchedKey = "firstLaunchKey"
     private static let kLastPushKey = "lastPush"
+    private static let kLastFetchKey = "lastFetch"
     private static let kPaidToRemoveKey = "alreadyPaid"
     private static let kHasAttemptedNotificationKey = "attemptedNotification"
     
@@ -271,6 +273,18 @@ class SettingsController
         }
         set {
             defaults.setDouble(newValue.timeIntervalSince1970, forKey: SettingsController.kLastPushKey)
+            defaults.synchronize()
+        }
+    }
+    
+    var lastFetchDate: NSDate {
+        get {
+            let interval = defaults.doubleForKey(SettingsController.kLastFetchKey)
+            return interval == 0 ? NSDate.distantPast() : NSDate(timeIntervalSince1970: interval)
+        }
+        set {
+            NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.kSettingsControllerDidUpdateLastFetchDateNotification, object: nil)
+            defaults.setDouble(newValue.timeIntervalSince1970, forKey: SettingsController.kLastFetchKey)
             defaults.synchronize()
         }
     }

@@ -43,6 +43,15 @@ class QuakesViewController: UIViewController
         return button
     }()
     
+    lazy var lastFetchDateFormatter: NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        
+        formatter.timeStyle = .ShortStyle
+        formatter.dateStyle = .ShortStyle
+        
+        return formatter
+    }()
+    
     private lazy var refresher = UIRefreshControl()
     private lazy var locationManager = CLLocationManager()
     private lazy var defaults = NSUserDefaults.standardUserDefaults()
@@ -84,6 +93,7 @@ class QuakesViewController: UIViewController
         
         refresher.tintColor = StyleController.contrastColor
         refresher.backgroundColor = StyleController.backgroundColor
+        refresher.attributedTitle = NSAttributedString(string: "Last updated: \(lastFetchDateFormatter.stringFromDate(SettingsController.sharedController.lastFetchDate))")
         refresher.addTarget(self, action: #selector(QuakesViewController.fetchQuakes), forControlEvents: .ValueChanged)
         tableView.addSubview(refresher)
         
@@ -117,6 +127,20 @@ class QuakesViewController: UIViewController
             self,
             selector: #selector(QuakesViewController.applicationDidEnterForeground),
             name: UIApplicationDidBecomeActiveNotification,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(QuakesViewController.applicationDidEnterForeground),
+            name: UIApplicationDidBecomeActiveNotification,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(QuakesViewController.settingsDidUpdateLastFetchDate),
+            name: SettingsController.kSettingsControllerDidUpdateLastFetchDateNotification,
             object: nil
         )
         
@@ -207,6 +231,11 @@ class QuakesViewController: UIViewController
     
     func settingsDidChangeUnitStyle() {
         tableView.reloadData()
+    }
+    
+    func settingsDidUpdateLastFetchDate() {
+        let attrString = NSAttributedString(string: "Last updated: \(lastFetchDateFormatter.stringFromDate(SettingsController.sharedController.lastFetchDate))")
+        refresher.attributedTitle = attrString
     }
     
     // MARK: - Actions
