@@ -97,7 +97,7 @@ class RemoveAdsViewController: UIViewController
         messageLabel.alpha = 1.0
         messageLabel.text = "Ad removal failed."
         
-        UIView.animateWithDuration(0.345, delay: 4.0, options: [], animations: {
+        UIView.animateWithDuration(0.3, delay: 4.0, options: [], animations: {
             self.messageLabel.alpha = 0.0
         }) { _ in
             self.messageLabel.text = ""

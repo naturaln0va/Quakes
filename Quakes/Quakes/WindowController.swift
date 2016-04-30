@@ -39,6 +39,63 @@ class WindowController: UIResponder, UIApplicationDelegate
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         guard NetworkUtility.internetReachable() else { completionHandler(.Failed); return }
+        
+        if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
+            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { _, error in
+                if error == nil {
+                    completionHandler(.NewData)
+                }
+                else {
+                    completionHandler(.Failed)
+                }
+            }
+            return
+        }
+        
+        if let option = SettingsController.sharedController.lastLocationOption {
+            switch option {
+            case LocationOption.Nearby.rawValue:
+                if let current = SettingsController.sharedController.cachedAddress?.location {
+                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { _, error in
+                        if error == nil {
+                            completionHandler(.NewData)
+                        }
+                        else {
+                            completionHandler(.Failed)
+                        }
+                    }
+                }
+                else {
+                    completionHandler(.Failed)
+                }
+                break
+            case LocationOption.World.rawValue:
+                NetworkClient.sharedClient.getWorldQuakes() { _, error in
+                    if error == nil {
+                        completionHandler(.NewData)
+                    }
+                    else {
+                        completionHandler(.Failed)
+                    }
+                }
+                break
+            case LocationOption.Major.rawValue:
+                NetworkClient.sharedClient.getMajorQuakes { _, error in
+                    if error == nil {
+                        completionHandler(.NewData)
+                    }
+                    else {
+                        completionHandler(.Failed)
+                    }
+                }
+                break
+                
+            default:
+                completionHandler(.Failed)
+                break
+            }
+        }
+        
         guard SettingsController.sharedController.hasAttemptedNotificationPermission else { completionHandler(.Failed); return }
         guard let notificationSettings = application.currentUserNotificationSettings() where notificationSettings.types != .None else { completionHandler(.Failed); return }
         guard NSDate().daysSince(SettingsController.sharedController.lastPushDate) > 6 else { completionHandler(.NoData); return }

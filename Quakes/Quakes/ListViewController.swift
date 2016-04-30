@@ -58,7 +58,7 @@ class ListViewController: UIViewController
     private lazy var geocoder = CLGeocoder()
     private var transitionAnimator: TextBarAnimator?
 
-    var currentLocation: CLLocation?
+    var currentLocation: CLLocation? = SettingsController.sharedController.cachedAddress?.location
 
     deinit {
         fetchedResultsController.delegate = nil
@@ -271,7 +271,7 @@ class ListViewController: UIViewController
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
             setTitleButtonText("\(lastPlace.cityStateString())")
 
-            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
+            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { _ in
                 self.commonFinishedFetch()
             }
             return
@@ -283,7 +283,7 @@ class ListViewController: UIViewController
                 if let current = currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
-                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
+                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { _ in
                         self.commonFinishedFetch()
                     }
                 }
@@ -308,14 +308,14 @@ class ListViewController: UIViewController
             case LocationOption.World.rawValue:
                 setTitleButtonText("Worldwide Quakes")
                 
-                NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
+                NetworkClient.sharedClient.getWorldQuakes() { _ in
                     self.commonFinishedFetch()
                 }
                 break
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
-                NetworkClient.sharedClient.getMajorQuakes { quakes, error in
+                NetworkClient.sharedClient.getMajorQuakes { _ in
                     self.commonFinishedFetch()
                 }
                 break
