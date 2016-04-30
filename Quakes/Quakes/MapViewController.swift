@@ -488,7 +488,7 @@ extension MapViewController: MKMapViewDelegate
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hash == control.tag }) {
             navigationController?.popToRootViewControllerAnimated(true)
-            navigationController?.pushViewController(QuakeDetailViewController(quake: quakes[index]), animated: true)
+            navigationController?.pushViewController(DetailViewController(quake: quakes[index]), animated: true)
         }
     }
     

@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QuakeDetailViewController" customModule="Quakes" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailViewController">
             <connections>
                 <outlet property="nameHeaderLabel" destination="PgY-IJ-lZC" id="Ev2-Aa-pd4"/>
                 <outlet property="tableView" destination="phf-rb-3P5" id="3yd-eV-0QZ"/>

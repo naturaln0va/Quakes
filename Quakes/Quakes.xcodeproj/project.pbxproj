@@ -50,8 +50,8 @@
 		696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031BB1C5948EF00F71B93 /* SeverityView.swift */; };
 		696031BE1C5953F000F71B93 /* country-to-code.plist in Resources */ = {isa = PBXBuildFile; fileRef = 696031BD1C5953F000F71B93 /* country-to-code.plist */; };
 		696031C01C59554300F71B93 /* FlagKit.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 696031BF1C59554300F71B93 /* FlagKit.xcassets */; };
-		696031C31C595BD200F71B93 /* QuakeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031C11C595BD200F71B93 /* QuakeDetailViewController.swift */; };
-		696031C41C595BD200F71B93 /* QuakeDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */; };
+		696031C31C595BD200F71B93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031C11C595BD200F71B93 /* DetailViewController.swift */; };
+		696031C41C595BD200F71B93 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031C21C595BD200F71B93 /* DetailViewController.xib */; };
 		696031C71C596C4000F71B93 /* convert.py in Resources */ = {isa = PBXBuildFile; fileRef = 696031C51C596C4000F71B93 /* convert.py */; };
 		696031C81C596C4000F71B93 /* countrytocode.txt in Resources */ = {isa = PBXBuildFile; fileRef = 696031C61C596C4000F71B93 /* countrytocode.txt */; };
 		696067261C7FB64700068B72 /* Empty.m in Sources */ = {isa = PBXBuildFile; fileRef = 696067211C7FB64700068B72 /* Empty.m */; };
@@ -120,8 +120,8 @@
 		696031BB1C5948EF00F71B93 /* SeverityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityView.swift; sourceTree = "<group>"; };
 		696031BD1C5953F000F71B93 /* country-to-code.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "country-to-code.plist"; sourceTree = "<group>"; };
 		696031BF1C59554300F71B93 /* FlagKit.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FlagKit.xcassets; sourceTree = "<group>"; };
-		696031C11C595BD200F71B93 /* QuakeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = QuakeDetailViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakeDetailViewController.xib; sourceTree = "<group>"; };
+		696031C11C595BD200F71B93 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DetailViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		696031C21C595BD200F71B93 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
 		696031C51C596C4000F71B93 /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		696031C61C596C4000F71B93 /* countrytocode.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countrytocode.txt; sourceTree = "<group>"; };
 		696067211C7FB64700068B72 /* Empty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Empty.m; sourceTree = "<group>"; };
@@ -340,8 +340,8 @@
 				696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */,
 				696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */,
 				48190D371C559601009712F6 /* PickerViewController.swift */,
-				696031C11C595BD200F71B93 /* QuakeDetailViewController.swift */,
-				696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */,
+				696031C11C595BD200F71B93 /* DetailViewController.swift */,
+				696031C21C595BD200F71B93 /* DetailViewController.xib */,
 				699CA6121C3C5D6F0094F48A /* ListViewController.swift */,
 				69D590F71C73855000481E44 /* ListViewController.xib */,
 				4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */,
@@ -443,7 +443,7 @@
 				692FA24D1C6662C300E4C7E5 /* NotificationPromptViewController.xib in Resources */,
 				69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */,
 				4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */,
-				696031C41C595BD200F71B93 /* QuakeDetailViewController.xib in Resources */,
+				696031C41C595BD200F71B93 /* DetailViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,7 +469,7 @@
 				6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */,
-				696031C31C595BD200F71B93 /* QuakeDetailViewController.swift in Sources */,
+				696031C31C595BD200F71B93 /* DetailViewController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
 				696067261C7FB64700068B72 /* Empty.m in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,

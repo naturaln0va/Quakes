@@ -374,7 +374,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
-            navigationController?.pushViewController(QuakeDetailViewController(quake: quake), animated: true)
+            navigationController?.pushViewController(DetailViewController(quake: quake), animated: true)
         }
     }
     

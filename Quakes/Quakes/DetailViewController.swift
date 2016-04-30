@@ -5,7 +5,7 @@ import CoreLocation
 import SafariServices
 
 
-class QuakeDetailViewController: UIViewController
+class DetailViewController: UIViewController
 {
 
     @IBOutlet var nameHeaderLabel: UILabel!
@@ -24,7 +24,7 @@ class QuakeDetailViewController: UIViewController
         button.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button.titleLabel?.textAlignment = .Center
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.addTarget(self, action: #selector(QuakeDetailViewController.openInMapButtonPressed), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(DetailViewController.openInMapButtonPressed), forControlEvents: .TouchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
         return button
@@ -36,7 +36,7 @@ class QuakeDetailViewController: UIViewController
         button.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button.titleLabel?.textAlignment = .Center
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.addTarget(self, action: #selector(QuakeDetailViewController.feltButtonPressed), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(DetailViewController.feltButtonPressed), forControlEvents: .TouchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
         return button
@@ -68,7 +68,7 @@ class QuakeDetailViewController: UIViewController
     var distanceFromQuake: Double?
     
     init(quake: Quake) {
-        super.init(nibName: String(QuakeDetailViewController), bundle: nil)
+        super.init(nibName: String(DetailViewController), bundle: nil)
         self.quakeToDisplay = quake
     }
     
@@ -119,7 +119,7 @@ class QuakeDetailViewController: UIViewController
         }
         
         nameHeaderLabel.text = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(QuakeDetailViewController.shareButtonPressed))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(DetailViewController.shareButtonPressed))
         
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true
@@ -279,7 +279,7 @@ class QuakeDetailViewController: UIViewController
     
 }
 
-extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
+extension DetailViewController: UITableViewDelegate, UITableViewDataSource
 {
     
     // MARK: - UITableView Delegate
@@ -418,7 +418,7 @@ extension QuakeDetailViewController: UITableViewDelegate, UITableViewDataSource
     
 }
 
-extension QuakeDetailViewController: CLLocationManagerDelegate
+extension DetailViewController: CLLocationManagerDelegate
 {
     
     // MARK: - CLLocationManager Delegate
@@ -430,7 +430,7 @@ extension QuakeDetailViewController: CLLocationManagerDelegate
     
 }
 
-extension QuakeDetailViewController: MKMapViewDelegate
+extension DetailViewController: MKMapViewDelegate
 {
     
     // MARK: - MKMapView Delegate
