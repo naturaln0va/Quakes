@@ -6,8 +6,6 @@ class RemoveAdsViewController: UIViewController
 {
 
     @IBOutlet weak var removeAdsButton: UIButton!
-    @IBOutlet weak var shareAppButton: UIButton!
-    @IBOutlet weak var dividingOrLabel: UILabel!
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
@@ -24,7 +22,6 @@ class RemoveAdsViewController: UIViewController
         if SettingsController.sharedController.hasSupported {
             headerLabel.text = "Thanks for your support ♥️"
             removeAdsButton.hidden = true
-            dividingOrLabel.hidden = true
             navigationItem.rightBarButtonItem = nil
             confetti.startConfetti()
         }
@@ -85,7 +82,6 @@ class RemoveAdsViewController: UIViewController
     func adRemovalPurchased() {
         headerLabel.text = "Thanks for your support ♥️"
         removeAdsButton.hidden = true
-        dividingOrLabel.hidden = true
         navigationItem.rightBarButtonItem = nil
         SettingsController.sharedController.hasSupported = true
         confetti.startConfetti()
@@ -101,7 +97,7 @@ class RemoveAdsViewController: UIViewController
         messageLabel.alpha = 1.0
         messageLabel.text = "Ad removal failed."
         
-        UIView.animateWithDuration(0.345, delay: 2.0, options: [], animations: {
+        UIView.animateWithDuration(0.345, delay: 4.0, options: [], animations: {
             self.messageLabel.alpha = 0.0
         }) { _ in
             self.messageLabel.text = ""
@@ -109,19 +105,6 @@ class RemoveAdsViewController: UIViewController
     }
     
     // MARK: Actions
-    @IBAction func shareButtonPressed(sender: UIButton) {
-        let shareVC = UIActivityViewController(
-            activityItems: ["Quakes: the best way to view details about earthquakes around the world! Check it out:\n", NSURL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8")!],
-            applicationActivities: nil
-        )
-        shareVC.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
-            if completed {
-                self.adRemovalPurchased()
-            }
-        }
-        presentViewController(shareVC, animated: true, completion: nil)
-    }
-    
     @IBAction func removeAdsButtonPressed(sender: UIButton) {
         helper.purchaseRemoveAds()
     }
