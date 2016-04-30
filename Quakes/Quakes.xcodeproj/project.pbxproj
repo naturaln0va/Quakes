@@ -14,6 +14,14 @@
 		48190D381C559601009712F6 /* PickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D371C559601009712F6 /* PickerViewController.swift */; };
 		48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D391C55A02F009712F6 /* UIDevice+Additions.swift */; };
 		483A624C1CD4F264008CA19D /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 483A624B1CD4F264008CA19D /* GoogleMobileAds.framework */; };
+		483A624E1CD4FF26008CA19D /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A624D1CD4FF26008CA19D /* NetworkOperation.swift */; };
+		483A62501CD505B5008CA19D /* USGSLocationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */; };
+		483A62521CD50BD4008CA19D /* USGSFetchQuakesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */; };
+		483A62541CD50C5F008CA19D /* USGSWorldOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62531CD50C5F008CA19D /* USGSWorldOperation.swift */; };
+		483A62561CD50CD4008CA19D /* USGSMajorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62551CD50CD4008CA19D /* USGSMajorOperation.swift */; };
+		483A62581CD50DE1008CA19D /* RecentQuakeCountOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62571CD50DE1008CA19D /* RecentQuakeCountOperation.swift */; };
+		483A625A1CD515A9008CA19D /* GetNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */; };
+		483A625C1CD518FE008CA19D /* GetDetailURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
 		4872AB991C55C15300B6CF37 /* RemoveAdsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */; };
@@ -76,6 +84,14 @@
 		48190D371C559601009712F6 /* PickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerViewController.swift; sourceTree = "<group>"; };
 		48190D391C55A02F009712F6 /* UIDevice+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Additions.swift"; sourceTree = "<group>"; };
 		483A624B1CD4F264008CA19D /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
+		483A624D1CD4FF26008CA19D /* NetworkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
+		483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSLocationOperation.swift; sourceTree = "<group>"; };
+		483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSFetchQuakesOperation.swift; sourceTree = "<group>"; };
+		483A62531CD50C5F008CA19D /* USGSWorldOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSWorldOperation.swift; sourceTree = "<group>"; };
+		483A62551CD50CD4008CA19D /* USGSMajorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSMajorOperation.swift; sourceTree = "<group>"; };
+		483A62571CD50DE1008CA19D /* RecentQuakeCountOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentQuakeCountOperation.swift; sourceTree = "<group>"; };
+		483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetNearbyCitiesOperation.swift; sourceTree = "<group>"; };
+		483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDetailURLOperation.swift; sourceTree = "<group>"; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Format.swift"; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveAdsViewController.swift; sourceTree = "<group>"; };
@@ -163,6 +179,14 @@
 				48190D2E1C553C9B009712F6 /* ConcurrentOperation.swift */,
 				48190D2B1C553A96009712F6 /* DownloadDetailOperation.swift */,
 				48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */,
+				483A624D1CD4FF26008CA19D /* NetworkOperation.swift */,
+				483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */,
+				483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */,
+				483A62531CD50C5F008CA19D /* USGSWorldOperation.swift */,
+				483A62551CD50CD4008CA19D /* USGSMajorOperation.swift */,
+				483A62571CD50DE1008CA19D /* RecentQuakeCountOperation.swift */,
+				483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */,
+				483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */,
 			);
 			name = Operations;
 			sourceTree = "<group>";
@@ -430,6 +454,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				483A625A1CD515A9008CA19D /* GetNearbyCitiesOperation.swift in Sources */,
 				48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */,
 				48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */,
 				69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */,
@@ -438,6 +463,8 @@
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
 				4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */,
 				69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */,
+				483A62581CD50DE1008CA19D /* RecentQuakeCountOperation.swift in Sources */,
+				483A624E1CD4FF26008CA19D /* NetworkOperation.swift in Sources */,
 				690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */,
 				6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
@@ -447,6 +474,7 @@
 				696067261C7FB64700068B72 /* Empty.m in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
 				48190D2C1C553A96009712F6 /* DownloadDetailOperation.swift in Sources */,
+				483A62541CD50C5F008CA19D /* USGSWorldOperation.swift in Sources */,
 				699CA60B1C3C543F0094F48A /* Quake.swift in Sources */,
 				692FA24F1C66732700E4C7E5 /* Int+Random.swift in Sources */,
 				69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */,
@@ -454,10 +482,12 @@
 				48190D311C553F81009712F6 /* ParsedNearbyCity.swift in Sources */,
 				4872AB991C55C15300B6CF37 /* RemoveAdsViewController.swift in Sources */,
 				699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */,
+				483A62521CD50BD4008CA19D /* USGSFetchQuakesOperation.swift in Sources */,
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
 				48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* QuakesViewController.swift in Sources */,
+				483A62561CD50CD4008CA19D /* USGSMajorOperation.swift in Sources */,
 				48190D381C559601009712F6 /* PickerViewController.swift in Sources */,
 				692FA24C1C6662C300E4C7E5 /* NotificationPromptViewController.swift in Sources */,
 				69B30FE31C3B051600241D79 /* WindowController.swift in Sources */,
@@ -465,9 +495,11 @@
 				694269EB1C46E55800BAA5C9 /* TextBarAnimator.swift in Sources */,
 				48190D2F1C553C9B009712F6 /* ConcurrentOperation.swift in Sources */,
 				483D1B141C3C8064003A5970 /* CLPlacemark+Format.swift in Sources */,
+				483A62501CD505B5008CA19D /* USGSLocationOperation.swift in Sources */,
 				69150F291C3DE60600D9D3BF /* String+BundleAdditions.swift in Sources */,
 				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Format.swift in Sources */,
 				69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */,
+				483A625C1CD518FE008CA19D /* GetDetailURLOperation.swift in Sources */,
 				699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */,
 				69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */,
 			);

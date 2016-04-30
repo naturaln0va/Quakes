@@ -10,7 +10,6 @@ protocol Fetchable {
     static func singleObjectInContext(context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) throws -> FetchableType?
     static func objectCountInContext(context: NSManagedObjectContext, predicate: NSPredicate?) -> Int
     static func fetchRequest(context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) -> NSFetchRequest
-    
 }
 
 extension Fetchable where Self: NSManagedObject, FetchableType == Self

@@ -11,11 +11,6 @@ class WindowController: UIResponder, UIApplicationDelegate
     
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        
-        if SettingsController.sharedController.fisrtLaunchDate == nil {
-            SettingsController.sharedController.fisrtLaunchDate = NSDate()
-        }
-        
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
         window.rootViewController = StyledNavigationController(rootViewController: QuakesViewController())
@@ -27,12 +22,16 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         
-        if !SettingsController.sharedController.hasSupported {
+        if !SettingsController.sharedController.hasSupported && SettingsController.sharedController.fisrtLaunchDate == nil {
             NetworkClient.sharedClient.verifyInAppRecipt { sucess in
                 if sucess {
                     SettingsController.sharedController.hasSupported = true
                 }
             }
+        }
+        
+        if SettingsController.sharedController.fisrtLaunchDate == nil {
+            SettingsController.sharedController.fisrtLaunchDate = NSDate()
         }
         
         return true
@@ -44,10 +43,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         guard let notificationSettings = application.currentUserNotificationSettings() where notificationSettings.types != .None else { completionHandler(.Failed); return }
         guard NSDate().daysSince(SettingsController.sharedController.lastPushDate) > 6 else { completionHandler(.NoData); return }
         
-        NetworkUtility.networkOperationStarted()
         NetworkClient.sharedClient.getNotificationCountFromStartDate(SettingsController.sharedController.lastPushDate) { count, error in
-            NetworkUtility.networkOperationFinished()
-            
             if let count = count where error == nil && count > 1 {
                 completionHandler(.NewData)
                 self.postLocalNotificationWithNumberOfNewQuakes(count)

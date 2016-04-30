@@ -276,10 +276,7 @@ class QuakesViewController: UIViewController
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
             setTitleButtonText("\(lastPlace.cityStateString())")
 
-            NetworkUtility.networkOperationStarted()
-            NetworkClient.sharedClient.getRecentQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
-                NetworkUtility.networkOperationFinished()
-
+            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
                 if let quakes = quakes where error == nil {
                     self.commonFetchedQuakes(quakes)
                 }
@@ -293,10 +290,7 @@ class QuakesViewController: UIViewController
                 if let current = currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
-                    NetworkUtility.networkOperationStarted()
-                    NetworkClient.sharedClient.getRecentQuakesByLocation(current.coordinate) { quakes, error in
-                        NetworkUtility.networkOperationFinished()
-                        
+                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
                         if let quakes = quakes where error == nil {
                             self.commonFetchedQuakes(quakes)
                         }
@@ -323,10 +317,7 @@ class QuakesViewController: UIViewController
             case LocationOption.World.rawValue:
                 setTitleButtonText("Worldwide Quakes")
                 
-                NetworkUtility.networkOperationStarted()
-                NetworkClient.sharedClient.getRecentWorldQuakes() { quakes, error in
-                    NetworkUtility.networkOperationFinished()
-                    
+                NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
                     if let quakes = quakes where error == nil {
                         self.commonFetchedQuakes(quakes)
                     }
@@ -335,10 +326,7 @@ class QuakesViewController: UIViewController
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
-                NetworkUtility.networkOperationStarted()
-                NetworkClient.sharedClient.getRecentMajorQuakes { quakes, error in
-                    NetworkUtility.networkOperationFinished()
-                    
+                NetworkClient.sharedClient.getMajorQuakes { quakes, error in
                     if let quakes = quakes where error == nil {
                         self.commonFetchedQuakes(quakes)
                     }
