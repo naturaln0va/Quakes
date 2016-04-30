@@ -217,7 +217,6 @@ class QuakesViewController: UIViewController
     // MARK: - Notifications
     func applicationDidEnterForeground() {
         tableView.reloadData()
-        fetchQuakes()
     }
     
     func settingsDidPurchaseAdRemoval() {
@@ -269,8 +268,9 @@ class QuakesViewController: UIViewController
             noResultsLabel.removeFromSuperview()
         }
         
-        if SettingsController.sharedController.fisrtLaunchDate == nil {
-            SettingsController.sharedController.lastLocationOption = LocationOption.World.rawValue
+        if SettingsController.sharedController.lastLocationOption == nil {
+            presentFinder()
+            return
         }
         
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
@@ -426,53 +426,54 @@ extension QuakesViewController: CLLocationManagerDelegate
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let lastLocation = locations.last {
-            currentLocation = lastLocation
-            stopLocationManager()
-            
-            if let cachedAddress = SettingsController.sharedController.cachedAddress,
-                let cachedLocation = cachedAddress.location where lastLocation.distanceFromLocation(cachedLocation) > 5 * 1000 {
-                    geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] places, error in
-                        if let placemark = places?.first where error == nil {
-                            SettingsController.sharedController.cachedAddress = placemark
-                            self.setTitleButtonText("\(placemark.cityStateString())")
-                        }
-                        else {
-                            self.setTitleButtonText("Location Error")
-                            
-                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                                self.presentFinder()
-                            }
-                        }
-                        
-                        self.fetchQuakes()
+        guard let lastLocation = locations.last else {
+            return
+        }
+        
+        currentLocation = lastLocation
+        stopLocationManager()
+        
+        if let cachedAddress = SettingsController.sharedController.cachedAddress {
+            if let cachedLocation = cachedAddress.location where lastLocation.distanceFromLocation(cachedLocation) > 5 * 1000 {
+                geocoder.reverseGeocodeLocation(lastLocation) { [weak self] places, error in
+                    if let placemark = places?.first where error == nil {
+                        SettingsController.sharedController.cachedAddress = placemark
+                        self?.setTitleButtonText("\(placemark.cityStateString())")
                     }
+                    else {
+                        self?.setTitleButtonText("Location Error")
+                        
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                            self?.presentFinder()
+                        }
+                    }
+                    
+                    self?.fetchQuakes()
+                }
             }
             else {
-                if let cachedAddress = SettingsController.sharedController.cachedAddress {
-                    setTitleButtonText(cachedAddress.cityStateString())
-                    fetchQuakes()
+                setTitleButtonText(cachedAddress.cityStateString())
+                fetchQuakes()
+            }
+        }
+        else {
+            NetworkUtility.networkOperationStarted()
+            geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
+                NetworkUtility.networkOperationFinished()
+                
+                if let placemark = place?.first where error == nil {
+                    SettingsController.sharedController.cachedAddress = placemark
+                    self.setTitleButtonText("\(placemark.cityStateString())")
                 }
                 else {
-                    NetworkUtility.networkOperationStarted()
-                    geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
-                        NetworkUtility.networkOperationFinished()
-                        
-                        if let placemark = place?.first where error == nil {
-                            SettingsController.sharedController.cachedAddress = placemark
-                            self.setTitleButtonText("\(placemark.cityStateString())")
-                        }
-                        else {
-                            self.setTitleButtonText("Location Error")
-                            
-                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                                self.presentFinder()
-                            }
-                        }
-                        
-                        self.fetchQuakes()
+                    self.setTitleButtonText("Location Error")
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                        self.presentFinder()
                     }
                 }
+                
+                self.fetchQuakes()
             }
         }
     }

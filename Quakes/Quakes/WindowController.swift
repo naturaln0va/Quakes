@@ -12,6 +12,10 @@ class WindowController: UIResponder, UIApplicationDelegate
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        if SettingsController.sharedController.fisrtLaunchDate == nil {
+            SettingsController.sharedController.fisrtLaunchDate = NSDate()
+        }
+        
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
         window.rootViewController = StyledNavigationController(rootViewController: QuakesViewController())

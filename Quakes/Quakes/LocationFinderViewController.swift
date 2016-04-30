@@ -38,6 +38,8 @@ class LocationFinderViewController: UIViewController
         controlContainerView.backgroundColor = StyleController.backgroundColor
         filterSegment.alpha = 0
         
+        controlContainerView.hidden = SettingsController.sharedController.lastLocationOption == nil
+        
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: #selector(LocationFinderViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(LocationFinderViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
@@ -128,7 +130,7 @@ class LocationFinderViewController: UIViewController
                     delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
                 }
                 else {
-                    errorMessage = "Location services are turned off"
+                    errorMessage = "Location services are turned off."
                 }
                 break
             case .NotDetermined:
@@ -136,14 +138,14 @@ class LocationFinderViewController: UIViewController
                 manager.requestWhenInUseAuthorization()
                 break
             default:
-                errorMessage = "Location access is denied"
+                errorMessage = "Please enable location access to view nearby quakes."
                 break
             }
             
             if errorMessage.characters.count > 0 {
                 sender.selectedSegmentIndex = -1
 
-                let alertView = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .Alert)
+                let alertView = UIAlertController(title: "Permission Needed", message: errorMessage, preferredStyle: .Alert)
                 
                 alertView.addAction(UIAlertAction(title: "Open Settings", style: .Default, handler: { action in
                     UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
@@ -193,6 +195,9 @@ extension LocationFinderViewController: CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedWhenInUse {
             delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
+        }
+        else {
+            filterSegment.selectedSegmentIndex = -1
         }
     }
     
