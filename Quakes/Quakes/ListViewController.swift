@@ -15,7 +15,7 @@ class ListViewController: UIViewController
         let moc = PersistentController.sharedController.moc
         
         let fetchRequest = Quake.fetchRequest(moc, predicate: nil, sortedBy: "timestamp", ascending: false)
-        fetchRequest.fetchBatchSize = 20
+        fetchRequest.fetchBatchSize = 75
         
         return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: moc, sectionNameKeyPath: nil, cacheName: "quakes")
     }()
@@ -183,7 +183,7 @@ class ListViewController: UIViewController
     
     private func presentFinder() {
         titleViewButton.hidden = true
-        transitionAnimator = TextBarAnimator(duration: 0.345, presentingViewController: true, originatingFrame: titleViewButton.frame, completion: {
+        transitionAnimator = TextBarAnimator(duration: 0.3, presentingViewController: true, originatingFrame: titleViewButton.frame, completion: {
             self.titleViewButton.hidden = false
         })
         
@@ -193,24 +193,17 @@ class ListViewController: UIViewController
         presentViewController(finderVC, animated: true, completion: nil)
     }
     
-    private func commonFetchedQuakes(quakes: [ParsedQuake]) {
-        if quakes.count == 0 && fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
+    private func commonFinishedFetch() {
+        if fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
             noResultsLabel.center = CGPoint(x: view.center.x, y: 115.0)
             tableView.addSubview(noResultsLabel)
         }
-        
-        PersistentController.sharedController.saveQuakes(quakes)
+        else {
+            navigationItem.rightBarButtonItem?.enabled = true
+        }
         
         if refresher.refreshing {
             refresher.endRefreshing()
-        }
-        
-        if !SettingsController.sharedController.hasAttemptedNotificationPermission {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(3 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                let notificationsVC = NotificationPromptViewController()
-                notificationsVC.delegate = self
-                self.presentViewController(notificationsVC, animated: true, completion: nil)
-            }
         }
     }
     
@@ -221,7 +214,7 @@ class ListViewController: UIViewController
     
     func settingsDidPurchaseAdRemoval() {
         if bannerViewBottomConstraint.constant == 0 {
-            UIView.animateWithDuration(0.23) {
+            UIView.animateWithDuration(0.3) {
                 self.bannerViewBottomConstraint.constant = -self.bannerView.frame.height
                 self.view.layoutIfNeeded()
             }
@@ -257,6 +250,8 @@ class ListViewController: UIViewController
     }
     
     func fetchQuakes() {
+        navigationItem.rightBarButtonItem?.enabled = false
+        
         guard NetworkUtility.internetReachable() else {
             if refresher.refreshing {
                 refresher.endRefreshing()
@@ -277,9 +272,7 @@ class ListViewController: UIViewController
             setTitleButtonText("\(lastPlace.cityStateString())")
 
             NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
-                if let quakes = quakes where error == nil {
-                    self.commonFetchedQuakes(quakes)
-                }
+                self.commonFinishedFetch()
             }
             return
         }
@@ -291,9 +284,7 @@ class ListViewController: UIViewController
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
                     NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
-                        if let quakes = quakes where error == nil {
-                            self.commonFetchedQuakes(quakes)
-                        }
+                        self.commonFinishedFetch()
                     }
                 }
                 else {
@@ -318,18 +309,14 @@ class ListViewController: UIViewController
                 setTitleButtonText("Worldwide Quakes")
                 
                 NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
-                    if let quakes = quakes where error == nil {
-                        self.commonFetchedQuakes(quakes)
-                    }
+                    self.commonFinishedFetch()
                 }
                 break
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
                 NetworkClient.sharedClient.getMajorQuakes { quakes, error in
-                    if let quakes = quakes where error == nil {
-                        self.commonFetchedQuakes(quakes)
-                    }
+                    self.commonFinishedFetch()
                 }
                 break
             default:
