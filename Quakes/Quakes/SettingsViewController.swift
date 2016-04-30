@@ -22,8 +22,9 @@ class SettingsViewController: UITableViewController
     }
     
     enum ExtraSectionRows: Int {
-        case PrivacyRow
+        case ShareRow
         case PermissionRow
+        case PrivacyRow
         case TotalRows
     }
     
@@ -43,6 +44,8 @@ class SettingsViewController: UITableViewController
         distFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
         return distFormatter
     }()
+    
+    private var hasShared = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,7 +91,9 @@ class SettingsViewController: UITableViewController
     
     // MARK: - Notifications
     @objc private func lowPowerModeChanged() {
-        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        }
     }
     
     // MARK: - UITableViewDataSource
@@ -114,7 +119,12 @@ class SettingsViewController: UITableViewController
     }
     
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return section == TableSections.TotalSections.rawValue - 1 ? "Quakes v" + UIDevice.currentDevice().appVersionAndBuildString : nil
+        if section == TableSections.UserSection.rawValue && NSProcessInfo.processInfo().lowPowerModeEnabled {
+            return "Some settings are limited because of Low Power Mode."
+        }
+        else {
+            return section == TableSections.TotalSections.rawValue - 1 ? "Quakes v" + UIDevice.currentDevice().appVersionAndBuildString : nil
+        }
     }
     
     // MARK: - UITableViewDelegate
@@ -180,13 +190,19 @@ class SettingsViewController: UITableViewController
         }
         else if indexPath.section == TableSections.ExtraSection.rawValue {
             switch indexPath.row {
-            case GeneralSectionRows.RateRow.rawValue:
-                cell.textLabel?.text = "Privacy"
+            case ExtraSectionRows.ShareRow.rawValue:
+                cell.textLabel?.text = "Spread the Word"
+                cell.accessoryType = .DisclosureIndicator
+                if hasShared { cell.detailTextLabel?.text = "♥️" }
+                break
+                
+            case ExtraSectionRows.PrivacyRow.rawValue:
+                cell.textLabel?.text = "Privacy Policy"
                 cell.accessoryType = .DisclosureIndicator
                 break
                 
-            case GeneralSectionRows.RemoveAdsRow.rawValue:
-                cell.textLabel?.text = "Permissions"
+            case ExtraSectionRows.PermissionRow.rawValue:
+                cell.textLabel?.text = "App Permissions"
                 cell.accessoryType = .DisclosureIndicator
                 break
                 
@@ -244,7 +260,7 @@ class SettingsViewController: UITableViewController
         }
         else if indexPath.section == TableSections.UserSection.rawValue {
             guard !NSProcessInfo.processInfo().lowPowerModeEnabled else {
-                let alertVC = UIAlertController(title: "Low Power Mode", message: "This setting cannot be changed when your device is in Low Power mode.", preferredStyle: .Alert)
+                let alertVC = UIAlertController(title: "Low Power Mode", message: "This setting cannot be changed when your device is in Low Power Mode.", preferredStyle: .Alert)
                 alertVC.addAction(
                     UIAlertAction(title: "Open Settings", style: .Default, handler: { action in
                         if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
@@ -313,7 +329,21 @@ class SettingsViewController: UITableViewController
         }
         else if indexPath.section == TableSections.ExtraSection.rawValue {
             switch indexPath.row {
-            case GeneralSectionRows.RateRow.rawValue:
+            case ExtraSectionRows.ShareRow.rawValue:
+                let shareVC = UIActivityViewController(
+                    activityItems: ["Quakes: the best way to view details about earthquakes around the world! Check it out:\n", NSURL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8")!],
+                    applicationActivities: nil
+                )
+                shareVC.completionWithItemsHandler = { [weak self] activityType, completed, returnedItems, activityError in
+                    if completed {
+                        self?.hasShared = true
+                        self?.tableView.reloadData()
+                    }
+                }
+                presentViewController(shareVC, animated: true, completion: nil)
+                break
+                
+            case ExtraSectionRows.PrivacyRow.rawValue:
                 if let url = NSURL(string: "http://www.ackermann.io/privacy") {
                     let safariVC = SFSafariViewController(URL: url)
                     safariVC.view.tintColor = StyleController.darkerMainAppColor
@@ -321,7 +351,7 @@ class SettingsViewController: UITableViewController
                 }
                 break
                 
-            case GeneralSectionRows.RemoveAdsRow.rawValue:
+            case ExtraSectionRows.PermissionRow.rawValue:
                 if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
                     UIApplication.sharedApplication().openURL(url)
                 }
