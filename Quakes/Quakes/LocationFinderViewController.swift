@@ -24,7 +24,7 @@ class LocationFinderViewController: UIViewController
     @IBOutlet weak var controlContainerView: UIView!
     
     private var shouldDismiss = false
-    let manager = CLLocationManager()
+    private let manager = CLLocationManager()
     weak var delegate: LocationFinderViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -46,22 +46,6 @@ class LocationFinderViewController: UIViewController
         
         searchTextField.delegate = self
         searchTextField.text = ""
-        
-        if let lastOption = SettingsController.sharedController.lastLocationOption {
-            switch lastOption {
-            case LocationOption.Nearby.rawValue:
-                filterSegment.selectedSegmentIndex = 0
-                
-            case LocationOption.World.rawValue:
-                filterSegment.selectedSegmentIndex = 1
-                
-            case LocationOption.Major.rawValue:
-                filterSegment.selectedSegmentIndex = 2
-                
-            default:
-                print("Unknown option from the SettingsController.")
-            }
-        }
     }
     
     override func viewDidAppear(animated: Bool) {

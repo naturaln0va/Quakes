@@ -21,9 +21,16 @@ class SettingsViewController: UITableViewController
         case TotalRows
     }
     
+    enum ExtraSectionRows: Int {
+        case PrivacyRow
+        case PermissionRow
+        case TotalRows
+    }
+    
     enum TableSections: Int {
         case UserSection
         case GeneralSection
+        case ExtraSection
         case TotalSections
     }
     
@@ -85,6 +92,9 @@ class SettingsViewController: UITableViewController
         }
         else if section == TableSections.UserSection.rawValue {
             return UserSectionRows.TotalRows.rawValue
+        }
+        else if section == TableSections.ExtraSection.rawValue {
+            return ExtraSectionRows.TotalRows.rawValue
         }
         else {
             return 0
@@ -150,6 +160,22 @@ class SettingsViewController: UITableViewController
                 cell.accessoryType = .DisclosureIndicator
                 cell.userInteractionEnabled = MFMailComposeViewController.canSendMail()
                 cell.textLabel?.enabled = MFMailComposeViewController.canSendMail()
+                break
+                
+            default:
+                break
+            }
+        }
+        else if indexPath.section == TableSections.ExtraSection.rawValue {
+            switch indexPath.row {
+            case GeneralSectionRows.RateRow.rawValue:
+                cell.textLabel?.text = "Privacy"
+                cell.accessoryType = .DisclosureIndicator
+                break
+                
+            case GeneralSectionRows.RemoveAdsRow.rawValue:
+                cell.textLabel?.text = "Permissions"
+                cell.accessoryType = .DisclosureIndicator
                 break
                 
             default:
@@ -253,6 +279,26 @@ class SettingsViewController: UITableViewController
                 pvc.delegate = self
                 
                 navigationController?.pushViewController(pvc, animated: true)
+                break
+                
+            default:
+                break
+            }
+        }
+        else if indexPath.section == TableSections.ExtraSection.rawValue {
+            switch indexPath.row {
+            case GeneralSectionRows.RateRow.rawValue:
+                if let url = NSURL(string: "http://www.ackermann.io/privacy") {
+                    let safariVC = SFSafariViewController(URL: url)
+                    safariVC.view.tintColor = StyleController.darkerMainAppColor
+                    presentViewController(safariVC, animated: true, completion: nil)
+                }
+                break
+                
+            case GeneralSectionRows.RemoveAdsRow.rawValue:
+                if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
+                    UIApplication.sharedApplication().openURL(url)
+                }
                 break
                 
             default:
