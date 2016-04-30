@@ -229,7 +229,7 @@ class SettingsController
     
     var searchRadius: SearchRadiusSize {
         get {
-            return SearchRadiusSize.closestValueForInteger(defaults.integerForKey(SettingsController.kSearchRadiusKey))
+            return NSProcessInfo.processInfo().lowPowerModeEnabled ? .Small : SearchRadiusSize.closestValueForInteger(defaults.integerForKey(SettingsController.kSearchRadiusKey))
         }
         set {
             defaults.setInteger(newValue.rawValue, forKey: SettingsController.kSearchRadiusKey)
@@ -239,7 +239,7 @@ class SettingsController
     
     var fetchLimit: APIFetchSize {
         get {
-            return APIFetchSize.closestValueForInteger(defaults.integerForKey(SettingsController.kFetchSizeLimitKey))
+            return NSProcessInfo.processInfo().lowPowerModeEnabled ? .Small : APIFetchSize.closestValueForInteger(defaults.integerForKey(SettingsController.kFetchSizeLimitKey))
         }
         set {
             defaults.setInteger(newValue.rawValue, forKey: SettingsController.kFetchSizeLimitKey)

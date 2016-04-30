@@ -55,6 +55,13 @@ class SettingsViewController: UITableViewController
         tableView.dataSource = self
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .Plain, target: self, action: #selector(SettingsViewController.doneButtonPressed))
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(SettingsViewController.lowPowerModeChanged),
+            name: NSProcessInfoPowerStateDidChangeNotification,
+            object: nil
+        )
     }
     
     // MARK: - Actions
@@ -77,6 +84,11 @@ class SettingsViewController: UITableViewController
         default:
             break
         }
+    }
+    
+    // MARK: - Notifications
+    @objc private func lowPowerModeChanged() {
+        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
     }
     
     // MARK: - UITableViewDataSource
@@ -231,6 +243,20 @@ class SettingsViewController: UITableViewController
             }
         }
         else if indexPath.section == TableSections.UserSection.rawValue {
+            guard !NSProcessInfo.processInfo().lowPowerModeEnabled else {
+                let alertVC = UIAlertController(title: "Low Power Mode", message: "This setting cannot be changed when your device is in Low Power mode.", preferredStyle: .Alert)
+                alertVC.addAction(
+                    UIAlertAction(title: "Open Settings", style: .Default, handler: { action in
+                        if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
+                            UIApplication.sharedApplication().openURL(url)
+                        }
+                    })
+                )
+                alertVC.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                presentViewController(alertVC, animated: true, completion: nil)
+                return
+            }
+            
             switch indexPath.row {
             case UserSectionRows.LimitRow.rawValue:
                 let values = [
