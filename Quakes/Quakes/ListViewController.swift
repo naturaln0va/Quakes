@@ -4,7 +4,7 @@ import CoreData
 import CoreLocation
 import GoogleMobileAds
 
-class QuakesViewController: UIViewController
+class ListViewController: UIViewController
 {
     
     @IBOutlet var tableView: UITableView!
@@ -35,7 +35,7 @@ class QuakesViewController: UIViewController
         button.backgroundColor = StyleController.searchBarColor
         button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
         button.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        button.addTarget(self, action: #selector(QuakesViewController.titleButtonPressed), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(ListViewController.titleButtonPressed), forControlEvents: .TouchUpInside)
         button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
         button.layer.cornerRadius = 4.0
         button.sizeToFit()
@@ -75,13 +75,13 @@ class QuakesViewController: UIViewController
             landscapeImagePhone: nil,
             style: .Plain,
             target: self,
-            action: #selector(QuakesViewController.mapButtonPressed)
+            action: #selector(ListViewController.mapButtonPressed)
         )
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(named: "settings-gear"),
             style: .Plain,
             target: self,
-            action: #selector(QuakesViewController.settingsButtonPressed)
+            action: #selector(ListViewController.settingsButtonPressed)
         )
         navigationItem.rightBarButtonItem?.enabled = false
         
@@ -94,7 +94,7 @@ class QuakesViewController: UIViewController
         refresher.tintColor = StyleController.contrastColor
         refresher.backgroundColor = StyleController.backgroundColor
         refresher.attributedTitle = NSAttributedString(string: "Last updated: \(lastFetchDateFormatter.stringFromDate(SettingsController.sharedController.lastFetchDate))")
-        refresher.addTarget(self, action: #selector(QuakesViewController.fetchQuakes), forControlEvents: .ValueChanged)
+        refresher.addTarget(self, action: #selector(ListViewController.fetchQuakes), forControlEvents: .ValueChanged)
         tableView.addSubview(refresher)
         
         bannerView.adUnitID = "ca-app-pub-6493864895252732/6300764804"
@@ -111,35 +111,35 @@ class QuakesViewController: UIViewController
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(QuakesViewController.settingsDidChangeUnitStyle),
+            selector: #selector(ListViewController.settingsDidChangeUnitStyle),
             name: SettingsController.kSettingsControllerDidChangeUnitStyleNotification,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(QuakesViewController.settingsDidPurchaseAdRemoval),
+            selector: #selector(ListViewController.settingsDidPurchaseAdRemoval),
             name: SettingsController.kSettingsControllerDidChangePurchaseAdRemovalNotification,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(QuakesViewController.applicationDidEnterForeground),
+            selector: #selector(ListViewController.applicationDidEnterForeground),
             name: UIApplicationDidBecomeActiveNotification,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(QuakesViewController.applicationDidEnterForeground),
+            selector: #selector(ListViewController.applicationDidEnterForeground),
             name: UIApplicationDidBecomeActiveNotification,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(QuakesViewController.settingsDidUpdateLastFetchDate),
+            selector: #selector(ListViewController.settingsDidUpdateLastFetchDate),
             name: SettingsController.kSettingsControllerDidUpdateLastFetchDateNotification,
             object: nil
         )
@@ -341,7 +341,7 @@ class QuakesViewController: UIViewController
     
 }
 
-extension QuakesViewController: UITableViewDelegate, UITableViewDataSource
+extension ListViewController: UITableViewDelegate, UITableViewDataSource
 {
     
     // MARK: - UITableView Delegate
@@ -388,7 +388,7 @@ extension QuakesViewController: UITableViewDelegate, UITableViewDataSource
     
 }
 
-extension QuakesViewController: CLLocationManagerDelegate
+extension ListViewController: CLLocationManagerDelegate
 {
     // MARK: - Location Manager Delegate
     func startLocationManager() {
@@ -487,7 +487,7 @@ extension QuakesViewController: CLLocationManagerDelegate
     
 }
 
-extension QuakesViewController: NSFetchedResultsControllerDelegate
+extension ListViewController: NSFetchedResultsControllerDelegate
 {
     
     // MARK: - NSFetchedResultsController Delegate
@@ -525,7 +525,7 @@ extension QuakesViewController: NSFetchedResultsControllerDelegate
     
 }
 
-extension QuakesViewController: LocationFinderViewControllerDelegate
+extension ListViewController: LocationFinderViewControllerDelegate
 {
     
     // MARK: - LocationFinderViewController Delegate
@@ -557,7 +557,7 @@ extension QuakesViewController: LocationFinderViewControllerDelegate
     
 }
 
-extension QuakesViewController: MapViewControllerDelegate
+extension ListViewController: MapViewControllerDelegate
 {
     
     // MARK: - MapViewController Delegate
@@ -579,7 +579,7 @@ extension QuakesViewController: MapViewControllerDelegate
     
 }
 
-extension QuakesViewController: NotificationPromptViewControllerDelegate
+extension ListViewController: NotificationPromptViewControllerDelegate
 {
     
     // MARK: NotificationPromptViewController Delegate
@@ -593,7 +593,7 @@ extension QuakesViewController: NotificationPromptViewControllerDelegate
     
 }
 
-extension QuakesViewController: UIViewControllerTransitioningDelegate
+extension ListViewController: UIViewControllerTransitioningDelegate
 {
     
     // MARK: - UIViewControllerTransitioning Delegate
@@ -608,7 +608,7 @@ extension QuakesViewController: UIViewControllerTransitioningDelegate
     
 }
 
-extension QuakesViewController: GADBannerViewDelegate
+extension ListViewController: GADBannerViewDelegate
 {
     
     // MARK: - GADBannerView Delegate

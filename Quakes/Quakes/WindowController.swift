@@ -13,7 +13,7 @@ class WindowController: UIResponder, UIApplicationDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
-        window.rootViewController = StyledNavigationController(rootViewController: QuakesViewController())
+        window.rootViewController = StyledNavigationController(rootViewController: ListViewController())
         window.makeKeyAndVisible()
         
         self.window = window

@@ -60,7 +60,7 @@
 		699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */; };
 		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
 		699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA60E1C3C55E10094F48A /* Fetchable.swift */; };
-		699CA6141C3C5D6F0094F48A /* QuakesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */; };
+		699CA6141C3C5D6F0094F48A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6121C3C5D6F0094F48A /* ListViewController.swift */; };
 		699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */; };
 		699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF01C3D69A00049C7F4 /* StyleController.swift */; };
 		699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */; };
@@ -71,7 +71,7 @@
 		69D163511C5C52E6000294A5 /* confetti.png in Resources */ = {isa = PBXBuildFile; fileRef = 69D1634F1C5C52E6000294A5 /* confetti.png */; };
 		69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D163501C5C52E6000294A5 /* SAConfettiView.swift */; };
 		69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D235361C3D75E100C9AA50 /* ParsedQuake.swift */; };
-		69D590F81C73855000481E44 /* QuakesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69D590F71C73855000481E44 /* QuakesViewController.xib */; };
+		69D590F81C73855000481E44 /* ListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69D590F71C73855000481E44 /* ListViewController.xib */; };
 		69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB431C5AAA990028AD81 /* Reachability.swift */; };
 		69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */; };
 /* End PBXBuildFile section */
@@ -131,7 +131,7 @@
 		699CA6051C3C52980094F48A /* Quakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Quakes.xcdatamodel; sourceTree = "<group>"; };
 		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
 		699CA60E1C3C55E10094F48A /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
-		699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = QuakesViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		699CA6121C3C5D6F0094F48A /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyledNavigationController.swift; sourceTree = "<group>"; };
 		699E4EF01C3D69A00049C7F4 /* StyleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleController.swift; sourceTree = "<group>"; };
 		699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Additions.swift"; sourceTree = "<group>"; };
@@ -144,7 +144,7 @@
 		69D1634F1C5C52E6000294A5 /* confetti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = confetti.png; sourceTree = "<group>"; };
 		69D163501C5C52E6000294A5 /* SAConfettiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAConfettiView.swift; sourceTree = "<group>"; };
 		69D235361C3D75E100C9AA50 /* ParsedQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedQuake.swift; sourceTree = "<group>"; };
-		69D590F71C73855000481E44 /* QuakesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuakesViewController.xib; sourceTree = "<group>"; };
+		69D590F71C73855000481E44 /* ListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListViewController.xib; sourceTree = "<group>"; };
 		69F9CB431C5AAA990028AD81 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../Reachability.swift; sourceTree = "<group>"; };
 		69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkUtility.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
@@ -342,8 +342,8 @@
 				48190D371C559601009712F6 /* PickerViewController.swift */,
 				696031C11C595BD200F71B93 /* QuakeDetailViewController.swift */,
 				696031C21C595BD200F71B93 /* QuakeDetailViewController.xib */,
-				699CA6121C3C5D6F0094F48A /* QuakesViewController.swift */,
-				69D590F71C73855000481E44 /* QuakesViewController.xib */,
+				699CA6121C3C5D6F0094F48A /* ListViewController.swift */,
+				69D590F71C73855000481E44 /* ListViewController.xib */,
 				4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */,
 				4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */,
 				48C000661C543B960046CC8F /* SettingsViewController.swift */,
@@ -435,7 +435,7 @@
 				696031C81C596C4000F71B93 /* countrytocode.txt in Resources */,
 				696031BA1C593D3000F71B93 /* PeekableDetailViewController.xib in Resources */,
 				696031C71C596C4000F71B93 /* convert.py in Resources */,
-				69D590F81C73855000481E44 /* QuakesViewController.xib in Resources */,
+				69D590F81C73855000481E44 /* ListViewController.xib in Resources */,
 				69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */,
 				696031BE1C5953F000F71B93 /* country-to-code.plist in Resources */,
 				69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */,
@@ -486,7 +486,7 @@
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
 				48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */,
-				699CA6141C3C5D6F0094F48A /* QuakesViewController.swift in Sources */,
+				699CA6141C3C5D6F0094F48A /* ListViewController.swift in Sources */,
 				483A62561CD50CD4008CA19D /* USGSMajorOperation.swift in Sources */,
 				48190D381C559601009712F6 /* PickerViewController.swift in Sources */,
 				692FA24C1C6662C300E4C7E5 /* NotificationPromptViewController.swift in Sources */,

@@ -211,7 +211,7 @@ class QuakeDetailViewController: UIViewController
     
     // MARK: - Actions
     internal func openInMapButtonPressed() {
-        if let rootVC = navigationController?.viewControllers.first as? QuakesViewController {
+        if let rootVC = navigationController?.viewControllers.first as? ListViewController {
             navigationController?.popViewControllerAnimated(true)
             
             let mapVC = MapViewController(centeredOnLocation: quakeToDisplay.coordinate)
