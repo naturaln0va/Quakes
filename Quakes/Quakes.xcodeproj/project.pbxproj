@@ -32,6 +32,10 @@
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
 		48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */; };
 		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
+		48C420F21CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F11CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift */; };
+		48C420F41CD7804E00DB3037 /* EMSCLocationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F31CD7804E00DB3037 /* EMSCLocationOperation.swift */; };
+		48C420F61CD786AD00DB3037 /* EMSCWorldOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F51CD786AD00DB3037 /* EMSCWorldOperation.swift */; };
+		48C420F81CD786F500DB3037 /* EMSCMajorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F71CD786F500DB3037 /* EMSCMajorOperation.swift */; };
 		48C7131A1C4090C600196225 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C713191C4090C600196225 /* SettingsController.swift */; };
 		690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690C289A1C580A750035F47A /* NSDate+Relative.swift */; };
 		69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */; };
@@ -102,6 +106,10 @@
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
 		48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedPolyQuake.swift; sourceTree = "<group>"; };
 		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		48C420F11CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCFetchQuakesOperation.swift; sourceTree = "<group>"; };
+		48C420F31CD7804E00DB3037 /* EMSCLocationOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCLocationOperation.swift; sourceTree = "<group>"; };
+		48C420F51CD786AD00DB3037 /* EMSCWorldOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCWorldOperation.swift; sourceTree = "<group>"; };
+		48C420F71CD786F500DB3037 /* EMSCMajorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCMajorOperation.swift; sourceTree = "<group>"; };
 		48C713191C4090C600196225 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		690C289A1C580A750035F47A /* NSDate+Relative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Relative.swift"; sourceTree = "<group>"; };
 		69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
@@ -181,9 +189,13 @@
 				48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */,
 				483A624D1CD4FF26008CA19D /* NetworkOperation.swift */,
 				483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */,
+				48C420F11CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift */,
 				483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */,
+				48C420F31CD7804E00DB3037 /* EMSCLocationOperation.swift */,
 				483A62531CD50C5F008CA19D /* USGSWorldOperation.swift */,
+				48C420F51CD786AD00DB3037 /* EMSCWorldOperation.swift */,
 				483A62551CD50CD4008CA19D /* USGSMajorOperation.swift */,
+				48C420F71CD786F500DB3037 /* EMSCMajorOperation.swift */,
 				483A62571CD50DE1008CA19D /* RecentQuakeCountOperation.swift */,
 				483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */,
 				483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */,
@@ -464,6 +476,8 @@
 				4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */,
 				69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */,
 				483A62581CD50DE1008CA19D /* RecentQuakeCountOperation.swift in Sources */,
+				48C420F41CD7804E00DB3037 /* EMSCLocationOperation.swift in Sources */,
+				48C420F21CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift in Sources */,
 				483A624E1CD4FF26008CA19D /* NetworkOperation.swift in Sources */,
 				690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */,
 				6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */,
@@ -473,6 +487,7 @@
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
 				696067261C7FB64700068B72 /* Empty.m in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
+				48C420F61CD786AD00DB3037 /* EMSCWorldOperation.swift in Sources */,
 				48190D2C1C553A96009712F6 /* DownloadDetailOperation.swift in Sources */,
 				483A62541CD50C5F008CA19D /* USGSWorldOperation.swift in Sources */,
 				699CA60B1C3C543F0094F48A /* Quake.swift in Sources */,
@@ -484,6 +499,7 @@
 				699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */,
 				483A62521CD50BD4008CA19D /* USGSFetchQuakesOperation.swift in Sources */,
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
+				48C420F81CD786F500DB3037 /* EMSCMajorOperation.swift in Sources */,
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
 				48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* ListViewController.swift in Sources */,

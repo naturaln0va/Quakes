@@ -26,6 +26,11 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>www.seismicportal.eu</key>
+			<dict>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
 			<key>earthquake.usgs.gov</key>
 			<dict>
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>

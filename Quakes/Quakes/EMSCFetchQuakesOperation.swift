@@ -1,9 +1,9 @@
 
 import UIKit
 
-class USGSFetchQuakesOperation: NetworkOperation {
+class EMSCFetchQuakesOperation: NetworkOperation {
     
-    let baseURLString = "http://earthquake.usgs.gov/fdsnws/event/1/"
+    let baseURLString = "http://www.seismicportal.eu/fdsnws/event/1/"
     var quakes: [ParsedQuake]?
     
     override func handleData() {
@@ -21,11 +21,11 @@ class USGSFetchQuakesOperation: NetworkOperation {
             return
         }
         
-        if shouldDebugOperation { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDict)") }
-        
         guard let quakesDicts = responseDict["features"] as? [[String: AnyObject]] else {
             return
         }
+        
+        if shouldDebugOperation { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(quakesDicts)") }
         
         quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
     }

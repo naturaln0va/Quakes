@@ -179,7 +179,7 @@ class NetworkClient {
     
     func getWorldQuakes(completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
-        let fetchOperation = USGSMajorOperation()
+        let fetchOperation = USGSWorldOperation()
         fetchOperation.qualityOfService = .UserInitiated
         fetchOperation.queuePriority = .VeryHigh
         

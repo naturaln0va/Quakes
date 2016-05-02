@@ -328,7 +328,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
                 websiteLabel.font = UIFont.systemFontOfSize(18.0, weight: UIFontWeightMedium)
                 websiteLabel.translatesAutoresizingMaskIntoConstraints = false
                 websiteLabel.textColor = quakeToDisplay.severityColor
-                websiteLabel.text = "Open in USGS"
+                websiteLabel.text = quakeToDisplay.provider == SourceProvider.USGS.rawValue ? "Open in USGS" : "Open in EMSC"
                 websiteLabel.textAlignment = .Center
                 
                 cell.translatesAutoresizingMaskIntoConstraints = true
