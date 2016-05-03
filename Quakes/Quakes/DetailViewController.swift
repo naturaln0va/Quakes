@@ -171,8 +171,6 @@ class DetailViewController: UIViewController
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NetworkUtility.cancelCurrentNetworkRequests()
-        
         if titleIndicatorView.superview != nil {
             titleIndicatorView.removeFromSuperview()
             navigationItem.titleView = nil
@@ -328,7 +326,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
                 websiteLabel.font = UIFont.systemFontOfSize(18.0, weight: UIFontWeightMedium)
                 websiteLabel.translatesAutoresizingMaskIntoConstraints = false
                 websiteLabel.textColor = quakeToDisplay.severityColor
-                websiteLabel.text = quakeToDisplay.provider == SourceProvider.USGS.rawValue ? "Open in USGS" : "Open in EMSC"
+                websiteLabel.text = Int(quakeToDisplay.provider) == SourceProvider.USGS.rawValue ? "Open in USGS" : "Open in EMSC"
                 websiteLabel.textAlignment = .Center
                 
                 cell.translatesAutoresizingMaskIntoConstraints = true

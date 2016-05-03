@@ -23,13 +23,6 @@ class NetworkUtility
         }
     }
     
-    static func cancelCurrentNetworkRequests() {
-        guard loadingCount > 0 else { return }
-        loadingCount = 0
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-        NSURLSession.sharedSession().invalidateAndCancel()
-    }
-    
     static func internetReachable() -> Bool {
         if let reach = try? Reachability.reachabilityForInternetConnection() {
             return reach.isReachable()

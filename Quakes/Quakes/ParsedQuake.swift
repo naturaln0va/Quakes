@@ -48,7 +48,15 @@ struct ParsedQuake {
             date = NSDate(timeIntervalSince1970: offset / 1000)
         }
         else if let dateString = properties["time"] as? String {
-            date = NSDateFormatter().dateFromString(dateString) ?? NSDate.distantFuture()
+            print("date string: \(dateString)")
+            
+            let formatter = NSDateFormatter()
+            formatter.locale = NSLocale.currentLocale()
+            formatter.setLocalizedDateFormatFromTemplate("yyyy-MM-dd'T'HH:mm:ss")
+            let d = formatter.dateFromString(dateString)
+            print("date: \(d)")
+            
+            date = d ?? NSDate.distantFuture()
         }
         else {
             date = NSDate.distantFuture()

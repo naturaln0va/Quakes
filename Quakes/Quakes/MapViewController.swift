@@ -153,7 +153,6 @@ class MapViewController: UIViewController
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NetworkUtility.cancelCurrentNetworkRequests()
         navigationController?.toolbarHidden = true
         
         if geocoder.geocoding {

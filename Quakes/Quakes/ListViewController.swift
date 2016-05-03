@@ -153,11 +153,6 @@ class ListViewController: UIViewController
         tableView.reloadData()
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        NetworkUtility.cancelCurrentNetworkRequests()
-    }
-    
     private func preformFetch() {
         if fetchedResultsController.delegate == nil {
             fetchedResultsController.delegate = self
@@ -263,7 +258,7 @@ class ListViewController: UIViewController
             noResultsLabel.removeFromSuperview()
         }
         
-        if SettingsController.sharedController.lastLocationOption == nil {
+        if SettingsController.sharedController.lastLocationOption == nil && SettingsController.sharedController.lastSearchedPlace == nil {
             presentFinder()
             return
         }
@@ -271,7 +266,8 @@ class ListViewController: UIViewController
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
             setTitleButtonText("\(lastPlace.cityStateString())")
 
-            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { _ in
+            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
+                if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                 self.commonFinishedFetch()
             }
             return
@@ -283,7 +279,8 @@ class ListViewController: UIViewController
                 if let current = currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
-                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { _ in
+                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
+                        if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                         self.commonFinishedFetch()
                     }
                 }
@@ -308,14 +305,16 @@ class ListViewController: UIViewController
             case LocationOption.World.rawValue:
                 setTitleButtonText("Worldwide Quakes")
                 
-                NetworkClient.sharedClient.getWorldQuakes() { _ in
+                NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
+                    if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                     self.commonFinishedFetch()
                 }
                 break
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
-                NetworkClient.sharedClient.getMajorQuakes { _ in
+                NetworkClient.sharedClient.getMajorQuakes { quakes, error in
+                    if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                     self.commonFinishedFetch()
                 }
                 break

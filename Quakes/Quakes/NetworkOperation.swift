@@ -21,6 +21,10 @@ class NetworkOperation: NSOperation {
         }
     }
     
+    var operating: Bool {
+        return state != .Finished
+    }
+    
     var urlString: String { return "" } // Subclass to override
     var shouldDebugOperation = false
     let incomingData = NSMutableData()
@@ -89,6 +93,15 @@ extension NetworkOperation: NSURLSessionDataDelegate {
             return
         }
         
+        if let httpResponse = response as? NSHTTPURLResponse {
+            if shouldDebugOperation { print("\(self.dynamicType): Code \(httpResponse.statusCode): \(NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode))") }
+            
+            if httpResponse.statusCode == 204 || httpResponse.statusCode == 404 {
+                if shouldDebugOperation { print("\(self.dynamicType): Canceling task because of the http status code, \(httpResponse.statusCode). Url: \(httpResponse.URL?.absoluteURL ?? "No URL")") }
+                completionHandler(.Cancel)
+            }
+        }
+        
         completionHandler(.Allow)
     }
     
@@ -112,7 +125,7 @@ extension NetworkOperation: NSURLSessionDataDelegate {
         if shouldDebugOperation && NSThread.isMainThread() { print("\(self.dynamicType): Completed on the main thread.") }
         
         if let e = error {
-            if shouldDebugOperation { print("\(self.dynamicType): Error receiving response: \(e.localizedDescription)") }
+            if shouldDebugOperation { print("\(self.dynamicType): Task completed with error: \(e.localizedDescription)") }
             state = .Finished
             return
         }

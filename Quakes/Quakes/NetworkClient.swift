@@ -14,6 +14,7 @@ class NetworkClient {
     private lazy var requestsQueue: NSOperationQueue = {
         let queue = NSOperationQueue()
         queue.underlyingQueue = dispatch_queue_create("io.ackermann.network", nil)
+        queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
         return queue
     }()
     
@@ -131,17 +132,30 @@ class NetworkClient {
     
     func getQuakesByLocation(coordinate: CLLocationCoordinate2D, completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
-        let fetchOperation = USGSLocationOperation(coordinate: coordinate)
-        fetchOperation.qualityOfService = .UserInitiated
-        fetchOperation.queuePriority = .VeryHigh
+        NetworkUtility.networkOperationStarted()
+
+        let USGSFetchOperation = USGSLocationOperation(coordinate: coordinate)
+        USGSFetchOperation.shouldDebugOperation = true
         
-        fetchOperation.completionBlock = { [weak self] in
+        USGSFetchOperation.qualityOfService = .UserInitiated
+        USGSFetchOperation.queuePriority = .VeryHigh
+        
+        let EMSCFetchOperation = EMSCLocationOperation(coordinate: coordinate)
+        EMSCFetchOperation.shouldDebugOperation = true
+        
+        EMSCFetchOperation.qualityOfService = .UserInitiated
+        EMSCFetchOperation.queuePriority = .VeryHigh
+        
+        USGSFetchOperation.completionBlock = { [weak self] in
+            if EMSCFetchOperation.operating {
+                EMSCFetchOperation.cancel()
+            }
+            
             dispatch_sync(dispatch_get_main_queue()) {
                 NetworkUtility.networkOperationFinished()
                 SettingsController.sharedController.lastFetchDate = NSDate()
                 
-                if let recievedQuakes = fetchOperation.quakes {
-                    PersistentController.sharedController.saveQuakes(recievedQuakes)
+                if let recievedQuakes = USGSFetchOperation.quakes {
                     completion?(quakes: recievedQuakes, error: nil)
                 }
                 else {
@@ -150,7 +164,25 @@ class NetworkClient {
             }
         }
         
-        requestsQueue.addOperation(fetchOperation)
+        EMSCFetchOperation.completionBlock = { [weak self] in
+            if USGSFetchOperation.operating {
+                USGSFetchOperation.cancel()
+            }
+            
+            dispatch_sync(dispatch_get_main_queue()) {
+                NetworkUtility.networkOperationFinished()
+                SettingsController.sharedController.lastFetchDate = NSDate()
+                
+                if let recievedQuakes = EMSCFetchOperation.quakes {
+                    completion?(quakes: recievedQuakes, error: nil)
+                }
+                else {
+                    completion?(quakes: nil, error: self?.noResponseError)
+                }
+            }
+        }
+        
+        requestsQueue.addOperations([USGSFetchOperation, EMSCFetchOperation], waitUntilFinished: false)
     }
     
     func getMajorQuakes(completion: QuakesCompletionBlock?) {
@@ -165,7 +197,6 @@ class NetworkClient {
                 SettingsController.sharedController.lastFetchDate = NSDate()
                 
                 if let recievedQuakes = fetchOperation.quakes {
-                    PersistentController.sharedController.saveQuakes(recievedQuakes)
                     completion?(quakes: recievedQuakes, error: nil)
                 }
                 else {
@@ -189,7 +220,6 @@ class NetworkClient {
                 SettingsController.sharedController.lastFetchDate = NSDate()
                 
                 if let recievedQuakes = fetchOperation.quakes {
-                    PersistentController.sharedController.saveQuakes(recievedQuakes)
                     completion?(quakes: recievedQuakes, error: nil)
                 }
                 else {

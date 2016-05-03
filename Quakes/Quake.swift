@@ -49,7 +49,7 @@ class Quake: NSManagedObject {
     @NSManaged var countryCode: String?
     @NSManaged var felt: Double
     @NSManaged var polyData: NSData?
-    @NSManaged var provider: Int
+    @NSManaged var provider: Int16
     
     var nameString: String {
         let formatter = MKDistanceFormatter()
