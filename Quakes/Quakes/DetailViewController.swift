@@ -79,7 +79,7 @@ class DetailViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        TelemetryController.sharedController.logQuakeDetailViewed(quakeToDisplay.weblink)
+        TelemetryController.sharedController.logQuakeDetailViewed(quakeToDisplay.weblink ?? "Unknown URL")
         
         if let nearbyCities = quakeToDisplay.nearbyCities {
             parsedNearbyCities = nearbyCities
@@ -230,7 +230,7 @@ class DetailViewController: UIViewController
     }
     
     internal func shareButtonPressed() {
-        guard let url = NSURL(string: quakeToDisplay.weblink) else { return }
+        guard let urlString = quakeToDisplay.weblink, let url = NSURL(string: urlString) else { return }
         let options = MKMapSnapshotOptions()
         options.region = MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1 / 2, longitudeDelta: 1 / 2))
         options.size = mapView.frame.size
@@ -376,7 +376,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
             return
         }
         
-        if let url = NSURL(string: quakeToDisplay.weblink) where parsedNearbyCities != nil ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
+        if let urlString = quakeToDisplay.weblink, let url = NSURL(string: urlString) where parsedNearbyCities != nil ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(URL: url)
             safariVC.view.tintColor = quakeToDisplay.severityColor
             dispatch_async(dispatch_get_main_queue()) {

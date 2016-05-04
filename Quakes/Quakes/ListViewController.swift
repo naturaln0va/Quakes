@@ -29,7 +29,7 @@ class ListViewController: UIViewController
         return label
     }()
     
-    lazy var titleViewButton: UIButton = {
+    private lazy var titleViewButton: UIButton = {
         let button = UIButton(type: .Custom)
         
         button.backgroundColor = StyleController.searchBarColor
@@ -43,7 +43,7 @@ class ListViewController: UIViewController
         return button
     }()
     
-    lazy var lastFetchDateFormatter: NSDateFormatter = {
+    private lazy var lastFetchDateFormatter: NSDateFormatter = {
         let formatter = NSDateFormatter()
         
         formatter.timeStyle = .ShortStyle
@@ -188,13 +188,21 @@ class ListViewController: UIViewController
         presentViewController(finderVC, animated: true, completion: nil)
     }
     
-    private func commonFinishedFetch() {
-        if fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
-            noResultsLabel.center = CGPoint(x: view.center.x, y: 115.0)
-            tableView.addSubview(noResultsLabel)
+    private func commonFinishedFetch(quakes: [ParsedQuake]?) {
+        if let recievedQuakes = quakes where recievedQuakes.count > 0 {
+            PersistentController.sharedController.saveQuakes(recievedQuakes)
+            
+            if noResultsLabel.superview != nil {
+                noResultsLabel.removeFromSuperview()
+            }
+            
+            navigationItem.rightBarButtonItem?.enabled = true
         }
         else {
-            navigationItem.rightBarButtonItem?.enabled = true
+            noResultsLabel.center = CGPoint(x: view.center.x, y: 115.0)
+            tableView.addSubview(noResultsLabel)
+            
+            navigationItem.rightBarButtonItem?.enabled = false
         }
         
         if refresher.refreshing {
@@ -267,8 +275,7 @@ class ListViewController: UIViewController
             setTitleButtonText("\(lastPlace.cityStateString())")
 
             NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
-                if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
-                self.commonFinishedFetch()
+                self.commonFinishedFetch(quakes)
             }
             return
         }
@@ -280,8 +287,7 @@ class ListViewController: UIViewController
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
                     NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
-                        if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
-                        self.commonFinishedFetch()
+                        self.commonFinishedFetch(quakes)
                     }
                 }
                 else {
@@ -306,16 +312,14 @@ class ListViewController: UIViewController
                 setTitleButtonText("Worldwide Quakes")
                 
                 NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
-                    if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
-                    self.commonFinishedFetch()
+                    self.commonFinishedFetch(quakes)
                 }
                 break
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
                 NetworkClient.sharedClient.getMajorQuakes { quakes, error in
-                    if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
-                    self.commonFinishedFetch()
+                    self.commonFinishedFetch(quakes)
                 }
                 break
             default:
@@ -341,6 +345,16 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource
         }
         
         if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
+            if quake.placemark == nil {
+                NetworkUtility.networkOperationStarted()
+                geocoder.reverseGeocodeLocation(quake.location) { marks, error in
+                    NetworkUtility.networkOperationFinished()
+                    if let mark = marks?.first {
+                        PersistentController.sharedController.updateQuakeWithPlacemark(quake, placemark: mark)
+                    }
+                }
+            }
+            
             cell.configure(quake)
         }
         
@@ -492,8 +506,8 @@ extension ListViewController: NSFetchedResultsControllerDelegate
             tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
             
         case .Update:
-            if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? QuakeCell {
-                if let quake = fetchedResultsController.objectAtIndexPath(indexPath!) as? Quake {
+            if let indexPath = indexPath, let cell = tableView.cellForRowAtIndexPath(indexPath) as? QuakeCell {
+                if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
                     cell.configure(quake)
                 }
             }

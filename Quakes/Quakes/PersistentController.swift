@@ -119,6 +119,12 @@ class PersistentController
         attemptSave()
     }
     
+    func updateQuakeWithPlacemark(quakeToUpdate: Quake, placemark: CLPlacemark) {
+        quakeToUpdate.placemark = placemark
+        
+        attemptSave()
+    }
+    
     func updateQuakeWithID(identifier: String, withNearbyCities cities: [ParsedNearbyCity]?, withCountry country: String?) {
         do {
             if let quakeToUpdate = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", identifier), sortedBy: nil, ascending: false) {

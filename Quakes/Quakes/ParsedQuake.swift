@@ -11,12 +11,11 @@ struct ParsedQuake {
     
     // MARK: Properties.
     let date: NSDate
-    
     let identifier, name, link, detailURL: String
-    
-    let depth, latitude, longitude, magnitude, distance, felt: Double
-    
+    let depth, latitude, longitude, magnitude, felt: Double
     let provider: Int
+    
+    let distance: Double?
 
     init?(dict: [String: AnyObject]) {
         let id = dict["unid"] as? String ?? dict["id"] as? String
@@ -48,15 +47,14 @@ struct ParsedQuake {
             date = NSDate(timeIntervalSince1970: offset / 1000)
         }
         else if let dateString = properties["time"] as? String {
-            print("date string: \(dateString)")
-            
-            let formatter = NSDateFormatter()
-            formatter.locale = NSLocale.currentLocale()
-            formatter.setLocalizedDateFormatFromTemplate("yyyy-MM-dd'T'HH:mm:ss")
-            let d = formatter.dateFromString(dateString)
-            print("date: \(d)")
-            
-            date = d ?? NSDate.distantFuture()
+            if let firstComponent = dateString.componentsSeparatedByString(".").first {
+                let formatter = NSDateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                date = formatter.dateFromString(firstComponent) ?? NSDate.distantFuture()
+            }
+            else {
+                date = NSDate.distantFuture()
+            }
         }
         else {
             date = NSDate.distantFuture()
@@ -69,9 +67,13 @@ struct ParsedQuake {
             distance = (Double(comps.first ?? "0") ?? 0) * 1000
         }
         else {
-            name = ""
-            distance = 0
-            // need to geocode
+            if let flynnRegionName = properties["flynn_region"] as? String {
+                name = flynnRegionName.lowercaseString.capitalizedString ?? ""
+                distance = nil
+            }
+            else {
+                return nil
+            }
         }
         
         let geometry = dict["geometry"] as? [String: AnyObject] ?? [:]
@@ -80,7 +82,7 @@ struct ParsedQuake {
             latitude = coordinates[1]
             
             // `depth` is in km, but we want to store it in meters.
-            depth = coordinates[2] * 1000
+            depth = abs(coordinates[2]) * 1000
         }
         else {
             return nil

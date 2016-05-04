@@ -22,7 +22,7 @@ class QuakeCell: UITableViewCell
         timestampLabel.text = quake.timestamp.relativeString()
         magnitudeLabel.text = Quake.magnitudeFormatter.stringFromNumber(quake.magnitude)
         
-        additionalInfoLabel.text = quake.nameString
+        additionalInfoLabel.text = quake.additionalInfoString
         
         feltLabel.text = quake.felt > 0 ? "\(Int(quake.felt)) felt" : ""
         

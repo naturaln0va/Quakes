@@ -36,7 +36,6 @@ class Quake: NSManagedObject {
     
     // MARK: - Properties
     @NSManaged var depth: Double
-    @NSManaged var weblink: String
     @NSManaged var timestamp: NSDate
     @NSManaged var name: String
     @NSManaged var magnitude: Double
@@ -44,18 +43,36 @@ class Quake: NSManagedObject {
     @NSManaged var latitude: Double
     @NSManaged var identifier: String
     @NSManaged var detailURL: String
-    @NSManaged var nearbyCitiesData: NSData?
-    @NSManaged var distance: Double
-    @NSManaged var countryCode: String?
     @NSManaged var felt: Double
-    @NSManaged var polyData: NSData?
     @NSManaged var provider: Int16
-    
-    var nameString: String {
-        let formatter = MKDistanceFormatter()
-        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
 
-        return [formatter.stringFromDistance(distance), name].joinWithSeparator(" ")
+    @NSManaged var weblink: String?
+    @NSManaged var polyData: NSData?
+    @NSManaged var placemark: CLPlacemark?
+    @NSManaged var nearbyCitiesData: NSData?
+    @NSManaged var distance: NSNumber?
+    @NSManaged var countryCode: String?
+    
+    var additionalInfoString: String {
+        if let doubleDistance = distance?.doubleValue {
+            let formatter = MKDistanceFormatter()
+            formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+            
+            return [formatter.stringFromDistance(doubleDistance), name].joinWithSeparator(" ")
+        }
+        else if let place = placemark {
+            if let city = place.locality, let state = place.administrativeArea {
+                return "\(city), \(state)"
+            }
+            else if let state = place.administrativeArea, let country = place.country {
+                return "\(state) \(country)"
+            }
+            else if let country = place.country {
+                return country
+            }
+        }
+        
+        return "From \(stringForProvider)"
     }
     
     var coordinate: CLLocationCoordinate2D {
@@ -79,6 +96,10 @@ class Quake: NSManagedObject {
         else {
             return StyleController.greenQuakeColor
         }
+    }
+    
+    var stringForProvider: String {
+        return Int(provider) == SourceProvider.USGS.rawValue ? "USGS" : "EMSC"
     }
     
     var nearbyCities: [ParsedNearbyCity]? {
@@ -106,7 +127,7 @@ extension Quake: Fetchable {
 extension Quake: MKAnnotation {
     
     var title: String? {
-        return nameString
+        return additionalInfoString
     }
     
     var subtitle: String? {
