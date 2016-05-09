@@ -11,7 +11,7 @@ class ListViewController: UIViewController
     @IBOutlet var bannerView: GADBannerView!
     @IBOutlet var bannerViewBottomConstraint: NSLayoutConstraint!
     
-    private lazy var fetchedResultsController: NSFetchedResultsController = {
+    private let fetchedResultsController: NSFetchedResultsController = {
         let moc = PersistentController.sharedController.moc
         
         let fetchRequest = Quake.fetchRequest(moc, predicate: nil, sortedBy: "timestamp", ascending: false)
@@ -58,7 +58,11 @@ class ListViewController: UIViewController
     private lazy var geocoder = CLGeocoder()
     private var transitionAnimator: TextBarAnimator?
 
-    var currentLocation: CLLocation? = SettingsController.sharedController.cachedAddress?.location
+    private var currentLocation: CLLocation? = SettingsController.sharedController.cachedAddress?.location
+    private var currentPage: UInt = 0
+    private var totalQuakes: Int = 0
+    
+    private let loadingCellTag = 345
 
     deinit {
         fetchedResultsController.delegate = nil
@@ -191,7 +195,9 @@ class ListViewController: UIViewController
     private func commonFinishedFetch(quakes: [ParsedQuake]?) {
         if let recievedQuakes = quakes where recievedQuakes.count > 0 {
             PersistentController.sharedController.saveQuakes(recievedQuakes)
-            
+        }
+        
+        if tableView.numberOfRowsInSection(0) > 0 || fetchedResultsController.fetchedObjects?.count > 0 {
             if noResultsLabel.superview != nil {
                 noResultsLabel.removeFromSuperview()
             }
@@ -274,7 +280,7 @@ class ListViewController: UIViewController
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
             setTitleButtonText("\(lastPlace.cityStateString())")
 
-            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
+            NetworkClient.sharedClient.getQuakesByLocation(currentPage, coordinate: lastPlace.location!.coordinate) { quakes, error in
                 self.commonFinishedFetch(quakes)
             }
             return
@@ -286,7 +292,7 @@ class ListViewController: UIViewController
                 if let current = currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
-                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
+                    NetworkClient.sharedClient.getQuakesByLocation(currentPage, coordinate: current.coordinate) { quakes, error in
                         self.commonFinishedFetch(quakes)
                     }
                 }
@@ -311,14 +317,14 @@ class ListViewController: UIViewController
             case LocationOption.World.rawValue:
                 setTitleButtonText("Worldwide Quakes")
                 
-                NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
+                NetworkClient.sharedClient.getWorldQuakes(currentPage) { quakes, error in
                     self.commonFinishedFetch(quakes)
                 }
                 break
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
-                NetworkClient.sharedClient.getMajorQuakes { quakes, error in
+                NetworkClient.sharedClient.getMajorQuakes(currentPage) { quakes, error in
                     self.commonFinishedFetch(quakes)
                 }
                 break
@@ -336,29 +342,72 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource
     
     // MARK: - UITableView Delegate
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return QuakeCell.cellHeight
+        let fetchController = fetchedResultsController
+        let objects = fetchController.fetchedObjects
+        
+        if indexPath.row < objects?.count {
+            return QuakeCell.cellHeight
+        }
+        else {
+            return 44.0
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(QuakeCell.reuseIdentifier) as? QuakeCell else {
-            fatalError("Expected to dequeue a 'QuakeCell'.")
-        }
+        let fetchController = fetchedResultsController
+        let objects = fetchController.fetchedObjects
         
-        if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
-            if quake.placemark == nil {
-                NetworkUtility.networkOperationStarted()
-                geocoder.reverseGeocodeLocation(quake.location) { marks, error in
-                    NetworkUtility.networkOperationFinished()
-                    if let mark = marks?.first {
-                        PersistentController.sharedController.updateQuakeWithPlacemark(quake, placemark: mark)
-                    }
-                }
+        if indexPath.row < objects?.count {
+            guard let cell = tableView.dequeueReusableCellWithIdentifier(QuakeCell.reuseIdentifier) as? QuakeCell else {
+                fatalError("Expected to dequeue a 'QuakeCell'.")
             }
             
-            cell.configure(quake)
+            if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
+                cell.configure(quake)
+            }
+            
+            return cell
         }
-        
-        return cell
+        else {
+            let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
+            cell.tag = loadingCellTag
+            cell.backgroundColor = StyleController.backgroundColor
+            
+            let acitivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+            acitivityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+            acitivityIndicatorView.center = cell.center
+            
+            cell.contentView.addSubview(acitivityIndicatorView)
+            acitivityIndicatorView.startAnimating()
+            
+            cell.contentView.addConstraint(NSLayoutConstraint(
+                item: acitivityIndicatorView,
+                attribute: .CenterX,
+                relatedBy: .Equal,
+                toItem: acitivityIndicatorView.superview,
+                attribute: .CenterX,
+                multiplier: 1,
+                constant: 0)
+            )
+            cell.contentView.addConstraint(NSLayoutConstraint(
+                item: acitivityIndicatorView,
+                attribute: .CenterY,
+                relatedBy: .Equal,
+                toItem: acitivityIndicatorView.superview,
+                attribute: .CenterY,
+                multiplier: 1,
+                constant: 0)
+            )
+            
+            return cell
+        }
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if cell.tag == loadingCellTag {
+            currentPage += 1
+            fetchQuakes()
+        }
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -383,7 +432,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource
     {
         let section = fetchedResultsController.sections?[section]
         
-        return section?.numberOfObjects ?? 0
+        return (section?.numberOfObjects ?? 0) + 1
     }
     
 }

@@ -18,19 +18,17 @@ extension NSDate
     }
     
     func relativeString() -> String {
-        let intervalDifference = NSDate().timeIntervalSinceDate(self)
+        let now = NSDate()
+        let intervalDifference = now.timeIntervalSinceDate(self)
         
-        if intervalDifference <= NSTimeInterval(60 * 2) {
-            return "now"
-        }
-        else if intervalDifference <= NSTimeInterval(60 * 60) {
+        if intervalDifference <= NSTimeInterval(60 * 60) {
             return "\(Int(intervalDifference / 60))m"
         }
         
-        let daysAgo = NSDate().daysSince(self)
-        let hoursAgo = Int(intervalDifference / NSTimeInterval(60 * 60))
+        let daysAgo = now.daysSince(self)
         
         if daysAgo <= 1 {
+            let hoursAgo = Int(intervalDifference / NSTimeInterval(60 * 60))
             return "\(hoursAgo)h"
         }
         else if daysAgo <= 6 {

@@ -65,7 +65,7 @@ class DetailViewController: UIViewController
         }
     }
     var lastUserLocation: CLLocation?
-    var distanceFromQuake: Double?
+    var distanceFromQuake: Double = 0.0
     
     init(quake: Quake) {
         super.init(nibName: String(DetailViewController), bundle: nil)
@@ -295,25 +295,41 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
                 cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(quakeToDisplay.depth)
             }
             else if indexPath.row == 2 {
-                cell.textLabel?.text = "Felt By"
-                cell.detailTextLabel?.text = "\(Int(quakeToDisplay.felt)) people"
-            }
-            else if indexPath.row == 3 {
                 cell.textLabel?.text = "Location"
                 cell.detailTextLabel?.text = quakeToDisplay.name
             }
-            else if indexPath.row == 4 {
+            else if indexPath.row == 3 {
                 cell.textLabel?.text = "Coordinate"
                 cell.detailTextLabel?.text = quakeToDisplay.coordinate.formatedString()
             }
-            else if indexPath.row == 5 {
+            else if indexPath.row == 4 {
                 cell.textLabel?.text = "Date & Time"
                 cell.detailTextLabel?.text = Quake.timestampFormatter.stringFromDate(quakeToDisplay.timestamp)
             }
-            else if indexPath.row == 6 {
-                Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
-                cell.textLabel?.text = "Distance"
-                cell.detailTextLabel?.text = distanceFromQuake == nil ? "N/A" : Quake.distanceFormatter.stringFromDistance(distanceFromQuake!)
+                
+            if quakeToDisplay.felt > 0 && distanceFromQuake > 0 {
+                if indexPath.row == 5 {
+                    cell.textLabel?.text = "Felt By"
+                    cell.detailTextLabel?.text = "\(Int(quakeToDisplay.felt)) people"
+                }
+                else if indexPath.row == 6 {
+                    Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+                    cell.textLabel?.text = "Distance"
+                    cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(distanceFromQuake)
+                }
+            }
+            else if quakeToDisplay.felt > 0 && distanceFromQuake == 0 {
+                if indexPath.row == 5 {
+                    cell.textLabel?.text = "Felt By"
+                    cell.detailTextLabel?.text = "\(Int(quakeToDisplay.felt)) people"
+                }
+            }
+            else if quakeToDisplay.felt == 0 && distanceFromQuake > 0 {
+                if indexPath.row == 5 {
+                    Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+                    cell.textLabel?.text = "Distance"
+                    cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(distanceFromQuake)
+                }
             }
         }
         else if indexPath.section == 1 {
@@ -404,7 +420,14 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 7
+            var offset = 0
+            if quakeToDisplay.felt == 0 {
+                offset += 1
+            }
+            if distanceFromQuake == 0 {
+                offset += 1
+            }
+            return 7 - offset
         }
         else if section == 1 {
             return parsedNearbyCities != nil ? parsedNearbyCities!.count : 1
@@ -443,7 +466,7 @@ extension DetailViewController: MKMapViewDelegate
         }
         
         distanceFromQuake = userLocation.distanceFromLocation(quakeToDisplay.location)
-        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 6, inSection: 0)], withRowAnimation: .Automatic)
+        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
         
         if userLocation.distanceFromLocation(quakeToDisplay.location) > (1000 * 900) {
             return

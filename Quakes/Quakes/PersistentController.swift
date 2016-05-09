@@ -119,12 +119,6 @@ class PersistentController
         attemptSave()
     }
     
-    func updateQuakeWithPlacemark(quakeToUpdate: Quake, placemark: CLPlacemark) {
-        quakeToUpdate.placemark = placemark
-        
-        attemptSave()
-    }
-    
     func updateQuakeWithID(identifier: String, withNearbyCities cities: [ParsedNearbyCity]?, withCountry country: String?) {
         do {
             if let quakeToUpdate = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", identifier), sortedBy: nil, ascending: false) {
@@ -170,6 +164,11 @@ class PersistentController
                         continue
                     }
                 }
+                
+//                if let exsistingQuake = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "magnitude == %@ AND ", quake.magnitude), sortedBy: nil, ascending: false) {
+                    // find a quake with the same mag and within 100 meters
+                    // https://www.objc.io/issues/4-core-data/core-data-fetch-requests/
+//                }
             }
                 
             catch {

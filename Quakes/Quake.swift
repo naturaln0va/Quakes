@@ -25,7 +25,7 @@ class Quake: NSManagedObject {
         magnitudeFormatter.minimumFractionDigits = 1
         
         return magnitudeFormatter
-    }()
+    }() 
     
     static let distanceFormatter: MKDistanceFormatter = {
         let formatter = MKDistanceFormatter()
@@ -48,31 +48,13 @@ class Quake: NSManagedObject {
 
     @NSManaged var weblink: String?
     @NSManaged var polyData: NSData?
-    @NSManaged var placemark: CLPlacemark?
     @NSManaged var nearbyCitiesData: NSData?
     @NSManaged var distance: NSNumber?
     @NSManaged var countryCode: String?
     
-    var additionalInfoString: String {
-        if let doubleDistance = distance?.doubleValue {
-            let formatter = MKDistanceFormatter()
-            formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
-            
-            return [formatter.stringFromDistance(doubleDistance), name].joinWithSeparator(" ")
-        }
-        else if let place = placemark {
-            if let city = place.locality, let state = place.administrativeArea {
-                return "\(city), \(state)"
-            }
-            else if let state = place.administrativeArea, let country = place.country {
-                return "\(state) \(country)"
-            }
-            else if let country = place.country {
-                return country
-            }
-        }
-        
-        return "From \(stringForProvider)"
+    var additionalInfoString: String {        
+        Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+        return "Depth: \(Quake.distanceFormatter.stringFromDistance(depth))"
     }
     
     var coordinate: CLLocationCoordinate2D {
@@ -127,7 +109,7 @@ extension Quake: Fetchable {
 extension Quake: MKAnnotation {
     
     var title: String? {
-        return additionalInfoString
+        return name
     }
     
     var subtitle: String? {

@@ -41,7 +41,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         guard NetworkUtility.internetReachable() else { completionHandler(.Failed); return }
         
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
-            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
+            NetworkClient.sharedClient.getQuakesByLocation(0, coordinate: lastPlace.location!.coordinate) { quakes, error in
                 if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                 if error == nil {
                     completionHandler(.NewData)
@@ -57,7 +57,7 @@ class WindowController: UIResponder, UIApplicationDelegate
             switch option {
             case LocationOption.Nearby.rawValue:
                 if let current = SettingsController.sharedController.cachedAddress?.location {
-                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
+                    NetworkClient.sharedClient.getQuakesByLocation(0, coordinate: current.coordinate) { quakes, error in
                         if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                         if error == nil {
                             completionHandler(.NewData)
@@ -72,7 +72,7 @@ class WindowController: UIResponder, UIApplicationDelegate
                 }
                 break
             case LocationOption.World.rawValue:
-                NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
+                NetworkClient.sharedClient.getWorldQuakes(0) { quakes, error in
                     if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                     if error == nil {
                         completionHandler(.NewData)
@@ -83,7 +83,7 @@ class WindowController: UIResponder, UIApplicationDelegate
                 }
                 break
             case LocationOption.Major.rawValue:
-                NetworkClient.sharedClient.getMajorQuakes { quakes, error in
+                NetworkClient.sharedClient.getMajorQuakes(0) { quakes, error in
                     if let recievedQuakes = quakes { PersistentController.sharedController.saveQuakes(recievedQuakes) }
                     if error == nil {
                         completionHandler(.NewData)
