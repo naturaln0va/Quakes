@@ -13,7 +13,6 @@
 		48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */; };
 		48190D381C559601009712F6 /* PickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D371C559601009712F6 /* PickerViewController.swift */; };
 		48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D391C55A02F009712F6 /* UIDevice+Additions.swift */; };
-		483A624C1CD4F264008CA19D /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 483A624B1CD4F264008CA19D /* GoogleMobileAds.framework */; };
 		483A624E1CD4FF26008CA19D /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A624D1CD4FF26008CA19D /* NetworkOperation.swift */; };
 		483A62501CD505B5008CA19D /* USGSLocationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */; };
 		483A62521CD50BD4008CA19D /* USGSFetchQuakesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */; };
@@ -37,6 +36,7 @@
 		48C420F61CD786AD00DB3037 /* EMSCWorldOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F51CD786AD00DB3037 /* EMSCWorldOperation.swift */; };
 		48C420F81CD786F500DB3037 /* EMSCMajorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F71CD786F500DB3037 /* EMSCMajorOperation.swift */; };
 		48C7131A1C4090C600196225 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C713191C4090C600196225 /* SettingsController.swift */; };
+		48C736481CEE7DD600CBFEE7 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C736471CEE7DD600CBFEE7 /* GoogleMobileAds.framework */; };
 		690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690C289A1C580A750035F47A /* NSDate+Relative.swift */; };
 		69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */; };
 		69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F211C3DDC9900D9D3BF /* QuakeCell.swift */; };
@@ -87,7 +87,6 @@
 		48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadNearbyCitiesOperation.swift; sourceTree = "<group>"; };
 		48190D371C559601009712F6 /* PickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerViewController.swift; sourceTree = "<group>"; };
 		48190D391C55A02F009712F6 /* UIDevice+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Additions.swift"; sourceTree = "<group>"; };
-		483A624B1CD4F264008CA19D /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		483A624D1CD4FF26008CA19D /* NetworkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
 		483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSLocationOperation.swift; sourceTree = "<group>"; };
 		483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSFetchQuakesOperation.swift; sourceTree = "<group>"; };
@@ -111,6 +110,7 @@
 		48C420F51CD786AD00DB3037 /* EMSCWorldOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCWorldOperation.swift; sourceTree = "<group>"; };
 		48C420F71CD786F500DB3037 /* EMSCMajorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCMajorOperation.swift; sourceTree = "<group>"; };
 		48C713191C4090C600196225 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		48C736471CEE7DD600CBFEE7 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		690C289A1C580A750035F47A /* NSDate+Relative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Relative.swift"; sourceTree = "<group>"; };
 		69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
 		69150F211C3DDC9900D9D3BF /* QuakeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuakeCell.swift; sourceTree = "<group>"; };
@@ -164,8 +164,8 @@
 			files = (
 				69497A841C80797500AB2654 /* SystemConfiguration.framework in Frameworks */,
 				69497A821C80796900AB2654 /* Security.framework in Frameworks */,
+				48C736481CEE7DD600CBFEE7 /* GoogleMobileAds.framework in Frameworks */,
 				4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */,
-				483A624C1CD4F264008CA19D /* GoogleMobileAds.framework in Frameworks */,
 				696067271C7FB64700068B72 /* libFlurry_7.5.1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -206,9 +206,9 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				48C736471CEE7DD600CBFEE7 /* GoogleMobileAds.framework */,
 				69497A831C80797500AB2654 /* SystemConfiguration.framework */,
 				69497A811C80796900AB2654 /* Security.framework */,
-				483A624B1CD4F264008CA19D /* GoogleMobileAds.framework */,
 				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
 				696067201C7FB64700068B72 /* Flurry */,
 				69D1634E1C5C52E6000294A5 /* SAConfetti */,
