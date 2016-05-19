@@ -2,8 +2,8 @@ git_url "https://github.com/naturaln0va/certificates.git"
 
 type "development" # The default type, can be: appstore, adhoc or development
 
-# app_identifier "tools.fastlane.app" 
-# username "user@fastlane.tools" # Your Apple Developer Portal username
+# app_identifier "io.ackermann.quakes"
+# username "huntermann26@gmail.com" # Your Apple Developer Portal username
 
 # For all available options run `match --help`
 # Remove the # in the beginning of the line to enable the other options

@@ -21,6 +21,7 @@ class WindowController: UIResponder, UIApplicationDelegate
         Flurry.startSession(TelemetryController.sharedController.apiKey)
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        registerForPushNotifications(application)
         
         if !SettingsController.sharedController.hasSupported && SettingsController.sharedController.fisrtLaunchDate == nil {
             NetworkClient.sharedClient.verifyInAppRecipt { sucess in
@@ -36,6 +37,40 @@ class WindowController: UIResponder, UIApplicationDelegate
         
         return true
     }
+    
+    // MARK: - Notifications
+    
+    func registerForPushNotifications(application: UIApplication) {
+        let notificationSettings = UIUserNotificationSettings(
+            forTypes: [.Sound, .Alert],
+            categories: nil
+        )
+        
+        application.registerUserNotificationSettings(notificationSettings)
+    }
+    
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        if notificationSettings.types != .None {
+            application.registerForRemoteNotifications()
+        }
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let tokenChars = UnsafePointer<CChar>(deviceToken.bytes)
+        var tokenString = ""
+        
+        for i in 0..<deviceToken.length {
+            tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
+        }
+        
+        print("Device Token:", tokenString)
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        print("Failed to register:", error)
+    }
+    
+    // MARK: - Background Fetch
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         guard NetworkUtility.internetReachable() else { completionHandler(.Failed); return }

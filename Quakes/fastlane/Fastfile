@@ -49,6 +49,24 @@ platform :ios do
     # frameit
   end
 
+  desc "Creates all profiles if nessacary"
+  lane :match do
+    match(git_url: "https://github.com/naturaln0va/certificates.git",
+      type: "development",
+      app_identifier: "io.ackermann.quakes",
+      readonly: false)
+
+    match(git_url: "https://github.com/naturaln0va/certificates.git",
+      type: "adhoc",
+      app_identifier: "io.ackermann.quakes",
+      readonly: false)
+
+    match(git_url: "https://github.com/naturaln0va/certificates.git",
+      type: "appstore",
+      app_identifier: "io.ackermann.quakes",
+      readonly: false)
+  end
+
   error do |lane, exception|
     notification(subtitle: "Fastlane Error", message: "Fastlane failed to finish lane '#{lane}' with error: '#{exception}'.")
   end
