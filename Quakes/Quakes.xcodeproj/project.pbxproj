@@ -22,6 +22,7 @@
 		483A625A1CD515A9008CA19D /* GetNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */; };
 		483A625C1CD518FE008CA19D /* GetDetailURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */; };
+		486CFE531CF31E8300762587 /* AddDeviceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486CFE521CF31E8300762587 /* AddDeviceOperation.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
 		4872AB991C55C15300B6CF37 /* RemoveAdsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */; };
 		4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */; };
@@ -96,6 +97,7 @@
 		483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetNearbyCitiesOperation.swift; sourceTree = "<group>"; };
 		483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDetailURLOperation.swift; sourceTree = "<group>"; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Format.swift"; sourceTree = "<group>"; };
+		486CFE521CF31E8300762587 /* AddDeviceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDeviceOperation.swift; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveAdsViewController.swift; sourceTree = "<group>"; };
 		4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RemoveAdsViewController.xib; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 		48190D2D1C553A9B009712F6 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				486CFE521CF31E8300762587 /* AddDeviceOperation.swift */,
 				48190D2E1C553C9B009712F6 /* ConcurrentOperation.swift */,
 				48190D2B1C553A96009712F6 /* DownloadDetailOperation.swift */,
 				48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */,
@@ -475,6 +478,7 @@
 				69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */,
 				696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */,
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
+				486CFE531CF31E8300762587 /* AddDeviceOperation.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
 				4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */,
 				69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */,

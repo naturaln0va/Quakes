@@ -26,6 +26,8 @@ class NetworkOperation: NSOperation {
     }
     
     var urlString: String { return "" } // Subclass to override
+    var postParams: [String: AnyObject] { return [:] } // Subclass to override
+    
     var shouldDebugOperation = false
     let incomingData = NSMutableData()
     
@@ -69,6 +71,14 @@ extension NetworkOperation {
         
         guard let url = NSURL(string: urlString) else { fatalError("\(self.dynamicType): Failed to build URL") }
         let request = NSMutableURLRequest(URL: url)
+        
+        if postParams.count > 0 {
+            request.HTTPMethod = "POST"
+            let postString = postParams.map({ key, value in
+                return "\(key)=\(value)"
+            }).joinWithSeparator("&")
+            request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
+        }
         
         sessionTask = internalURLSession.dataTaskWithRequest(request)
         sessionTask!.resume()

@@ -64,6 +64,10 @@ class WindowController: UIResponder, UIApplicationDelegate
         }
         
         print("Device Token: \(tokenString), length of token: \(tokenString.characters.count)")
+        
+        if let address = SettingsController.sharedController.cachedAddress where address.location != nil {
+            NetworkClient.sharedClient.registerForNotificationsWithToken(tokenString, location: address.location!)
+        }
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
