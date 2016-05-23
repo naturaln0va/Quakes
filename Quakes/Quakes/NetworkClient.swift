@@ -84,6 +84,10 @@ class NetworkClient {
         }
     }
     
+    func registerForNotificationsWithToken(token: String, location: CLLocation) {
+        // /api/1.0/add_user
+    }
+    
     func getNearbyCitiesWithURL(urlForNearbyCities url: NSURL, completion: NearbyCityCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         let fetchOperation = GetNearbyCitiesOperation(urlForNearbyCities: url)

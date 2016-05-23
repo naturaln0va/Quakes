@@ -63,11 +63,11 @@ class WindowController: UIResponder, UIApplicationDelegate
             tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
         }
         
-        print("Device Token:", tokenString)
+        print("Device Token: \(tokenString), length of token: \(tokenString.characters.count)")
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-        print("Failed to register:", error)
+        print("Failed to register: \(error)")
     }
     
     // MARK: - Background Fetch
