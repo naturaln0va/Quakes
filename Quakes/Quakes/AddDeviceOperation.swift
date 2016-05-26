@@ -22,7 +22,7 @@ class AddDeviceOperation: NetworkOperation {
     }
     
     override var urlString: String {
-        return "http://localhost:5000/api/1.0/add_user"
+        return "http://quakes.api.ackermann.io/add_user"
     }
     
     override func handleData() {
