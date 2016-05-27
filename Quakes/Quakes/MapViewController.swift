@@ -263,7 +263,7 @@ class MapViewController: UIViewController
             return
         }
         
-        NetworkClient.sharedClient.getQuakesByLocation(0, coordinate: placemark.location!.coordinate) { quakes, error in
+        NetworkClient.sharedClient.getQuakesByLocation(placemark.location!.coordinate) { quakes, error in
             var sucess = false
             if let quakes = quakes where error == nil {
                 sucess = quakes.count > 0

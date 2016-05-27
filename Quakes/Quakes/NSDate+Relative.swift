@@ -13,8 +13,16 @@ extension NSDate
         return NSCalendar.currentCalendar().components(.Day, fromDate: date, toDate: self, options: []).day
     }
     
+    func isToday() -> Bool {
+        return NSCalendar.currentCalendar().components([.Year, .Month, .Day], fromDate: NSDate(), toDate: self, options: []).day == 0
+    }
+    
     func isMoreThanAWeekOld() -> Bool {
         return NSCalendar.currentCalendar().components(.Day, fromDate: self, toDate: NSDate(), options: []).day > 7
+    }
+    
+    func isMoreThanAMonthOld() -> Bool {
+        return NSCalendar.currentCalendar().components(.Month, fromDate: self, toDate: NSDate(), options: []).month > 1
     }
     
     func relativeString() -> String {

@@ -48,32 +48,38 @@ class PersistentController
     // MARK: - Helpers
     func attemptSave() {
         if moc.hasChanges {
-            moc.performBlockAndWait { [unowned self] in
-                do {
-                    try self.moc.save()
-                }
-                    
-                catch {
-                    fatalError("\nError saving the managed object context: \(error)\n\n")
-                }
+            do {
+                try self.moc.save()
+            }
+                
+            catch {
+                fatalError("\nError saving the managed object context: \(error)\n\n")
             }
         }
     }
     
     func attemptCleanup() {
-        if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
-                return
-        }
-        
         let maxQuakesToStore = SettingsController.sharedController.fetchLimit.rawValue
         
         if let quakes = try? Quake.objectsInContext(moc, predicate: nil, sortedBy: "timestamp", ascending: false) {
             var quakesCopy = quakes
+            
+            for quake in quakesCopy {
+                if quake.timestamp.isMoreThanAMonthOld() {
+                    moc.deleteObject(quake)
+                    quakesCopy.removeLast()
+                }
+            }
+            
             while quakesCopy.count > maxQuakesToStore {
                 if let lastQuake = quakes.last {
                     moc.deleteObject(lastQuake)
                     quakesCopy.removeLast()
                 }
+            }
+            
+            if SettingsController.sharedController.isLocationOptionWorldOrMajor() {
+                return
             }
             
             var locationOption: CLLocation?
@@ -164,11 +170,6 @@ class PersistentController
                         continue
                     }
                 }
-                
-//                if let exsistingQuake = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "magnitude == %@ AND ", quake.magnitude), sortedBy: nil, ascending: false) {
-                    // find a quake with the same mag and within 100 meters
-                    // https://www.objc.io/issues/4-core-data/core-data-fetch-requests/
-//                }
             }
                 
             catch {
@@ -192,7 +193,6 @@ class PersistentController
             dataToSave.felt = quake.felt
         }
         
-        attemptCleanup()
         attemptSave()
     }
     

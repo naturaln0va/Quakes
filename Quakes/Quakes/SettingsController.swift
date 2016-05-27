@@ -9,6 +9,7 @@ class SettingsController
     static let kSettingsControllerDidChangeUnitStyleNotification = "settingsControllerDidChangeUnitStyle"
     static let kSettingsControllerDidChangePurchaseAdRemovalNotification = "settingsControllerDidChangePurchaseAdRemoval"
     static let kSettingsControllerDidUpdateLastFetchDateNotification = "settingsControllerDidUpdateLastFetchDate"
+    static let kSettingsControllerDidUpdateLocationForPushNotification = "settingsControllerDidUpdateLocationForPush"
     
     enum APIFetchSize: Int {
         case Small = 100
@@ -93,6 +94,7 @@ class SettingsController
     private static let kLastFetchKey = "lastFetch"
     private static let kPaidToRemoveKey = "alreadyPaid"
     private static let kHasAttemptedNotificationKey = "attemptedNotification"
+    private static let kPushTokenKey = "pushToken"
     
     private let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -121,6 +123,18 @@ class SettingsController
     func isLocationOptionWorldOrMajor() -> Bool {
         return lastLocationOption == LocationOption.World.rawValue || lastLocationOption == LocationOption.Major.rawValue
     }
+    
+    func locationEligableForNotifications() -> CLLocation? {
+        if let lastAddress = cachedAddress where lastAddress.location != nil {
+            return lastAddress.location
+        }
+        else if let lastSearch = lastSearchedPlace where lastSearch.location != nil {
+            return lastSearch.location
+        }
+        else {
+            return nil
+        }
+    }
         
     // MARK: - Public
     var cachedAddress: CLPlacemark? {
@@ -138,9 +152,46 @@ class SettingsController
                 let data = NSKeyedArchiver.archivedDataWithRootObject(newPlace)
                 defaults.setObject(data, forKey: SettingsController.kCachedPlacemarkKey)
                 defaults.synchronize()
+                NSNotificationCenter.defaultCenter().postNotificationName(SettingsController.kSettingsControllerDidUpdateLocationForPushNotification, object: nil)
             }
             else {
                 defaults.setObject(nil, forKey: SettingsController.kCachedPlacemarkKey)
+                defaults.synchronize()
+            }
+        }
+    }
+    
+    var lastSearchedPlace: CLPlacemark? {
+        get {
+            if let data = defaults.objectForKey(SettingsController.kLastSearchedKey) as? NSData,
+                let place = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? CLPlacemark {
+                return place
+            }
+            else {
+                return nil
+            }
+        }
+        set {
+            if let newPlace = newValue {
+                let data = NSKeyedArchiver.archivedDataWithRootObject(newPlace)
+                defaults.setObject(data, forKey: SettingsController.kLastSearchedKey)
+                defaults.synchronize()
+                NSNotificationCenter.defaultCenter().postNotificationName(SettingsController.kSettingsControllerDidUpdateLocationForPushNotification, object: nil)
+            }
+            else {
+                defaults.setObject(nil, forKey: SettingsController.kLastSearchedKey)
+                defaults.synchronize()
+            }
+        }
+    }
+    
+    var pushToken: String? {
+        get {
+            return defaults.objectForKey(SettingsController.kPushTokenKey) as? String
+        }
+        set {
+            if let newToken = newValue {
+                defaults.setObject(newToken, forKey: SettingsController.kPushTokenKey)
                 defaults.synchronize()
             }
         }
@@ -178,29 +229,6 @@ class SettingsController
             defaults.setBool(newValue, forKey: SettingsController.kUnitStyleKey)
             defaults.synchronize()
             NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.kSettingsControllerDidChangeUnitStyleNotification, object: nil)
-        }
-    }
-    
-    var lastSearchedPlace: CLPlacemark? {
-        get {
-            if let data = defaults.objectForKey(SettingsController.kLastSearchedKey) as? NSData,
-                let place = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? CLPlacemark {
-                    return place
-            }
-            else {
-                return nil
-            }
-        }
-        set {
-            if let newPlace = newValue {
-                let data = NSKeyedArchiver.archivedDataWithRootObject(newPlace)
-                defaults.setObject(data, forKey: SettingsController.kLastSearchedKey)
-                defaults.synchronize()
-            }
-            else {
-                defaults.setObject(nil, forKey: SettingsController.kLastSearchedKey)
-                defaults.synchronize()
-            }
         }
     }
     

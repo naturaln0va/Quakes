@@ -72,12 +72,12 @@ extension NetworkOperation {
         guard let url = NSURL(string: urlString) else { fatalError("\(self.dynamicType): Failed to build URL") }
         let request = NSMutableURLRequest(URL: url)
         
-        if postParams.count > 0 {
+        if let jsonPostData = try? NSJSONSerialization.dataWithJSONObject(postParams, options: []) where NSJSONSerialization.isValidJSONObject(postParams) && postParams.count > 0 {
             request.HTTPMethod = "POST"
-            let postString = postParams.map({ key, value in
-                return "\(key)=\(value)"
-            }).joinWithSeparator("&")
-            request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("\(jsonPostData.length)", forHTTPHeaderField: "Content-Length")
+            request.HTTPBody = jsonPostData
         }
         
         sessionTask = internalURLSession.dataTaskWithRequest(request)
@@ -108,6 +108,8 @@ extension NetworkOperation: NSURLSessionDataDelegate {
             
             if httpResponse.statusCode == 204 || httpResponse.statusCode == 404 {
                 if shouldDebugOperation { print("\(self.dynamicType): Canceling task because of the http status code, \(httpResponse.statusCode). Url: \(httpResponse.URL?.absoluteURL ?? "No URL")") }
+                state = .Finished
+                sessionTask?.cancel()
                 completionHandler(.Cancel)
             }
         }

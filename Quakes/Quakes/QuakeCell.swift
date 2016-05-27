@@ -29,7 +29,7 @@ class QuakeCell: UITableViewCell
         cityLabel.text = quake.name.componentsSeparatedByString(" of ").last!
         
         colorView.backgroundColor = quake.severityColor
-        colorView.layer.cornerRadius = 6.0
+        colorView.layer.cornerRadius = 10.0
     }
     
     override func setSelected(selected: Bool, animated: Bool) {

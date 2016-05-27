@@ -92,8 +92,6 @@ class NetworkClient {
             longitude: location.coordinate.longitude
         )
         
-        operation.shouldDebugOperation = true
-        
         operation.qualityOfService = .Background
         operation.queuePriority = .Normal
         
@@ -150,16 +148,12 @@ class NetworkClient {
         requestsQueue.addOperation(fetchOperation)
     }
     
-    func getQuakesByLocation(page: UInt, coordinate: CLLocationCoordinate2D, completion: QuakesCompletionBlock?) {
+    func getQuakesByLocation(coordinate: CLLocationCoordinate2D, completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
 
-        let USGSFetchOperation = USGSLocationOperation(page: page, coordinate: coordinate)
+        let USGSFetchOperation = USGSLocationOperation(coordinate: coordinate)
         USGSFetchOperation.qualityOfService = .UserInitiated
         USGSFetchOperation.queuePriority = .VeryHigh
-        
-//        let EMSCFetchOperation = EMSCLocationOperation(page: page, coordinate: coordinate)
-//        EMSCFetchOperation.qualityOfService = .UserInitiated
-//        EMSCFetchOperation.queuePriority = .VeryHigh
         
         USGSFetchOperation.completionBlock = { [weak self] in
             dispatch_sync(dispatch_get_main_queue()) {
@@ -174,37 +168,16 @@ class NetworkClient {
                 }
             }
         }
-        
-//        EMSCFetchOperation.completionBlock = { [weak self] in
-//            if USGSFetchOperation.operating {
-//                USGSFetchOperation.cancel()
-//            }
-//            dispatch_sync(dispatch_get_main_queue()) {
-//                NetworkUtility.networkOperationFinished()
-//                SettingsController.sharedController.lastFetchDate = NSDate()
-//                
-//                if let recievedQuakes = EMSCFetchOperation.quakes {
-//                    completion?(quakes: recievedQuakes, error: nil)
-//                }
-//                else {
-//                    completion?(quakes: nil, error: self?.noResponseError)
-//                }
-//            }
-//        }
         
         requestsQueue.addOperations([USGSFetchOperation], waitUntilFinished: false)
     }
     
-    func getMajorQuakes(page: UInt, completion: QuakesCompletionBlock?) {
+    func getMajorQuakes(completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
         
-        let USGSFetchOperation = USGSMajorOperation(page: page)
+        let USGSFetchOperation = USGSMajorOperation()
         USGSFetchOperation.qualityOfService = .UserInitiated
         USGSFetchOperation.queuePriority = .VeryHigh
-        
-//        let EMSCFetchOperation = EMSCMajorOperation(page: page)
-//        EMSCFetchOperation.qualityOfService = .UserInitiated
-//        EMSCFetchOperation.queuePriority = .VeryHigh
         
         USGSFetchOperation.completionBlock = { [weak self] in
             dispatch_sync(dispatch_get_main_queue()) {
@@ -219,38 +192,16 @@ class NetworkClient {
                 }
             }
         }
-        
-//        EMSCFetchOperation.completionBlock = { [weak self] in
-//            if USGSFetchOperation.operating {
-//                USGSFetchOperation.cancel()
-//            }
-//            
-//            dispatch_sync(dispatch_get_main_queue()) {
-//                NetworkUtility.networkOperationFinished()
-//                SettingsController.sharedController.lastFetchDate = NSDate()
-//                
-//                if let recievedQuakes = EMSCFetchOperation.quakes {
-//                    completion?(quakes: recievedQuakes, error: nil)
-//                }
-//                else {
-//                    completion?(quakes: nil, error: self?.noResponseError)
-//                }
-//            }
-//        }
         
         requestsQueue.addOperations([USGSFetchOperation], waitUntilFinished: false)
     }
     
-    func getWorldQuakes(page: UInt, completion: QuakesCompletionBlock?) {
+    func getWorldQuakes(completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
         
-        let USGSFetchOperation = USGSWorldOperation(page: page)
+        let USGSFetchOperation = USGSWorldOperation()
         USGSFetchOperation.qualityOfService = .UserInitiated
         USGSFetchOperation.queuePriority = .VeryHigh
-        
-//        let EMSCFetchOperation = EMSCWorldOperation(page: page)
-//        EMSCFetchOperation.qualityOfService = .UserInitiated
-//        EMSCFetchOperation.queuePriority = .VeryHigh
         
         USGSFetchOperation.completionBlock = { [weak self] in
             dispatch_sync(dispatch_get_main_queue()) {
@@ -265,24 +216,6 @@ class NetworkClient {
                 }
             }
         }
-        
-//        EMSCFetchOperation.completionBlock = { [weak self] in
-//            if USGSFetchOperation.operating {
-//                USGSFetchOperation.cancel()
-//            }
-//            
-//            dispatch_sync(dispatch_get_main_queue()) {
-//                NetworkUtility.networkOperationFinished()
-//                SettingsController.sharedController.lastFetchDate = NSDate()
-//                
-//                if let recievedQuakes = EMSCFetchOperation.quakes {
-//                    completion?(quakes: recievedQuakes, error: nil)
-//                }
-//                else {
-//                    completion?(quakes: nil, error: self?.noResponseError)
-//                }
-//            }
-//        }
         
         requestsQueue.addOperations([USGSFetchOperation], waitUntilFinished: false)
     }

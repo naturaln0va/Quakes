@@ -2,23 +2,9 @@
 import UIKit
 import CoreData
 import CoreLocation
-import GoogleMobileAds
 
-class ListViewController: UIViewController
+class ListViewController: UITableViewController
 {
-    
-    @IBOutlet var tableView: UITableView!
-    @IBOutlet var bannerView: GADBannerView!
-    @IBOutlet var bannerViewBottomConstraint: NSLayoutConstraint!
-    
-    private let fetchedResultsController: NSFetchedResultsController = {
-        let moc = PersistentController.sharedController.moc
-        
-        let fetchRequest = Quake.fetchRequest(moc, predicate: nil, sortedBy: "timestamp", ascending: false)
-        fetchRequest.fetchBatchSize = 75
-        
-        return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: moc, sectionNameKeyPath: nil, cacheName: "quakes")
-    }()
     
     private lazy var noResultsLabel: UILabel = {
         let label = UILabel()
@@ -43,31 +29,14 @@ class ListViewController: UIViewController
         return button
     }()
     
-    private lazy var lastFetchDateFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
-        
-        formatter.timeStyle = .ShortStyle
-        formatter.dateStyle = .ShortStyle
-        
-        return formatter
-    }()
-    
-    private lazy var refresher = UIRefreshControl()
     private lazy var locationManager = CLLocationManager()
     private lazy var defaults = NSUserDefaults.standardUserDefaults()
     private lazy var geocoder = CLGeocoder()
     private var transitionAnimator: TextBarAnimator?
+    private var fetchedResultsController: NSFetchedResultsController?
 
     private var currentLocation: CLLocation? = SettingsController.sharedController.cachedAddress?.location
-    private var currentPage: UInt = 0
-    private var totalQuakes: Int = 0
-    
-    private let loadingCellTag = 345
 
-    deinit {
-        fetchedResultsController.delegate = nil
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -89,65 +58,32 @@ class ListViewController: UIViewController
         )
         navigationItem.rightBarButtonItem?.enabled = false
         
-        tableView.delegate = self
-        tableView.dataSource = self
         tableView.estimatedRowHeight = QuakeCell.cellHeight
         tableView.backgroundColor = StyleController.backgroundColor
         tableView.registerNib(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
+        tableView.registerNib(UINib(nibName: NativeAdCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: NativeAdCell.reuseIdentifier)
         
-        refresher.tintColor = StyleController.contrastColor
-        refresher.backgroundColor = StyleController.backgroundColor
-        refresher.attributedTitle = NSAttributedString(string: "Last updated: \(lastFetchDateFormatter.stringFromDate(SettingsController.sharedController.lastFetchDate))")
-        refresher.addTarget(self, action: #selector(ListViewController.fetchQuakes), forControlEvents: .ValueChanged)
-        tableView.addSubview(refresher)
-        
-        bannerView.adUnitID = "ca-app-pub-6493864895252732/6300764804"
-        bannerView.delegate = self
-        bannerView.rootViewController = self
-        bannerView.backgroundColor = StyleController.backgroundColor
-        
-        if !SettingsController.sharedController.hasSupported {
-            let request = GADRequest()
-            request.testDevices = [kGADSimulatorID]
+        refreshControl = {
+            let refresher = UIRefreshControl()
             
-            bannerView.loadRequest(request)
-        }
+            refresher.tintColor = StyleController.contrastColor
+            refresher.backgroundColor = StyleController.backgroundColor
+            refresher.addTarget(self, action: #selector(ListViewController.fetchQuakes), forControlEvents: .ValueChanged)
+            
+            return refresher
+        }()
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(ListViewController.settingsDidChangeUnitStyle),
-            name: SettingsController.kSettingsControllerDidChangeUnitStyleNotification,
-            object: nil
-        )
+        fetchedResultsController = {
+            let moc = PersistentController.sharedController.moc
+            
+            let fetchRequest = Quake.fetchRequest(moc, predicate: nil, sortedBy: "timestamp", ascending: false)
+            fetchRequest.fetchBatchSize = 20
+            
+            return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: moc, sectionNameKeyPath: nil, cacheName: "quakes")
+        }()
+        fetchedResultsController?.delegate = self
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(ListViewController.settingsDidPurchaseAdRemoval),
-            name: SettingsController.kSettingsControllerDidChangePurchaseAdRemovalNotification,
-            object: nil
-        )
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(ListViewController.applicationDidEnterForeground),
-            name: UIApplicationDidBecomeActiveNotification,
-            object: nil
-        )
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(ListViewController.applicationDidEnterForeground),
-            name: UIApplicationDidBecomeActiveNotification,
-            object: nil
-        )
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(ListViewController.settingsDidUpdateLastFetchDate),
-            name: SettingsController.kSettingsControllerDidUpdateLastFetchDateNotification,
-            object: nil
-        )
-        
+        beginObserving()
         preformFetch()
         fetchQuakes()
     }
@@ -158,12 +94,8 @@ class ListViewController: UIViewController
     }
     
     private func preformFetch() {
-        if fetchedResultsController.delegate == nil {
-            fetchedResultsController.delegate = self
-        }
-        
         do {
-            try fetchedResultsController.performFetch()
+            try fetchedResultsController?.performFetch()
             if navigationItem.rightBarButtonItem?.enabled == false {
                 navigationItem.rightBarButtonItem?.enabled = true
             }
@@ -182,9 +114,9 @@ class ListViewController: UIViewController
     
     private func presentFinder() {
         titleViewButton.hidden = true
-        transitionAnimator = TextBarAnimator(duration: 0.3, presentingViewController: true, originatingFrame: titleViewButton.frame, completion: {
+        transitionAnimator = TextBarAnimator(duration: 0.3, presentingViewController: true, originatingFrame: titleViewButton.frame) {
             self.titleViewButton.hidden = false
-        })
+        }
         
         let finderVC = LocationFinderViewController()
         finderVC.delegate = self
@@ -197,7 +129,7 @@ class ListViewController: UIViewController
             PersistentController.sharedController.saveQuakes(recievedQuakes)
         }
         
-        if tableView.numberOfRowsInSection(0) > 0 || fetchedResultsController.fetchedObjects?.count > 0 {
+        if fetchedResultsController?.sections?.count > 0 {
             if noResultsLabel.superview != nil {
                 noResultsLabel.removeFromSuperview()
             }
@@ -211,9 +143,116 @@ class ListViewController: UIViewController
             navigationItem.rightBarButtonItem?.enabled = false
         }
         
-        if refresher.refreshing {
+        if let refresher = refreshControl where refresher.refreshing {
             refresher.endRefreshing()
         }
+    }
+    
+    private func shouldLoadAdAtIndexPath(indexPath: NSIndexPath) -> Bool {
+        guard SettingsController.sharedController.hasSupported else { return false }
+        return indexPath.row == 3 || indexPath.row % 34 == 3
+    }
+    
+    private func beginObserving() {
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(ListViewController.settingsDidChangeUnitStyle),
+            name: SettingsController.kSettingsControllerDidChangeUnitStyleNotification,
+            object: nil
+        )
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(ListViewController.settingsDidPurchaseAdRemoval),
+            name: SettingsController.kSettingsControllerDidChangePurchaseAdRemovalNotification,
+            object: nil
+        )
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(ListViewController.applicationDidEnterForeground),
+            name: UIApplicationDidBecomeActiveNotification,
+            object: nil
+        )
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(ListViewController.settingsDidUpdateLastFetchDate),
+            name: SettingsController.kSettingsControllerDidUpdateLastFetchDateNotification,
+            object: nil
+        )
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(ListViewController.settingsDidUpdateLocationForPush),
+            name: SettingsController.kSettingsControllerDidUpdateLocationForPushNotification,
+            object: nil
+        )
+    }
+    
+    // MARK: - UITableView Delegate
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if shouldLoadAdAtIndexPath(indexPath) {
+            return NativeAdCell.cellHeight
+        }
+        else {
+            return QuakeCell.cellHeight
+        }
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if shouldLoadAdAtIndexPath(indexPath) {
+            guard let cell = tableView.dequeueReusableCellWithIdentifier(NativeAdCell.reuseIdentifier) as? NativeAdCell else {
+                fatalError("Expected to dequeue a 'NativeAdCell'.")
+            }
+            
+            cell.nativeExpressAdView.rootViewController = self
+            cell.loadRequest()
+            
+            return cell
+        }
+        else {
+            guard let cell = tableView.dequeueReusableCellWithIdentifier(QuakeCell.reuseIdentifier) as? QuakeCell else {
+                fatalError("Expected to dequeue a 'QuakeCell'.")
+            }
+            
+            if let quake = fetchedResultsController?.objectAtIndexPath(indexPath) as? Quake {
+                cell.configure(quake)
+            }
+            
+            return cell
+        }
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.0001
+    }
+    
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.0001
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        if let quake = fetchedResultsController?.objectAtIndexPath(indexPath) as? Quake {
+            navigationController?.pushViewController(DetailViewController(quake: quake), animated: true)
+        }
+    }
+    
+    // MARK: - UITableView DataSource
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let section = fetchedResultsController?.sections?[section] else { return 0 }
+        
+        let objectCount = section.numberOfObjects
+        
+        var tableAds = 0
+        for idx in 0..<objectCount where SettingsController.sharedController.hasSupported {
+            if idx == 3 {
+                tableAds += 1
+            }
+            else if idx % 34 == 3 {
+                tableAds += 1
+            }
+        }
+        
+        return objectCount + tableAds
     }
     
     // MARK: - Notifications
@@ -222,12 +261,7 @@ class ListViewController: UIViewController
     }
     
     func settingsDidPurchaseAdRemoval() {
-        if bannerViewBottomConstraint.constant == 0 {
-            UIView.animateWithDuration(0.3) {
-                self.bannerViewBottomConstraint.constant = -self.bannerView.frame.height
-                self.view.layoutIfNeeded()
-            }
-        }
+        tableView.reloadData()
     }
     
     func settingsDidChangeUnitStyle() {
@@ -235,8 +269,28 @@ class ListViewController: UIViewController
     }
     
     func settingsDidUpdateLastFetchDate() {
-        let attrString = NSAttributedString(string: "Last updated: \(lastFetchDateFormatter.stringFromDate(SettingsController.sharedController.lastFetchDate))")
-        refresher.attributedTitle = attrString
+        let formatter = NSDateFormatter()
+        formatter.timeStyle = .ShortStyle
+        
+        let lastFetchDate = SettingsController.sharedController.lastFetchDate
+        var attrString = ""
+        
+        if lastFetchDate.isToday() {
+            formatter.dateStyle = .NoStyle
+            attrString = "Last updated: Today at \(formatter.stringFromDate(lastFetchDate))"
+        }
+        else {
+            formatter.dateStyle = .ShortStyle
+            attrString = "Last updated: \(formatter.stringFromDate(lastFetchDate))"
+        }
+        
+        refreshControl?.attributedTitle = NSAttributedString(string: attrString)
+    }
+    
+    func settingsDidUpdateLocationForPush() {
+        guard let token = SettingsController.sharedController.pushToken else { return }
+        guard let location = SettingsController.sharedController.locationEligableForNotifications() else { return }
+        NetworkClient.sharedClient.registerForNotificationsWithToken(token, location: location)
     }
     
     // MARK: - Actions
@@ -262,7 +316,7 @@ class ListViewController: UIViewController
         navigationItem.rightBarButtonItem?.enabled = false
         
         guard NetworkUtility.internetReachable() else {
-            if refresher.refreshing {
+            if let refresher = refreshControl where refresher.refreshing {
                 refresher.endRefreshing()
             }
             return
@@ -280,7 +334,7 @@ class ListViewController: UIViewController
         if let lastPlace = SettingsController.sharedController.lastSearchedPlace {
             setTitleButtonText("\(lastPlace.cityStateString())")
 
-            NetworkClient.sharedClient.getQuakesByLocation(currentPage, coordinate: lastPlace.location!.coordinate) { quakes, error in
+            NetworkClient.sharedClient.getQuakesByLocation(lastPlace.location!.coordinate) { quakes, error in
                 self.commonFinishedFetch(quakes)
             }
             return
@@ -292,7 +346,7 @@ class ListViewController: UIViewController
                 if let current = currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
-                    NetworkClient.sharedClient.getQuakesByLocation(currentPage, coordinate: current.coordinate) { quakes, error in
+                    NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
                         self.commonFinishedFetch(quakes)
                     }
                 }
@@ -317,14 +371,14 @@ class ListViewController: UIViewController
             case LocationOption.World.rawValue:
                 setTitleButtonText("Worldwide Quakes")
                 
-                NetworkClient.sharedClient.getWorldQuakes(currentPage) { quakes, error in
+                NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
                     self.commonFinishedFetch(quakes)
                 }
                 break
             case LocationOption.Major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
-                NetworkClient.sharedClient.getMajorQuakes(currentPage) { quakes, error in
+                NetworkClient.sharedClient.getMajorQuakes() { quakes, error in
                     self.commonFinishedFetch(quakes)
                 }
                 break
@@ -333,106 +387,6 @@ class ListViewController: UIViewController
                 break
             }
         }
-    }
-    
-}
-
-extension ListViewController: UITableViewDelegate, UITableViewDataSource
-{
-    
-    // MARK: - UITableView Delegate
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let fetchController = fetchedResultsController
-        let objects = fetchController.fetchedObjects
-        
-        if indexPath.row < objects?.count {
-            return QuakeCell.cellHeight
-        }
-        else {
-            return 44.0
-        }
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let fetchController = fetchedResultsController
-        let objects = fetchController.fetchedObjects
-        
-        if indexPath.row < objects?.count {
-            guard let cell = tableView.dequeueReusableCellWithIdentifier(QuakeCell.reuseIdentifier) as? QuakeCell else {
-                fatalError("Expected to dequeue a 'QuakeCell'.")
-            }
-            
-            if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
-                cell.configure(quake)
-            }
-            
-            return cell
-        }
-        else {
-            let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
-            cell.tag = loadingCellTag
-            cell.backgroundColor = StyleController.backgroundColor
-            
-            let acitivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-            acitivityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-            acitivityIndicatorView.center = cell.center
-            
-            cell.contentView.addSubview(acitivityIndicatorView)
-            acitivityIndicatorView.startAnimating()
-            
-            cell.contentView.addConstraint(NSLayoutConstraint(
-                item: acitivityIndicatorView,
-                attribute: .CenterX,
-                relatedBy: .Equal,
-                toItem: acitivityIndicatorView.superview,
-                attribute: .CenterX,
-                multiplier: 1,
-                constant: 0)
-            )
-            cell.contentView.addConstraint(NSLayoutConstraint(
-                item: acitivityIndicatorView,
-                attribute: .CenterY,
-                relatedBy: .Equal,
-                toItem: acitivityIndicatorView.superview,
-                attribute: .CenterY,
-                multiplier: 1,
-                constant: 0)
-            )
-            
-            return cell
-        }
-    }
-    
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if cell.tag == loadingCellTag {
-            currentPage += 1
-            fetchQuakes()
-        }
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.0001
-    }
-    
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.0001
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
-    {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        
-        if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
-            navigationController?.pushViewController(DetailViewController(quake: quake), animated: true)
-        }
-    }
-    
-    // MARK: - UITableView DataSource
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        let section = fetchedResultsController.sections?[section]
-        
-        return (section?.numberOfObjects ?? 0) + 1
     }
     
 }
@@ -549,21 +503,27 @@ extension ListViewController: NSFetchedResultsControllerDelegate
     {
         switch type {
         case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            if let newIndexPathToInsert = newIndexPath {
+                tableView.insertRowsAtIndexPaths([newIndexPathToInsert], withRowAnimation: .Automatic)
+            }
             
         case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            if let oldIndexPathToDelete = indexPath {
+                tableView.deleteRowsAtIndexPaths([oldIndexPathToDelete], withRowAnimation: .Automatic)
+            }
             
         case .Update:
             if let indexPath = indexPath, let cell = tableView.cellForRowAtIndexPath(indexPath) as? QuakeCell {
-                if let quake = fetchedResultsController.objectAtIndexPath(indexPath) as? Quake {
+                if let quake = fetchedResultsController?.objectAtIndexPath(indexPath) as? Quake {
                     cell.configure(quake)
                 }
             }
             
         case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            if let newIndexPathToInsert = newIndexPath, let oldIndexPathToDelete = indexPath {
+                tableView.deleteRowsAtIndexPaths([oldIndexPathToDelete], withRowAnimation: .Automatic)
+                tableView.insertRowsAtIndexPaths([newIndexPathToInsert], withRowAnimation: .Automatic)
+            }
         }
     }
     
@@ -615,7 +575,7 @@ extension ListViewController: MapViewControllerDelegate
             setTitleButtonText("\(placemark.cityStateString())")
         }
         
-        if !sucess && fetchedResultsController.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
+        if !sucess && fetchedResultsController?.fetchedObjects?.count == 0 && tableView.numberOfRowsInSection(0) == 0 {
             noResultsLabel.center = CGPoint(x: view.center.x, y: 65.0)
             tableView.addSubview(noResultsLabel)
         }
@@ -623,20 +583,6 @@ extension ListViewController: MapViewControllerDelegate
             if noResultsLabel.superview != nil {
                 noResultsLabel.removeFromSuperview()
             }
-        }
-    }
-    
-}
-
-extension ListViewController: NotificationPromptViewControllerDelegate
-{
-    
-    // MARK: NotificationPromptViewController Delegate
-    func notificationPromptViewControllerDidAllowNotifications() {
-        dismissViewControllerAnimated(true) {
-            UIApplication.sharedApplication().registerUserNotificationSettings(
-                UIUserNotificationSettings(forTypes: .Alert, categories: nil)
-            )
         }
     }
     
@@ -653,30 +599,6 @@ extension ListViewController: UIViewControllerTransitioningDelegate
     func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         transitionAnimator?.presenting = false
         return transitionAnimator
-    }
-    
-}
-
-extension ListViewController: GADBannerViewDelegate
-{
-    
-    // MARK: - GADBannerView Delegate
-    func adView(bannerView: GADBannerView!, didFailToReceiveAdWithError error: GADRequestError!) {
-        if bannerViewBottomConstraint.constant == 0 {
-            UIView.animateWithDuration(0.23) {
-                self.bannerViewBottomConstraint.constant = -bannerView.frame.height
-                self.view.layoutIfNeeded()
-            }
-        }
-    }
-    
-    func adViewDidReceiveAd(bannerView: GADBannerView!) {
-        if bannerViewBottomConstraint.constant != 0 && !SettingsController.sharedController.hasSupported {
-            UIView.animateWithDuration(0.23) {
-                self.bannerViewBottomConstraint.constant = 0
-                self.view.layoutIfNeeded()
-            }
-        }
     }
     
 }
