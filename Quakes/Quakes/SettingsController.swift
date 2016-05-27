@@ -120,6 +120,10 @@ class SettingsController
     }
     
     // MARK: - Helper
+    func hasSearchedBefore() -> Bool {
+        return lastLocationOption == nil && lastSearchedPlace == nil && cachedAddress == nil
+    }
+    
     func isLocationOptionWorldOrMajor() -> Bool {
         return lastLocationOption == LocationOption.World.rawValue || lastLocationOption == LocationOption.Major.rawValue
     }

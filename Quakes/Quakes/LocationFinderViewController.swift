@@ -38,7 +38,7 @@ class LocationFinderViewController: UIViewController
         controlContainerView.backgroundColor = StyleController.backgroundColor
         filterSegment.alpha = 0
         
-        controlContainerView.hidden = SettingsController.sharedController.lastLocationOption == nil
+        controlContainerView.hidden = SettingsController.sharedController.hasSearchedBefore()
         
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: #selector(LocationFinderViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
