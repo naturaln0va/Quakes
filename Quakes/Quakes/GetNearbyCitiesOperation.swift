@@ -19,10 +19,10 @@ class GetNearbyCitiesOperation: NetworkOperation {
         var dicts: [[String: AnyObject]]?
         
         do {
-            dicts = try NSJSONSerialization.JSONObjectWithData(incomingData, options: .MutableLeaves) as? [[String: AnyObject]]
+            dicts = try NSJSONSerialization.JSONObjectWithData(resultData, options: .MutableLeaves) as? [[String: AnyObject]]
         }
         catch let error {
-            if shouldDebugOperation { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
+            if debug { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
             return
         }
         
@@ -30,7 +30,7 @@ class GetNearbyCitiesOperation: NetworkOperation {
             return
         }
         
-        if shouldDebugOperation { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDicts)") }
+        if debug { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDicts)") }
         
         nearbyCities = responseDicts.map {
             return ParsedNearbyCity(dict: $0)

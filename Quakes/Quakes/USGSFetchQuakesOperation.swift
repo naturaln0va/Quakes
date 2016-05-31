@@ -10,10 +10,10 @@ class USGSFetchQuakesOperation: NetworkOperation {
         var dict: [String: AnyObject]?
         
         do {
-            dict = try NSJSONSerialization.JSONObjectWithData(incomingData, options: .MutableLeaves) as? [String: AnyObject]
+            dict = try NSJSONSerialization.JSONObjectWithData(resultData, options: .MutableLeaves) as? [String: AnyObject]
         }
         catch let error {
-            if shouldDebugOperation { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
+            if debug { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
             return
         }
         
@@ -21,7 +21,7 @@ class USGSFetchQuakesOperation: NetworkOperation {
             return
         }
         
-        if shouldDebugOperation { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDict)") }
+        if debug { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDict)") }
         
         guard let quakesDicts = responseDict["features"] as? [[String: AnyObject]] else {
             return

@@ -23,7 +23,9 @@ class WindowController: UIResponder, UIApplicationDelegate {
     }
     
     func performSecondaryInitializationsWithOptions(launchOptions: [NSObject: AnyObject]?) {
-        Flurry.startSession(TelemetryController.sharedController.apiKey)
+        Flurry.setDebugLogEnabled(false)
+        Flurry.setShowErrorInLogEnabled(false)
+        Flurry.startSession(TelemetryController.sharedController.apiKey, withOptions: launchOptions)
         
         if !SettingsController.sharedController.hasSupported && SettingsController.sharedController.fisrtLaunchDate == nil {
             NetworkClient.sharedClient.verifyInAppRecipt { sucess in
@@ -66,9 +68,6 @@ class WindowController: UIResponder, UIApplicationDelegate {
         print("Device Token: \(tokenString), length of token: \(tokenString.characters.count)")
         
         SettingsController.sharedController.pushToken = tokenString
-        if let location = SettingsController.sharedController.locationEligableForNotifications() {
-            NetworkClient.sharedClient.registerForNotificationsWithToken(tokenString, location: location)
-        }
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {

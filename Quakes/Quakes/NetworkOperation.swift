@@ -28,8 +28,8 @@ class NetworkOperation: NSOperation {
     var urlString: String { return "" } // Subclass to override
     var postParams: [String: AnyObject] { return [:] } // Subclass to override
     
-    var shouldDebugOperation = false
-    let incomingData = NSMutableData()
+    var debug = false
+    let resultData = NSMutableData()
     
     private var sessionTask: NSURLSessionTask?
     private var internalURLSession: NSURLSession {
@@ -74,7 +74,6 @@ extension NetworkOperation {
         
         if let jsonPostData = try? NSJSONSerialization.dataWithJSONObject(postParams, options: []) where NSJSONSerialization.isValidJSONObject(postParams) && postParams.count > 0 {
             request.HTTPMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue("\(jsonPostData.length)", forHTTPHeaderField: "Content-Length")
             request.HTTPBody = jsonPostData
@@ -104,10 +103,10 @@ extension NetworkOperation: NSURLSessionDataDelegate {
         }
         
         if let httpResponse = response as? NSHTTPURLResponse {
-            if shouldDebugOperation { print("\(self.dynamicType): Code \(httpResponse.statusCode): \(NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode))") }
+            if debug { print("\(self.dynamicType): Code \(httpResponse.statusCode): \(NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode))") }
             
             if httpResponse.statusCode == 204 || httpResponse.statusCode == 404 {
-                if shouldDebugOperation { print("\(self.dynamicType): Canceling task because of the http status code, \(httpResponse.statusCode). Url: \(httpResponse.URL?.absoluteURL ?? "No URL")") }
+                if debug { print("\(self.dynamicType): Canceling task because of the http status code, \(httpResponse.statusCode). Url: \(httpResponse.URL?.absoluteURL ?? "No URL")") }
                 state = .Finished
                 sessionTask?.cancel()
                 completionHandler(.Cancel)
@@ -124,7 +123,7 @@ extension NetworkOperation: NSURLSessionDataDelegate {
             return
         }
         
-        incomingData.appendData(data)
+        resultData.appendData(data)
     }
     
     func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
@@ -134,10 +133,10 @@ extension NetworkOperation: NSURLSessionDataDelegate {
             return
         }
         
-        if shouldDebugOperation && NSThread.isMainThread() { print("\(self.dynamicType): Completed on the main thread.") }
+        if debug && NSThread.isMainThread() { print("\(self.dynamicType): Completed on the main thread.") }
         
         if let e = error {
-            if shouldDebugOperation { print("\(self.dynamicType): Task completed with error: \(e.localizedDescription)") }
+            if debug { print("\(self.dynamicType): Task completed with error: \(e.localizedDescription)") }
             state = .Finished
             return
         }

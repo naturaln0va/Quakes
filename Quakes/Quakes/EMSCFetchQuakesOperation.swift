@@ -10,10 +10,10 @@ class EMSCFetchQuakesOperation: NetworkOperation {
         var dict: [String: AnyObject]?
         
         do {
-            dict = try NSJSONSerialization.JSONObjectWithData(incomingData, options: .MutableLeaves) as? [String: AnyObject]
+            dict = try NSJSONSerialization.JSONObjectWithData(resultData, options: .MutableLeaves) as? [String: AnyObject]
         }
         catch let error {
-            if shouldDebugOperation { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
+            if debug { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
             return
         }
         
@@ -25,7 +25,7 @@ class EMSCFetchQuakesOperation: NetworkOperation {
             return
         }
         
-        if shouldDebugOperation { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(quakesDicts)") }
+        if debug { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(quakesDicts)") }
         
         quakes = quakesDicts.flatMap{ ParsedQuake(dict: $0) }
     }

@@ -35,7 +35,7 @@ class ListViewController: UITableViewController
     private var transitionAnimator: TextBarAnimator?
     private var fetchedResultsController: NSFetchedResultsController?
 
-    private var currentLocation: CLLocation? = SettingsController.sharedController.cachedAddress?.location
+    private var currentLocation: CLLocation?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -174,12 +174,6 @@ class ListViewController: UITableViewController
         )
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(ListViewController.settingsDidUpdateLastFetchDate),
-            name: SettingsController.kSettingsControllerDidUpdateLastFetchDateNotification,
-            object: nil
-        )
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
             selector: #selector(ListViewController.settingsDidUpdateLocationForPush),
             name: SettingsController.kSettingsControllerDidUpdateLocationForPushNotification,
             object: nil
@@ -266,25 +260,6 @@ class ListViewController: UITableViewController
     
     func settingsDidChangeUnitStyle() {
         tableView.reloadData()
-    }
-    
-    func settingsDidUpdateLastFetchDate() {
-        let formatter = NSDateFormatter()
-        formatter.timeStyle = .ShortStyle
-        
-        let lastFetchDate = SettingsController.sharedController.lastFetchDate
-        var attrString = ""
-        
-        if lastFetchDate.isToday() {
-            formatter.dateStyle = .NoStyle
-            attrString = "Last updated: Today at \(formatter.stringFromDate(lastFetchDate))"
-        }
-        else {
-            formatter.dateStyle = .ShortStyle
-            attrString = "Last updated: \(formatter.stringFromDate(lastFetchDate))"
-        }
-        
-        refreshControl?.attributedTitle = NSAttributedString(string: attrString)
     }
     
     func settingsDidUpdateLocationForPush() {
@@ -424,48 +399,23 @@ extension ListViewController: CLLocationManagerDelegate
         currentLocation = lastLocation
         stopLocationManager()
         
-        if let cachedAddress = SettingsController.sharedController.cachedAddress {
-            if let cachedLocation = cachedAddress.location where lastLocation.distanceFromLocation(cachedLocation) > 5 * 1000 {
-                geocoder.reverseGeocodeLocation(lastLocation) { [weak self] places, error in
-                    if let placemark = places?.first where error == nil {
-                        SettingsController.sharedController.cachedAddress = placemark
-                        self?.setTitleButtonText("\(placemark.cityStateString())")
-                    }
-                    else {
-                        self?.setTitleButtonText("Location Error")
-                        
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                            self?.presentFinder()
-                        }
-                    }
-                    
-                    self?.fetchQuakes()
-                }
+        NetworkUtility.networkOperationStarted()
+        geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
+            NetworkUtility.networkOperationFinished()
+            
+            if let placemark = place?.first where error == nil {
+                SettingsController.sharedController.cachedAddress = placemark
+                self.setTitleButtonText("\(placemark.cityStateString())")
             }
             else {
-                setTitleButtonText(cachedAddress.cityStateString())
-                fetchQuakes()
-            }
-        }
-        else {
-            NetworkUtility.networkOperationStarted()
-            geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
-                NetworkUtility.networkOperationFinished()
+                self.setTitleButtonText("Location Error")
                 
-                if let placemark = place?.first where error == nil {
-                    SettingsController.sharedController.cachedAddress = placemark
-                    self.setTitleButtonText("\(placemark.cityStateString())")
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                    self.presentFinder()
                 }
-                else {
-                    self.setTitleButtonText("Location Error")
-                    
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                        self.presentFinder()
-                    }
-                }
-                
-                self.fetchQuakes()
             }
+            
+            self.fetchQuakes()
         }
     }
     

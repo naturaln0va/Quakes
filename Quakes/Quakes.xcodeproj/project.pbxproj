@@ -22,6 +22,8 @@
 		483A625A1CD515A9008CA19D /* GetNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */; };
 		483A625C1CD518FE008CA19D /* GetDetailURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */; };
+		483E283A1CFD0C7000871229 /* FlurryEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = 483E28361CFD0C7000871229 /* FlurryEmpty.m */; };
+		483E283B1CFD0C7000871229 /* libFlurry_7.6.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */; };
 		486CFE531CF31E8300762587 /* AddDeviceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486CFE521CF31E8300762587 /* AddDeviceOperation.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
 		4872AB991C55C15300B6CF37 /* RemoveAdsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */; };
@@ -61,8 +63,6 @@
 		696031C41C595BD200F71B93 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031C21C595BD200F71B93 /* DetailViewController.xib */; };
 		696031C71C596C4000F71B93 /* convert.py in Resources */ = {isa = PBXBuildFile; fileRef = 696031C51C596C4000F71B93 /* convert.py */; };
 		696031C81C596C4000F71B93 /* countrytocode.txt in Resources */ = {isa = PBXBuildFile; fileRef = 696031C61C596C4000F71B93 /* countrytocode.txt */; };
-		696067261C7FB64700068B72 /* Empty.m in Sources */ = {isa = PBXBuildFile; fileRef = 696067211C7FB64700068B72 /* Empty.m */; };
-		696067271C7FB64700068B72 /* libFlurry_7.5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696067241C7FB64700068B72 /* libFlurry_7.5.1.a */; };
 		6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696067291C7FB67900068B72 /* TelemetryController.swift */; };
 		699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */; };
 		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
@@ -98,6 +98,9 @@
 		483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetNearbyCitiesOperation.swift; sourceTree = "<group>"; };
 		483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDetailURLOperation.swift; sourceTree = "<group>"; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Format.swift"; sourceTree = "<group>"; };
+		483E28351CFD0C7000871229 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		483E28361CFD0C7000871229 /* FlurryEmpty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlurryEmpty.m; sourceTree = "<group>"; };
+		483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.6.3.a; sourceTree = "<group>"; };
 		486CFE521CF31E8300762587 /* AddDeviceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDeviceOperation.swift; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveAdsViewController.swift; sourceTree = "<group>"; };
@@ -137,9 +140,6 @@
 		696031C21C595BD200F71B93 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
 		696031C51C596C4000F71B93 /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		696031C61C596C4000F71B93 /* countrytocode.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countrytocode.txt; sourceTree = "<group>"; };
-		696067211C7FB64700068B72 /* Empty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Empty.m; sourceTree = "<group>"; };
-		696067221C7FB64700068B72 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
-		696067241C7FB64700068B72 /* libFlurry_7.5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.5.1.a; sourceTree = "<group>"; };
 		696067291C7FB67900068B72 /* TelemetryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryController.swift; sourceTree = "<group>"; };
 		699CA6051C3C52980094F48A /* Quakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Quakes.xcdatamodel; sourceTree = "<group>"; };
 		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
@@ -167,10 +167,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				69497A841C80797500AB2654 /* SystemConfiguration.framework in Frameworks */,
+				483E283B1CFD0C7000871229 /* libFlurry_7.6.3.a in Frameworks */,
 				69497A821C80796900AB2654 /* Security.framework in Frameworks */,
 				48C736481CEE7DD600CBFEE7 /* GoogleMobileAds.framework in Frameworks */,
 				4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */,
-				696067271C7FB64700068B72 /* libFlurry_7.5.1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,11 +211,11 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				483E28341CFD0C7000871229 /* Flurry */,
 				48C736471CEE7DD600CBFEE7 /* GoogleMobileAds.framework */,
 				69497A831C80797500AB2654 /* SystemConfiguration.framework */,
 				69497A811C80796900AB2654 /* Security.framework */,
 				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
-				696067201C7FB64700068B72 /* Flurry */,
 				69D1634E1C5C52E6000294A5 /* SAConfetti */,
 			);
 			name = Frameworks;
@@ -236,6 +236,16 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		483E28341CFD0C7000871229 /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				483E28351CFD0C7000871229 /* Flurry.h */,
+				483E28361CFD0C7000871229 /* FlurryEmpty.m */,
+				483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */,
+			);
+			path = Flurry;
+			sourceTree = "<group>";
+		};
 		69150F251C3DDC9D00D9D3BF /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -253,17 +263,6 @@
 				694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */,
 			);
 			name = Animators;
-			sourceTree = "<group>";
-		};
-		696067201C7FB64700068B72 /* Flurry */ = {
-			isa = PBXGroup;
-			children = (
-				696067211C7FB64700068B72 /* Empty.m */,
-				696067221C7FB64700068B72 /* Flurry.h */,
-				696067241C7FB64700068B72 /* libFlurry_7.5.1.a */,
-			);
-			name = Flurry;
-			path = Quakes/Flurry;
 			sourceTree = "<group>";
 		};
 		699CA6071C3C529F0094F48A /* Model */ = {
@@ -493,9 +492,9 @@
 				6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */,
+				483E283A1CFD0C7000871229 /* FlurryEmpty.m in Sources */,
 				696031C31C595BD200F71B93 /* DetailViewController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
-				696067261C7FB64700068B72 /* Empty.m in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
 				48C420F61CD786AD00DB3037 /* EMSCWorldOperation.swift in Sources */,
 				48190D2C1C553A96009712F6 /* DownloadDetailOperation.swift in Sources */,
@@ -648,6 +647,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Quakes/Flurry",
+					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -679,6 +679,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Quakes/Flurry",
+					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";

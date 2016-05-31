@@ -32,7 +32,7 @@ class RecentQuakeCountOperation: NetworkOperation {
     }
     
     override func handleData() {
-        let stringFromResponseData = String(data: incomingData, encoding: NSUTF8StringEncoding)
+        let stringFromResponseData = String(data: resultData, encoding: NSUTF8StringEncoding)
         
         print("string from data :\(stringFromResponseData)")
     }
