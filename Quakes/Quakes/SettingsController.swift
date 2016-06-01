@@ -129,11 +129,11 @@ class SettingsController
     }
     
     func locationEligableForNotifications() -> CLLocation? {
-        if let lastAddress = cachedAddress where lastAddress.location != nil {
-            return lastAddress.location
-        }
-        else if let lastSearch = lastSearchedPlace where lastSearch.location != nil {
+        if let lastSearch = lastSearchedPlace where lastSearch.location != nil {
             return lastSearch.location
+        }
+        else if let lastAddress = cachedAddress where lastAddress.location != nil {
+            return lastAddress.location
         }
         else {
             return nil
@@ -191,13 +191,11 @@ class SettingsController
     
     var pushToken: String? {
         get {
-            return defaults.objectForKey(SettingsController.kPushTokenKey) as? String
+            return defaults.stringForKey(SettingsController.kPushTokenKey)
         }
         set {
-            if let newToken = newValue {
-                defaults.setObject(newToken, forKey: SettingsController.kPushTokenKey)
-                defaults.synchronize()
-            }
+            defaults.setObject(newValue, forKey: SettingsController.kPushTokenKey)
+            defaults.synchronize()
         }
     }
     

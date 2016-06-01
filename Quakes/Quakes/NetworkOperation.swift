@@ -77,6 +77,9 @@ extension NetworkOperation {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue("\(jsonPostData.length)", forHTTPHeaderField: "Content-Length")
             request.HTTPBody = jsonPostData
+            
+            if debug { print("Headers: \(request.allHTTPHeaderFields)") }
+            if debug { print("Post Body: \(postParams)") }
         }
         
         sessionTask = internalURLSession.dataTaskWithRequest(request)

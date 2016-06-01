@@ -7,6 +7,12 @@ class AddDeviceOperation: NetworkOperation {
     let latitude: Double
     let longitude: Double
     
+    let numberFormatter: NSNumberFormatter = {
+        let formatter = NSNumberFormatter()
+        formatter.maximumSignificantDigits = 7
+        return formatter
+    }()
+    
     init(token: String, latitude: Double, longitude: Double) {
         self.token = token
         self.latitude = latitude
@@ -16,8 +22,8 @@ class AddDeviceOperation: NetworkOperation {
     override var postParams: [String : AnyObject] {
         return [
             "token": token,
-            "lat": Float(latitude),
-            "long": Float(longitude)
+            "lat": numberFormatter.stringFromNumber(NSNumber(double: latitude))!,
+            "long": numberFormatter.stringFromNumber(NSNumber(double: longitude))!
         ]
     }
     
