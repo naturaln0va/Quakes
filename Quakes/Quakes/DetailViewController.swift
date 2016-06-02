@@ -199,9 +199,10 @@ class DetailViewController: UIViewController
             
             let views = ["map": mapView, "open": openInMapButton, "feels": feltButton]
             headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: views))
-            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[open(==size)][feels(==size)]|", options: [], metrics: ["size": view.frame.width / 2], views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[open][feels(==open)]|", options: [], metrics: ["size": view.frame.width / 2], views: views))
             headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][open(==44)]|", options: [], metrics: nil, views: views))
             headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][feels(==44)]|", options: [], metrics: nil, views: views))
+            openInMapButton.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
             
             tableView.tableHeaderView = headerContainerView
         }

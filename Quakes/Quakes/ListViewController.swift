@@ -2,6 +2,7 @@
 import UIKit
 import CoreData
 import CoreLocation
+import GoogleMobileAds
 
 class ListViewController: UITableViewController
 {
@@ -149,8 +150,8 @@ class ListViewController: UITableViewController
     }
     
     private func shouldLoadAdAtIndexPath(indexPath: NSIndexPath) -> Bool {
-        guard SettingsController.sharedController.hasSupported else { return false }
-        return indexPath.row == 3 || indexPath.row % 34 == 3
+        guard !SettingsController.sharedController.hasSupported else { return false }
+        return indexPath.section == 0
     }
     
     private func beginObserving() {
@@ -206,7 +207,7 @@ class ListViewController: UITableViewController
                 fatalError("Expected to dequeue a 'QuakeCell'.")
             }
             
-            if let quake = fetchedResultsController?.objectAtIndexPath(indexPath) as? Quake {
+            if let quake = fetchedResultsController?.fetchedObjects?[indexPath.row] as? Quake {
                 cell.configure(quake)
             }
             
@@ -225,28 +226,20 @@ class ListViewController: UITableViewController
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        if let quake = fetchedResultsController?.objectAtIndexPath(indexPath) as? Quake {
+        if let quake = fetchedResultsController?.fetchedObjects?[indexPath.row] as? Quake {
             navigationController?.pushViewController(DetailViewController(quake: quake), animated: true)
         }
     }
     
     // MARK: - UITableView DataSource
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
+    }
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let section = fetchedResultsController?.sections?[section] else { return 0 }
-        
-        let objectCount = section.numberOfObjects
-        
-        var tableAds = 0
-        for idx in 0..<objectCount where SettingsController.sharedController.hasSupported {
-            if idx == 3 {
-                tableAds += 1
-            }
-            else if idx % 34 == 3 {
-                tableAds += 1
-            }
-        }
-        
-        return objectCount + tableAds
+        guard section > 0 else { return 1 }
+        let objectCount = fetchedResultsController?.fetchedObjects?.count ?? 0
+        return objectCount
     }
     
     // MARK: - Notifications
@@ -444,41 +437,49 @@ extension ListViewController: NSFetchedResultsControllerDelegate
 {
     
     // MARK: - NSFetchedResultsController Delegate
-    func controllerWillChangeContent(controller: NSFetchedResultsController)
-    {
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
         tableView.beginUpdates()
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?)
-    {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        guard navigationController?.topViewController is ListViewController else { return }
+        
         switch type {
         case .Insert:
             if let newIndexPathToInsert = newIndexPath {
-                tableView.insertRowsAtIndexPaths([newIndexPathToInsert], withRowAnimation: .Automatic)
+                let adjustedIndexPath = NSIndexPath(forRow: newIndexPathToInsert.row, inSection: 1)
+                tableView.insertRowsAtIndexPaths([adjustedIndexPath], withRowAnimation: .Automatic)
             }
             
         case .Delete:
             if let oldIndexPathToDelete = indexPath {
-                tableView.deleteRowsAtIndexPaths([oldIndexPathToDelete], withRowAnimation: .Automatic)
+                let adjustedIndexPath = NSIndexPath(forRow: oldIndexPathToDelete.row, inSection: 1)
+                tableView.deleteRowsAtIndexPaths([adjustedIndexPath], withRowAnimation: .Automatic)
             }
             
         case .Update:
-            if let indexPath = indexPath, let cell = tableView.cellForRowAtIndexPath(indexPath) as? QuakeCell {
-                if let quake = fetchedResultsController?.objectAtIndexPath(indexPath) as? Quake {
-                    cell.configure(quake)
+            if let indexPath = indexPath {
+                let adjustedIndexPath = NSIndexPath(forRow: indexPath.row, inSection: 1)
+                
+                if let cell = tableView.cellForRowAtIndexPath(adjustedIndexPath) as? QuakeCell {
+                    if let quake = fetchedResultsController?.objectAtIndexPath(adjustedIndexPath) as? Quake {
+                        cell.configure(quake)
+                    }
                 }
             }
             
         case .Move:
             if let newIndexPathToInsert = newIndexPath, let oldIndexPathToDelete = indexPath {
-                tableView.deleteRowsAtIndexPaths([oldIndexPathToDelete], withRowAnimation: .Automatic)
-                tableView.insertRowsAtIndexPaths([newIndexPathToInsert], withRowAnimation: .Automatic)
+                let newAdjustedIndexPath = NSIndexPath(forRow: newIndexPathToInsert.row, inSection: 1)
+                let oldAdjustedIndexPath = NSIndexPath(forRow: oldIndexPathToDelete.row, inSection: 1)
+
+                tableView.deleteRowsAtIndexPaths([oldAdjustedIndexPath], withRowAnimation: .Automatic)
+                tableView.insertRowsAtIndexPaths([newAdjustedIndexPath], withRowAnimation: .Automatic)
             }
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController)
-    {
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
         tableView.endUpdates()
     }
     
