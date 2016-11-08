@@ -13,7 +13,7 @@ class PeekableDetailViewController: UIViewController
     
     init(quake: Quake) {
         quakeToDisplay = quake
-        super.init(nibName: String(PeekableDetailViewController), bundle: nil)
+        super.init(nibName: String(describing: PeekableDetailViewController.self), bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -30,7 +30,7 @@ class PeekableDetailViewController: UIViewController
             span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
         )
         
-        headerLabel.text = "\(Quake.magnitudeFormatter.stringFromNumber(quakeToDisplay.magnitude)!) \(quakeToDisplay.name.componentsSeparatedByString(" of ").last!)"
+        headerLabel.text = "\(Quake.magnitudeFormatter.string(from: NSNumber(value: quakeToDisplay.magnitude))!) \(quakeToDisplay.name.components(separatedBy: " of ").last!)"
     }
     
 }
@@ -38,18 +38,18 @@ class PeekableDetailViewController: UIViewController
 extension PeekableDetailViewController: MKMapViewDelegate
 {
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?
     {
         guard annotation is Quake else {
             return nil
         }
         
-        if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("Quake") as? MKPinAnnotationView {
+        if let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "Quake") as? MKPinAnnotationView {
             return annotationView
         }
         else {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "Quake")
-            annotationView.enabled = true
+            annotationView.isEnabled = true
             annotationView.animatesDrop = true
             
             var colorForPin = StyleController.greenQuakeColor

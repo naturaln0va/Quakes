@@ -7,17 +7,17 @@ protocol DetailDataProvider {
 
 class DownloadDetailOperation: ConcurrentOperation
 {
-    private let url: NSURL
+    fileprivate let url: URL
     var detailURLString: String?
 
-    init(url: NSURL) {
+    init(url: URL) {
         self.url = url
         super.init()
     }
     
     override func main() {
         NetworkClient.sharedClient.getDetailForQuakeWithURL(urlForDetail: url) { detailURLString, error in
-            guard let detailURLString = detailURLString where error == nil else {
+            guard let detailURLString = detailURLString, error == nil else {
                 self.cancel()
                 return
             }

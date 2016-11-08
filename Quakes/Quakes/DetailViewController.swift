@@ -11,40 +11,40 @@ class DetailViewController: UIViewController
     @IBOutlet var nameHeaderLabel: UILabel!
     @IBOutlet var tableView: UITableView!
     
-    private lazy var mapView: MKMapView = {
+    fileprivate lazy var mapView: MKMapView = {
         let map = MKMapView()
-        map.userInteractionEnabled = false
+        map.isUserInteractionEnabled = false
         map.delegate = self
         return map
     }()
     
-    private lazy var openInMapButton: UIButton = {
-        let button = UIButton(type: .Custom)
-        button.setTitle("View on Map", forState: .Normal)
-        button.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        button.titleLabel?.textAlignment = .Center
-        button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.addTarget(self, action: #selector(DetailViewController.openInMapButtonPressed), forControlEvents: .TouchUpInside)
+    fileprivate lazy var openInMapButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("View on Map", for: UIControlState())
+        button.setTitleColor(UIColor.black, for: UIControlState())
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
+        button.addTarget(self, action: #selector(DetailViewController.openInMapButtonPressed), for: .touchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
         return button
     }()
     
-    private lazy var feltButton: UIButton = {
-        let button = UIButton(type: .Custom)
-        button.setTitle("I Felt This", forState: .Normal)
-        button.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        button.titleLabel?.textAlignment = .Center
-        button.titleLabel?.font = UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
-        button.addTarget(self, action: #selector(DetailViewController.feltButtonPressed), forControlEvents: .TouchUpInside)
+    fileprivate lazy var feltButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("I Felt This", for: UIControlState())
+        button.setTitleColor(UIColor.black, for: UIControlState())
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
+        button.addTarget(self, action: #selector(DetailViewController.feltButtonPressed), for: .touchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
         return button
     }()
     
-    private lazy var titleImageView: UIImageView = {
+    fileprivate lazy var titleImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "WW"))
-        imageView.layer.shadowColor = UIColor.blackColor().CGColor
+        imageView.layer.shadowColor = UIColor.black.cgColor
         imageView.layer.shadowOpacity = 0.5
         imageView.layer.shadowRadius = 1.75
         imageView.layer.shadowOffset = CGSize.zero
@@ -52,8 +52,8 @@ class DetailViewController: UIViewController
     }()
     
     let geocoder = CLGeocoder()
-    let titleIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-    let mainQueue = NSOperationQueue.mainQueue()
+    let titleIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    let mainQueue = OperationQueue.main
     let manager = CLLocationManager()
     
     var quakeToDisplay: Quake!
@@ -68,7 +68,7 @@ class DetailViewController: UIViewController
     var distanceFromQuake: Double = 0.0
     
     init(quake: Quake) {
-        super.init(nibName: String(DetailViewController), bundle: nil)
+        super.init(nibName: String(describing: DetailViewController.self), bundle: nil)
         self.quakeToDisplay = quake
     }
     
@@ -84,7 +84,7 @@ class DetailViewController: UIViewController
         if let nearbyCities = quakeToDisplay.nearbyCities {
             parsedNearbyCities = nearbyCities
         }
-        else if let url = NSURL(string: quakeToDisplay.detailURL) where quakeToDisplay.nearbyCities == nil {
+        else if let url = URL(string: quakeToDisplay.detailURL), quakeToDisplay.nearbyCities == nil {
             NetworkUtility.networkOperationStarted()
             
             let downloadDetailOperation = DownloadDetailOperation(url: url)
@@ -92,10 +92,10 @@ class DetailViewController: UIViewController
                             
             downloadNearbyCitiesOperation.completionBlock = {
                 NetworkUtility.networkOperationFinished()
-                if let cities = downloadNearbyCitiesOperation.downloadedCities where cities.count > 0 {
+                if let cities = downloadNearbyCitiesOperation.downloadedCities, cities.count > 0 {
                     PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: cities, withCountry: nil)
                     
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.parsedNearbyCities = cities
                     }
                 }
@@ -104,7 +104,7 @@ class DetailViewController: UIViewController
             downloadDetailOperation |> downloadNearbyCitiesOperation
             
             mainQueue.maxConcurrentOperationCount = 1
-            mainQueue.qualityOfService = .UserInitiated
+            mainQueue.qualityOfService = .userInitiated
             mainQueue.addOperations([downloadDetailOperation, downloadNearbyCitiesOperation], waitUntilFinished: false)
         }
         
@@ -118,13 +118,13 @@ class DetailViewController: UIViewController
             titleIndicatorView.startAnimating()
         }
         
-        nameHeaderLabel.text = quakeToDisplay.name.componentsSeparatedByString(" of ").last!
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(DetailViewController.shareButtonPressed))
+        nameHeaderLabel.text = quakeToDisplay.name.components(separatedBy: " of ").last!
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(DetailViewController.shareButtonPressed))
         
-        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true
         }
-        else if CLLocationManager.authorizationStatus() == .NotDetermined {
+        else if CLLocationManager.authorizationStatus() == .notDetermined {
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
         }
@@ -138,15 +138,15 @@ class DetailViewController: UIViewController
         tableView.backgroundColor = UIColor(red: 0.933,  green: 0.933,  blue: 0.933, alpha: 1.0)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if quakeToDisplay.countryCode == nil {
             var stringToSearch = ""
-            if let lastLocationName = quakeToDisplay.name.componentsSeparatedByString(" of ").last?.componentsSeparatedByString(", ").last {
+            if let lastLocationName = quakeToDisplay.name.components(separatedBy: " of ").last?.components(separatedBy: ", ").last {
                 stringToSearch = lastLocationName
             }
-            else if let wholeLocationName = quakeToDisplay.name.componentsSeparatedByString(" of ").last {
+            else if let wholeLocationName = quakeToDisplay.name.components(separatedBy: " of ").last {
                 stringToSearch = wholeLocationName
             }
             
@@ -154,8 +154,8 @@ class DetailViewController: UIViewController
             geocoder.geocodeAddressString(stringToSearch) { marks, error -> Void in
                 NetworkUtility.networkOperationFinished()
                 
-                dispatch_async(dispatch_get_main_queue()) {
-                    if let mark = marks?.first, let code = mark.ISOcountryCode where error == nil {
+                DispatchQueue.main.async {
+                    if let mark = marks?.first, let code = mark.isoCountryCode, error == nil {
                         PersistentController.sharedController.updateQuakeWithID(self.quakeToDisplay.identifier, withNearbyCities: nil, withCountry: code)
                         self.titleImageView.image = UIImage(named: code) ?? UIImage(named: "WW")
                         self.navigationItem.titleView = self.titleImageView
@@ -168,7 +168,7 @@ class DetailViewController: UIViewController
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         if titleIndicatorView.superview != nil {
@@ -176,7 +176,7 @@ class DetailViewController: UIViewController
             navigationItem.titleView = nil
         }
         
-        if geocoder.geocoding {
+        if geocoder.isGeocoding {
             geocoder.cancelGeocode()
         }
     }
@@ -197,12 +197,12 @@ class DetailViewController: UIViewController
             headerContainerView.addSubview(openInMapButton)
             headerContainerView.addSubview(feltButton)
             
-            let views = ["map": mapView, "open": openInMapButton, "feels": feltButton]
-            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: views))
-            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[open][feels(==open)]|", options: [], metrics: ["size": view.frame.width / 2], views: views))
-            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][open(==44)]|", options: [], metrics: nil, views: views))
-            headerContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map][feels(==44)]|", options: [], metrics: nil, views: views))
-            openInMapButton.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
+            let views = ["map": mapView, "open": openInMapButton, "feels": feltButton] as [String : Any]
+            headerContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[map]|", options: [], metrics: nil, views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[open][feels(==open)]|", options: [], metrics: ["size": view.frame.width / 2], views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[map][open(==44)]|", options: [], metrics: nil, views: views))
+            headerContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[map][feels(==44)]|", options: [], metrics: nil, views: views))
+            openInMapButton.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
             
             tableView.tableHeaderView = headerContainerView
         }
@@ -211,7 +211,7 @@ class DetailViewController: UIViewController
     // MARK: - Actions
     internal func openInMapButtonPressed() {
         if let rootVC = navigationController?.viewControllers.first as? ListViewController {
-            navigationController?.popViewControllerAnimated(true)
+            navigationController?.popViewController(animated: true)
             
             let mapVC = MapViewController(centeredOnLocation: quakeToDisplay.coordinate)
             mapVC.delegate = rootVC
@@ -221,40 +221,40 @@ class DetailViewController: UIViewController
     }
     
     internal func feltButtonPressed() {
-        if let url = NSURL(string: "\(quakeToDisplay.weblink)#impact_tellus") {
-            let safariVC = SFSafariViewController(URL: url)
+        if let url = URL(string: "\(quakeToDisplay.weblink)#impact_tellus") {
+            let safariVC = SFSafariViewController(url: url)
             safariVC.view.tintColor = quakeToDisplay.severityColor
-            dispatch_async(dispatch_get_main_queue()) {
-                self.presentViewController(safariVC, animated: true, completion: nil)
+            DispatchQueue.main.async {
+                self.present(safariVC, animated: true, completion: nil)
             }
         }
     }
     
     internal func shareButtonPressed() {
-        guard let urlString = quakeToDisplay.weblink, let url = NSURL(string: urlString) else { return }
+        guard let urlString = quakeToDisplay.weblink, let url = URL(string: urlString) else { return }
         let options = MKMapSnapshotOptions()
         options.region = MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1 / 2, longitudeDelta: 1 / 2))
         options.size = mapView.frame.size
-        options.scale = UIScreen.mainScreen().scale
-        options.mapType = .Hybrid
+        options.scale = UIScreen.main.scale
+        options.mapType = .hybrid
         
-        MKMapSnapshotter(options: options).startWithCompletionHandler { snapshot, error in
-            let prompt = "A \(Quake.magnitudeFormatter.stringFromNumber(self.quakeToDisplay.magnitude)!) magnitude earthquake happened \(self.quakeToDisplay.timestamp.relativeString()) ago near \(self.quakeToDisplay.name.componentsSeparatedByString(" of ").last!)."
-            var items = [prompt, url, self.quakeToDisplay.location]
+        MKMapSnapshotter(options: options).start (completionHandler: { snapshot, error in
+            let prompt = "A \(Quake.magnitudeFormatter.string(from: NSNumber(value: self.quakeToDisplay.magnitude))!) magnitude earthquake happened \(self.quakeToDisplay.timestamp.relativeString()) ago near \(self.quakeToDisplay.name.components(separatedBy: " of ").last!)."
+            var items: [Any] = [prompt, url, self.quakeToDisplay.location]
             
-            if let shot = snapshot where error == nil {
+            if let shot = snapshot, error == nil {
                 let pin = MKPinAnnotationView(annotation: nil, reuseIdentifier: nil)
                 let image = shot.image
                 
                 UIGraphicsBeginImageContextWithOptions(image.size, true, image.scale)
-                image.drawAtPoint(CGPoint.zero)
+                image.draw(at: CGPoint.zero)
                 
                 let visibleRect = CGRect(origin: CGPoint.zero, size: image.size)
-                var point = shot.pointForCoordinate(self.quakeToDisplay.coordinate)
+                var point = shot.point(for: self.quakeToDisplay.coordinate)
                 if visibleRect.contains(point) {
                     point.x = point.x + pin.centerOffset.x - (pin.bounds.size.width / 2)
                     point.y = point.y + pin.centerOffset.y - (pin.bounds.size.height / 2)
-                    pin.image?.drawAtPoint(point)
+                    pin.image?.draw(at: point)
                 }
                 
                 let compositeImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -263,8 +263,8 @@ class DetailViewController: UIViewController
                 items.append(compositeImage)
             }
             
-            dispatch_async(dispatch_get_main_queue()) {
-                self.presentViewController(UIActivityViewController(
+            DispatchQueue.main.async {
+                self.present(UIActivityViewController(
                     activityItems: items,
                     applicationActivities: nil),
                     animated: true,
@@ -273,7 +273,7 @@ class DetailViewController: UIViewController
                     }
                 )
             }
-        }
+        })
     }
     
 }
@@ -282,18 +282,18 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
 {
     
     // MARK: - UITableView Delegate
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .Value1, reuseIdentifier: "quakeInfoCell")
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: "quakeInfoCell")
         
         if indexPath.section == 0 {
             if indexPath.row == 0 {
                 cell.textLabel?.text = "Magnitude"
-                cell.detailTextLabel?.text = Quake.magnitudeFormatter.stringFromNumber(quakeToDisplay.magnitude)
+                cell.detailTextLabel?.text = Quake.magnitudeFormatter.string(from: NSNumber(value: quakeToDisplay.magnitude))
             }
             else if indexPath.row == 1 {
                 cell.textLabel?.text = "Depth"
-                Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
-                cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(quakeToDisplay.depth)
+                Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .imperial : .metric
+                cell.detailTextLabel?.text = Quake.distanceFormatter.string(fromDistance: quakeToDisplay.depth)
             }
             else if indexPath.row == 2 {
                 cell.textLabel?.text = "Location"
@@ -305,7 +305,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
             }
             else if indexPath.row == 4 {
                 cell.textLabel?.text = "Date & Time"
-                cell.detailTextLabel?.text = Quake.timestampFormatter.stringFromDate(quakeToDisplay.timestamp)
+                cell.detailTextLabel?.text = Quake.timestampFormatter.string(from: quakeToDisplay.timestamp)
             }
                 
             if quakeToDisplay.felt > 0 && distanceFromQuake > 0 {
@@ -314,9 +314,9 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
                     cell.detailTextLabel?.text = "\(Int(quakeToDisplay.felt)) people"
                 }
                 else if indexPath.row == 6 {
-                    Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+                    Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .imperial : .metric
                     cell.textLabel?.text = "Distance"
-                    cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(distanceFromQuake)
+                    cell.detailTextLabel?.text = Quake.distanceFormatter.string(fromDistance: distanceFromQuake)
                 }
             }
             else if quakeToDisplay.felt > 0 && distanceFromQuake == 0 {
@@ -327,53 +327,53 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
             }
             else if quakeToDisplay.felt == 0 && distanceFromQuake > 0 {
                 if indexPath.row == 5 {
-                    Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+                    Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .imperial : .metric
                     cell.textLabel?.text = "Distance"
-                    cell.detailTextLabel?.text = Quake.distanceFormatter.stringFromDistance(distanceFromQuake)
+                    cell.detailTextLabel?.text = Quake.distanceFormatter.string(fromDistance: distanceFromQuake)
                 }
             }
         }
         else if indexPath.section == 1 {
             if let cities = parsedNearbyCities {
                 cell.textLabel?.text = cities[indexPath.row].cityName
-                cell.accessoryType = .DisclosureIndicator
+                cell.accessoryType = .disclosureIndicator
             }
             else {
                 let websiteLabel = UILabel()
-                websiteLabel.font = UIFont.systemFontOfSize(18.0, weight: UIFontWeightMedium)
+                websiteLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFontWeightMedium)
                 websiteLabel.translatesAutoresizingMaskIntoConstraints = false
                 websiteLabel.textColor = quakeToDisplay.severityColor
-                websiteLabel.text = Int(quakeToDisplay.provider) == SourceProvider.USGS.rawValue ? "Open in USGS" : "Open in EMSC"
-                websiteLabel.textAlignment = .Center
+                websiteLabel.text = Int(quakeToDisplay.provider) == SourceProvider.usgs.rawValue ? "Open in USGS" : "Open in EMSC"
+                websiteLabel.textAlignment = .center
                 
                 cell.translatesAutoresizingMaskIntoConstraints = true
                 cell.addSubview(websiteLabel)
                 
                 let views = ["label": websiteLabel]
-                cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: [], metrics: nil, views: views))
-                cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: [], metrics: nil, views: views))
+                cell.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[label]|", options: [], metrics: nil, views: views))
+                cell.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[label]|", options: [], metrics: nil, views: views))
             }
         }
         else {
             let websiteLabel = UILabel()
-            websiteLabel.font = UIFont.systemFontOfSize(18.0, weight: UIFontWeightMedium)
+            websiteLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFontWeightMedium)
             websiteLabel.translatesAutoresizingMaskIntoConstraints = false
             websiteLabel.textColor = quakeToDisplay.severityColor
             websiteLabel.text = "Open in USGS"
-            websiteLabel.textAlignment = .Center
+            websiteLabel.textAlignment = .center
             
             cell.translatesAutoresizingMaskIntoConstraints = true
             cell.addSubview(websiteLabel)
             
             let views = ["label": websiteLabel]
-            cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: [], metrics: nil, views: views))
-            cell.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: [], metrics: nil, views: views))
+            cell.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[label]|", options: [], metrics: nil, views: views))
+            cell.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[label]|", options: [], metrics: nil, views: views))
         }
         
         return cell
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 1 {
             return parsedNearbyCities != nil ? "Nearby Cities" : nil
         }
@@ -382,44 +382,44 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
         }
     }
     
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return indexPath.section != 0
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
         
         guard NetworkUtility.internetReachable() else {
             return
         }
         
-        if let urlString = quakeToDisplay.weblink, let url = NSURL(string: urlString) where parsedNearbyCities != nil ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
-            let safariVC = SFSafariViewController(URL: url)
+        if let urlString = quakeToDisplay.weblink, let url = URL(string: urlString), parsedNearbyCities != nil ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
+            let safariVC = SFSafariViewController(url: url)
             safariVC.view.tintColor = quakeToDisplay.severityColor
-            dispatch_async(dispatch_get_main_queue()) {
-                self.presentViewController(safariVC, animated: true, completion: { _ in
+            DispatchQueue.main.async {
+                self.present(safariVC, animated: true, completion: { _ in
                     TelemetryController.sharedController.logQuakeOpenedInBrowser()
                 })
             }
         }
-        else if let citiesToDisplay = parsedNearbyCities where indexPath.section == 1 && parsedNearbyCities != nil {
+        else if let citiesToDisplay = parsedNearbyCities, indexPath.section == 1 && parsedNearbyCities != nil {
             TelemetryController.sharedController.logQuakeCitiesViewed()
             let selectedCity = citiesToDisplay[indexPath.row]
-            let sortedCities = citiesToDisplay.sort({ $0.0.cityName == selectedCity.cityName })
+            let sortedCities = citiesToDisplay.sorted(by: { $0.0.cityName == selectedCity.cityName })
             navigationController?.pushViewController(MapViewController(quakeToDisplay: quakeToDisplay, nearbyCities: sortedCities), animated: true)
         }
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44.0
     }
     
     // MARK: - UITableView DataSource
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return parsedNearbyCities != nil ? 3 : 2
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             var offset = 0
             if quakeToDisplay.felt == 0 {
@@ -444,8 +444,8 @@ extension DetailViewController: CLLocationManagerDelegate
 {
     
     // MARK: - CLLocationManager Delegate
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .AuthorizedWhenInUse {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
             mapView.showsUserLocation = true
         }
     }
@@ -456,20 +456,20 @@ extension DetailViewController: MKMapViewDelegate
 {
     
     // MARK: - MKMapView Delegate
-    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation)
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation)
     {
-        guard let userLocation = userLocation.location where userLocation.horizontalAccuracy > 0 else {
+        guard let userLocation = userLocation.location, userLocation.horizontalAccuracy > 0 else {
             return
         }
         
-        if let lastLocation = lastUserLocation where lastLocation.distanceFromLocation(userLocation) > 25.0 {
+        if let lastLocation = lastUserLocation, lastLocation.distance(from: userLocation) > 25.0 {
             return
         }
         
-        distanceFromQuake = userLocation.distanceFromLocation(quakeToDisplay.location)
-        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+        distanceFromQuake = userLocation.distance(from: quakeToDisplay.location)
+        tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
         
-        if userLocation.distanceFromLocation(quakeToDisplay.location) > (1000 * 900) {
+        if userLocation.distance(from: quakeToDisplay.location) > (1000 * 900) {
             return
         }
         
@@ -478,18 +478,18 @@ extension DetailViewController: MKMapViewDelegate
         lastUserLocation = userLocation
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?
     {
         guard annotation is Quake else {
             return nil
         }
         
-        if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("Quake") as? MKPinAnnotationView {
+        if let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "Quake") as? MKPinAnnotationView {
             return annotationView
         }
         else {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "Quake")
-            annotationView.enabled = true
+            annotationView.isEnabled = true
             annotationView.animatesDrop = true
             
             annotationView.pinTintColor = quakeToDisplay.severityColor

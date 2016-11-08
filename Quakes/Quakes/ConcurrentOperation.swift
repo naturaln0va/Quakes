@@ -22,28 +22,28 @@
 import Foundation
 
 infix operator |> { associativity left precedence 160 }
-public func |>(lhs: NSOperation, rhs: NSOperation) -> NSOperation {
+public func |>(lhs: Operation, rhs: Operation) -> Operation {
     rhs.addDependency(lhs)
     return rhs
 }
 
-public class ConcurrentOperation: NSOperation {
+open class ConcurrentOperation: Operation {
     public enum State: String {
         case Ready, Executing, Finished
         
-        private var keyPath: String {
+        fileprivate var keyPath: String {
             return "is" + rawValue
         }
     }
     
-    public var state = State.Ready {
+    open var state = State.Ready {
         willSet {
-            willChangeValueForKey(newValue.keyPath)
-            willChangeValueForKey(state.keyPath)
+            willChangeValue(forKey: newValue.keyPath)
+            willChangeValue(forKey: state.keyPath)
         }
         didSet {
-            didChangeValueForKey(oldValue.keyPath)
-            didChangeValueForKey(state.keyPath)
+            didChangeValue(forKey: oldValue.keyPath)
+            didChangeValue(forKey: state.keyPath)
         }
     }
 }
@@ -51,24 +51,24 @@ public class ConcurrentOperation: NSOperation {
 
 extension ConcurrentOperation {
     //: NSOperation Overrides
-    override public var ready: Bool {
-        return super.ready && state == .Ready
+    override open var isReady: Bool {
+        return super.isReady && state == .Ready
     }
     
-    override public var executing: Bool {
+    override open var isExecuting: Bool {
         return state == .Executing
     }
     
-    override public var finished: Bool {
+    override open var isFinished: Bool {
         return state == .Finished
     }
     
-    override public var asynchronous: Bool {
+    override open var isAsynchronous: Bool {
         return true
     }
     
-    override public func start() {
-        if cancelled {
+    override open func start() {
+        if isCancelled {
             state = .Finished
             return
         }
@@ -77,7 +77,7 @@ extension ConcurrentOperation {
         state = .Executing
     }
     
-    override public func cancel() {
+    override open func cancel() {
         state = .Finished
     }
 }

@@ -9,20 +9,20 @@ class IAPUtility: NSObject
     static let IAPHelperPurchaseNotification = "IAPHelperPurchaseNotification"
     static let IAPHelperFailedNotification = "IAPHelperFailedNotification"
     
-    typealias ProductsRequestCompletionHandler = (products: [SKProduct]?) -> ()
+    typealias ProductsRequestCompletionHandler = (_ products: [SKProduct]?) -> ()
     
-    private var productsRequest: SKProductsRequest?
-    private var removeAdsProduct: SKProduct?
-    private let removeAdsProductIdentifier: String = "io.ackermann.quakes.removeads"
-    private var productsRequestCompletionHandler:  ProductsRequestCompletionHandler?
+    fileprivate var productsRequest: SKProductsRequest?
+    fileprivate var removeAdsProduct: SKProduct?
+    fileprivate let removeAdsProductIdentifier: String = "io.ackermann.quakes.removeads"
+    fileprivate var productsRequestCompletionHandler:  ProductsRequestCompletionHandler?
     
     deinit {
-        SKPaymentQueue.defaultQueue().removeTransactionObserver(self)
+        SKPaymentQueue.default().remove(self)
     }
     
     override init() {
         super.init()
-        SKPaymentQueue.defaultQueue().addTransactionObserver(self)
+        SKPaymentQueue.default().add(self)
     }
     
 }
@@ -31,11 +31,11 @@ class IAPUtility: NSObject
 extension IAPUtility
 {
     
-    static func isRemoveAdsProduct(product: SKProduct) -> Bool {
+    static func isRemoveAdsProduct(_ product: SKProduct) -> Bool {
         return product.productIdentifier == "io.ackermann.quakes.removeads"
     }
     
-    func requestProducts(completionHandler: ProductsRequestCompletionHandler) {
+    func requestProducts(_ completionHandler: @escaping ProductsRequestCompletionHandler) {
         guard SKPaymentQueue.canMakePayments() else { return }
         
         productsRequest?.cancel()
@@ -47,16 +47,16 @@ extension IAPUtility
     }
     
     func purchaseRemoveAds() {
-        guard let product = removeAdsProduct where SKPaymentQueue.canMakePayments() else { return }
+        guard let product = removeAdsProduct, SKPaymentQueue.canMakePayments() else { return }
 
         let payment = SKPayment(product: product)
-        SKPaymentQueue.defaultQueue().addPayment(payment)
+        SKPaymentQueue.default().add(payment)
     }
     
     func restorePurchases() {
         guard SKPaymentQueue.canMakePayments() else { return }
 
-        SKPaymentQueue.defaultQueue().restoreCompletedTransactions()
+        SKPaymentQueue.default().restoreCompletedTransactions()
     }
     
 }
@@ -65,7 +65,7 @@ extension IAPUtility
 extension IAPUtility: SKProductsRequestDelegate
 {
     
-    func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse)
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse)
     {
         for product in response.products {
             if product.productIdentifier == removeAdsProductIdentifier {
@@ -73,20 +73,20 @@ extension IAPUtility: SKProductsRequestDelegate
             }
         }
         
-        productsRequestCompletionHandler?(products: response.products)
+        productsRequestCompletionHandler?(response.products)
         clearRequest()
     }
     
-    func request(request: SKRequest, didFailWithError error: NSError)
+    func request(_ request: SKRequest, didFailWithError error: Error)
     {
         print("Failed to load list of products. Error: \(error)")
-        productsRequestCompletionHandler?(products: .None)
+        productsRequestCompletionHandler?(.none)
         clearRequest()
     }
     
-    private func clearRequest()
+    fileprivate func clearRequest()
     {
-        productsRequestCompletionHandler = .None
+        productsRequestCompletionHandler = .none
         productsRequest = nil
     }
     
@@ -95,23 +95,23 @@ extension IAPUtility: SKProductsRequestDelegate
 extension IAPUtility: SKPaymentTransactionObserver
 {
     
-    func paymentQueue(queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
+    func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
             failedTransaction(transaction)
         }
     }
     
-    func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])
     {
         for transaction in transactions {
             switch (transaction.transactionState) {
-            case .Purchased:
+            case .purchased:
                 completeTransaction(transaction)
                 break
-            case .Failed:
+            case .failed:
                 failedTransaction(transaction)
                 break
-            case .Restored:
+            case .restored:
                 restoredTransaction(transaction)
                 break
             default:
@@ -120,28 +120,29 @@ extension IAPUtility: SKPaymentTransactionObserver
         }
     }
     
-    private func completeTransaction(transaction: SKPaymentTransaction) {
+    fileprivate func completeTransaction(_ transaction: SKPaymentTransaction) {
         deliverPurchaseNotification()
-        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+        SKPaymentQueue.default().finishTransaction(transaction)
     }
     
-    private func failedTransaction(transaction: SKPaymentTransaction) {
-        if let errorCode = transaction.error?.code where errorCode == SKErrorCode.ClientInvalid.rawValue || errorCode == SKErrorCode.PaymentNotAllowed.rawValue || errorCode == SKErrorCode.PaymentInvalid.rawValue {
+    fileprivate func failedTransaction(_ transaction: SKPaymentTransaction) {
+        let errorCode = (transaction.error as! NSError).code
+        if errorCode == SKError.clientInvalid.rawValue || errorCode == SKError.paymentNotAllowed.rawValue || errorCode == SKError.paymentInvalid.rawValue {
             print("Transaction error: \(transaction.error)")
-            NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.IAPHelperFailedNotification, object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).IAPHelperFailedNotification), object: nil)
         }
-        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+        SKPaymentQueue.default().finishTransaction(transaction)
     }
     
-    private func restoredTransaction(transaction: SKPaymentTransaction) {
-        if transaction.originalTransaction?.payment.productIdentifier == removeAdsProductIdentifier {
+    fileprivate func restoredTransaction(_ transaction: SKPaymentTransaction) {
+        if transaction.original?.payment.productIdentifier == removeAdsProductIdentifier {
             deliverPurchaseNotification()
         }
-        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+        SKPaymentQueue.default().finishTransaction(transaction)
     }
     
-    private func deliverPurchaseNotification() {
-        NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.IAPHelperPurchaseNotification, object: nil)
+    fileprivate func deliverPurchaseNotification() {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).IAPHelperPurchaseNotification), object: nil)
         removeAdsProduct = nil
     }
     

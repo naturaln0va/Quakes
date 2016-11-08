@@ -10,15 +10,15 @@ class ParsedNearbyCity: NSObject, NSCoding
     
     let cityName, directionString: String
     
-    private let distanceFormatter: MKDistanceFormatter = {
+    fileprivate let distanceFormatter: MKDistanceFormatter = {
         let formatter = MKDistanceFormatter()
-        formatter.unitStyle = .Abbreviated
-        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+        formatter.unitStyle = .abbreviated
+        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .imperial : .metric
         return formatter
     }()
     
     var location: CLLocation {
-        return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: kCLLocationAccuracyBest, verticalAccuracy: kCLLocationAccuracyBest, timestamp: NSDate.distantFuture())
+        return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: kCLLocationAccuracyBest, verticalAccuracy: kCLLocationAccuracyBest, timestamp: Date.distantFuture)
     }
     
     init(dict: [String: AnyObject]) {
@@ -33,21 +33,21 @@ class ParsedNearbyCity: NSObject, NSCoding
     // MARK: NSCoding
     required init?(coder decoder: NSCoder)
     {
-        distance = decoder.decodeDoubleForKey("distance")
-        latitude = decoder.decodeDoubleForKey("latitude")
-        longitude = decoder.decodeDoubleForKey("longitude")
+        distance = decoder.decodeDouble(forKey: "distance")
+        latitude = decoder.decodeDouble(forKey: "latitude")
+        longitude = decoder.decodeDouble(forKey: "longitude")
         
-        cityName = decoder.decodeObjectForKey("cityName") as? String ?? ""
-        directionString = decoder.decodeObjectForKey("directionString") as? String ?? ""
+        cityName = decoder.decodeObject(forKey: "cityName") as? String ?? ""
+        directionString = decoder.decodeObject(forKey: "directionString") as? String ?? ""
     }
     
-    func encodeWithCoder(coder: NSCoder)
+    func encode(with coder: NSCoder)
     {
-        coder.encodeDouble(distance, forKey: "distance")
-        coder.encodeDouble(latitude, forKey: "latitude")
-        coder.encodeDouble(longitude, forKey: "longitude")
-        coder.encodeObject(cityName, forKey: "cityName")
-        coder.encodeObject(directionString, forKey: "directionString")
+        coder.encode(distance, forKey: "distance")
+        coder.encode(latitude, forKey: "latitude")
+        coder.encode(longitude, forKey: "longitude")
+        coder.encode(cityName, forKey: "cityName")
+        coder.encode(directionString, forKey: "directionString")
     }
     
 }
@@ -56,11 +56,11 @@ extension ParsedNearbyCity: MKAnnotation
 {
     
     var title: String? {
-        return [directionString, cityName].joinWithSeparator(" ")
+        return [directionString, cityName].joined(separator: " ")
     }
     
     var subtitle: String? {
-        return [distanceFormatter.stringFromDistance(distance * 1000), "from the center of the quake."].joinWithSeparator(" ")
+        return [distanceFormatter.string(fromDistance: distance * 1000), "from the center of the quake."].joined(separator: " ")
     }
     
     var coordinate: CLLocationCoordinate2D {

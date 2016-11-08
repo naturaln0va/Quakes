@@ -7,35 +7,35 @@ class PersistentController
 {
     
     static let sharedController = PersistentController()
-    private static let contextName = "Quakes"
+    fileprivate static let contextName = "Quakes"
     
     // MARK: - Managed Object Context
     lazy var moc: NSManagedObjectContext = {
-        guard let modelURL = NSBundle.mainBundle().URLForResource(contextName, withExtension: "momd") else {
+        guard let modelURL = Bundle.main.url(forResource: contextName, withExtension: "momd") else {
             fatalError("Could not find the data model in the bundle")
         }
         
-        guard let model = NSManagedObjectModel(contentsOfURL: modelURL) else {
+        guard let model = NSManagedObjectModel(contentsOf: modelURL) else {
             fatalError("error initializing model from: \(modelURL)")
         }
         
-        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentsDirectory = urls[0]
-        let storeURL = documentsDirectory.URLByAppendingPathComponent("\(contextName).sqlite")
+        let storeURL = documentsDirectory.appendingPathComponent("\(contextName).sqlite")
         
         do {
             let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
             
-            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType,
-                configuration: nil,
-                URL: storeURL,
+            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
+                configurationName: nil,
+                at: storeURL,
                 options: [
                     NSMigratePersistentStoresAutomaticallyOption: true,
                     NSInferMappingModelAutomaticallyOption: true
                 ]
             )
             
-            let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+            let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
             context.persistentStoreCoordinator = coordinator
             return context
         }
@@ -66,14 +66,14 @@ class PersistentController
             
             for quake in quakesCopy {
                 if quake.timestamp.isMoreThanAMonthOld() {
-                    moc.deleteObject(quake)
+                    moc.delete(quake)
                     quakesCopy.removeLast()
                 }
             }
             
             while quakesCopy.count > maxQuakesToStore {
                 if let lastQuake = quakes.last {
-                    moc.deleteObject(lastQuake)
+                    moc.delete(lastQuake)
                     quakesCopy.removeLast()
                 }
             }
@@ -83,7 +83,7 @@ class PersistentController
             }
             
             var locationOption: CLLocation?
-            if let nearbyLocation = SettingsController.sharedController.cachedAddress?.location where SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue {
+            if let nearbyLocation = SettingsController.sharedController.cachedAddress?.location, SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue {
                 locationOption = nearbyLocation
             }
             else if let searchedLocation = SettingsController.sharedController.lastSearchedPlace?.location {
@@ -94,8 +94,8 @@ class PersistentController
                 let radius = SettingsController.sharedController.searchRadius.rawValue
                 
                 for quake in quakesCopy {
-                    if quake.location.distanceFromLocation(location) > (Double(radius) * 1000) {
-                        moc.deleteObject(quake)
+                    if quake.location.distance(from: location) > (Double(radius) * 1000) {
+                        moc.delete(quake)
                     }
                 }
             }
@@ -113,23 +113,23 @@ class PersistentController
         }
         
         for quake in allQuakes {
-            moc.deleteObject(quake)
+            moc.delete(quake)
         }
         
         attemptSave()
     }
     
-    func deleteQuake(quakeToDelete: Quake) {
-        moc.deleteObject(quakeToDelete)
+    func deleteQuake(_ quakeToDelete: Quake) {
+        moc.delete(quakeToDelete)
         
         attemptSave()
     }
     
-    func updateQuakeWithID(identifier: String, withNearbyCities cities: [ParsedNearbyCity]?, withCountry country: String?) {
+    func updateQuakeWithID(_ identifier: String, withNearbyCities cities: [ParsedNearbyCity]?, withCountry country: String?) {
         do {
             if let quakeToUpdate = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", identifier), sortedBy: nil, ascending: false) {
                 if let cities = cities {
-                    let data = NSKeyedArchiver.archivedDataWithRootObject(cities)
+                    let data = NSKeyedArchiver.archivedData(withRootObject: cities)
                     quakeToUpdate.nearbyCitiesData = data
                 }
                 quakeToUpdate.countryCode = country ?? nil
@@ -144,20 +144,20 @@ class PersistentController
         attemptSave()
     }
     
-    func deleteAllThenSaveQuakes(parsedQuakes: [ParsedQuake]) {
+    func deleteAllThenSaveQuakes(_ parsedQuakes: [ParsedQuake]) {
         guard let allQuakes = try? Quake.objectsInContext(moc) else {
             print("Failed to fetch all the quakes to delete")
             return
         }
         
         for quake in allQuakes {
-            moc.deleteObject(quake)
+            moc.delete(quake)
         }
         
         saveQuakes(parsedQuakes)
     }
     
-    func saveQuakes(parsedQuake: [ParsedQuake]) {
+    func saveQuakes(_ parsedQuake: [ParsedQuake]) {
         for quake in parsedQuake {
             do {
                 if let savedQuake = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", quake.identifier), sortedBy: nil, ascending: false) {
@@ -176,7 +176,7 @@ class PersistentController
                 print("Failed to get a single object from the managed context.")
             }
             
-            guard let dataToSave = NSEntityDescription.insertNewObjectForEntityForName(Quake.entityName(), inManagedObjectContext: moc) as? Quake else {
+            guard let dataToSave = NSEntityDescription.insertNewObject(forEntityName: Quake.entityName(), into: moc) as? Quake else {
                 fatalError("Expected to insert and entity of type 'Quake'.")
             }
             
@@ -189,7 +189,7 @@ class PersistentController
             dataToSave.longitude = quake.longitude
             dataToSave.identifier = quake.identifier
             dataToSave.detailURL = quake.detailURL
-            dataToSave.distance = quake.distance
+            dataToSave.distance = quake.distance as NSNumber?
             dataToSave.felt = quake.felt
         }
         

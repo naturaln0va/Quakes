@@ -9,7 +9,7 @@ struct StyleController
     static let mainAppColor = UIColor(white: 1.0, alpha: 1.0)
     static let darkerMainAppColor = UIColor(red: 0.557,  green: 0.557,  blue: 0.557, alpha: 1.0)
     static let searchBarColor = UIColor(red: 0.91,  green: 0.91,  blue: 0.91, alpha: 1.0)
-    static let contrastColor = UIColor.blackColor()
+    static let contrastColor = UIColor.black
     
     static let purpleColor = UIColor(red: 0.65,  green: 0.33,  blue: 0.88, alpha: 1.0)
     static let redQuakeColor = UIColor(red: 0.749,  green: 0.106,  blue: 0.157, alpha: 1.0)

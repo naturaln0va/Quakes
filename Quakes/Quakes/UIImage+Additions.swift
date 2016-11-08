@@ -4,7 +4,7 @@ import UIKit
 extension UIImage
 {
     
-    static func imageOfColor(color: UIColor, size: CGSize) -> UIImage {
+    static func imageOfColor(_ color: UIColor, size: CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
         
         color.set()
@@ -13,7 +13,7 @@ extension UIImage
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
     
 }

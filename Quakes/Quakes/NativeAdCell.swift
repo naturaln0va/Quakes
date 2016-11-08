@@ -3,7 +3,7 @@ import UIKit
 import GoogleMobileAds
 
 protocol NativeAdCellDelegate: class {
-    func nativeAdCellDidFailToReceiveAd(cell: NativeAdCell)
+    func nativeAdCellDidFailToReceiveAd(_ cell: NativeAdCell)
 }
 
 class NativeAdCell: UITableViewCell {
@@ -37,7 +37,7 @@ class NativeAdCell: UITableViewCell {
     func loadRequest() {
         let request = GADRequest()
         request.testDevices = [kGADSimulatorID]
-        nativeExpressAdView.loadRequest(request)
+        nativeExpressAdView.load(request)
     }
     
 }
@@ -45,19 +45,19 @@ class NativeAdCell: UITableViewCell {
 extension NativeAdCell: GADNativeExpressAdViewDelegate {
     
     // MARK: - GADBannerView Delegate
-    func nativeExpressAdViewDidReceiveAd(nativeExpressAdView: GADNativeExpressAdView!) {
+    func nativeExpressAdViewDidReceiveAd(_ nativeExpressAdView: GADNativeExpressAdView!) {
         activityIndicatorView.stopAnimating()
-        UIView.animateWithDuration(0.23) {
+        UIView.animate(withDuration: 0.23, animations: {
             nativeExpressAdView.alpha = 1.0
-        }
+        }) 
     }
     
-    func nativeExpressAdView(nativeExpressAdView: GADNativeExpressAdView!, didFailToReceiveAdWithError error: GADRequestError!) {
-        UIView.animateWithDuration(0.23, animations: {
+    func nativeExpressAdView(_ nativeExpressAdView: GADNativeExpressAdView!, didFailToReceiveAdWithError error: GADRequestError!) {
+        UIView.animate(withDuration: 0.23, animations: {
             nativeExpressAdView.alpha = 0.0
-        }) { _ in
+        }, completion: { _ in
             self.delegate?.nativeAdCellDidFailToReceiveAd(self)
-        }
+        }) 
     }
     
 }

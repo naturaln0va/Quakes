@@ -5,11 +5,11 @@ import UIKit
 class NetworkUtility
 {
     
-    private static var loadingCount = 0
+    fileprivate static var loadingCount = 0
     
     static func networkOperationStarted() {
         if loadingCount == 0 {
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
         }
         loadingCount += 1
     }
@@ -19,13 +19,13 @@ class NetworkUtility
             loadingCount -= 1
         }
         if loadingCount == 0 {
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
     }
     
     static func internetReachable() -> Bool {
-        if let reach = try? Reachability.reachabilityForInternetConnection() {
-            return reach.isReachable()
+        if let reach = Reachability() {
+            return reach.isReachable
         }
         else {
             return false

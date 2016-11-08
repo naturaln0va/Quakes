@@ -8,14 +8,14 @@ struct ParsedPolyQuake {
     let points: [CLLocationCoordinate2D]
     
     var polygon: MKPolygon {
-        let pointsPointer = UnsafeMutablePointer<CLLocationCoordinate2D>.alloc(points.count)
-        for indexPoint in points.enumerate() {
-            pointsPointer[indexPoint.index] = indexPoint.element
+        let pointsPointer = UnsafeMutablePointer<CLLocationCoordinate2D>.allocate(capacity: points.count)
+        for indexPoint in points.enumerated() {
+            pointsPointer[indexPoint.0] = indexPoint.element
         }
         
         let polygonFromPoints = MKPolygon(coordinates: pointsPointer, count: points.count)
-        pointsPointer.destroy()
-        pointsPointer.dealloc(points.count)
+        pointsPointer.deinitialize()
+        pointsPointer.deallocate(capacity: points.count)
         
         return polygonFromPoints
     }

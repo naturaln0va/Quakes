@@ -17,17 +17,17 @@ class NotificationPromptViewController: UIViewController
         SettingsController.sharedController.hasAttemptedNotificationPermission = true
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
     // MARK: Actions
-    @IBAction func allowNotificationsButtonPressed(sender: AnyObject) {
+    @IBAction func allowNotificationsButtonPressed(_ sender: AnyObject) {
         delegate?.notificationPromptViewControllerDidAllowNotifications()
     }
     
-    @IBAction func closeButtonPressed(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func closeButtonPressed(_ sender: AnyObject) {
+        dismiss(animated: true, completion: nil)
     }
     
 }

@@ -11,7 +11,7 @@ class RemoveAdsViewController: UIViewController
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var confetti: SAConfettiView!
     
-    private let helper = IAPUtility()
+    fileprivate let helper = IAPUtility()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,59 +21,59 @@ class RemoveAdsViewController: UIViewController
         
         if SettingsController.sharedController.hasSupported {
             headerLabel.text = "Thanks for your support ♥️"
-            removeAdsButton.hidden = true
+            removeAdsButton.isHidden = true
             navigationItem.rightBarButtonItem = nil
             confetti.startConfetti()
         }
         else {
-            NSNotificationCenter.defaultCenter().addObserver(
+            NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(RemoveAdsViewController.adRemovalPurchased),
-                name: IAPUtility.IAPHelperPurchaseNotification,
+                name: NSNotification.Name(rawValue: IAPUtility.IAPHelperPurchaseNotification),
                 object: nil
             )
-            NSNotificationCenter.defaultCenter().addObserver(
+            NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(RemoveAdsViewController.adRemovalFailed),
-                name: IAPUtility.IAPHelperFailedNotification,
+                name: NSNotification.Name(rawValue: IAPUtility.IAPHelperFailedNotification),
                 object: nil
             )
             
-            removeAdsButton.setTitle("", forState: .Normal)
+            removeAdsButton.setTitle("", for: UIControlState())
             navigationItem.rightBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem: .Refresh,
+                barButtonSystemItem: .refresh,
                 target: self,
                 action: #selector(RemoveAdsViewController.refreshButtonPressed)
             )
-            navigationItem.rightBarButtonItem?.enabled = false
-            removeAdsButton.enabled = false
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            removeAdsButton.isEnabled = false
             
             loadingActivityIndicator.startAnimating()
             helper.requestProducts { products in
                 self.loadingActivityIndicator.stopAnimating()
 
-                if let firstProduct = products?.first where IAPUtility.isRemoveAdsProduct(firstProduct) {
-                    let numberFormatter = NSNumberFormatter()
-                    numberFormatter.numberStyle = .CurrencyStyle
+                if let firstProduct = products?.first, IAPUtility.isRemoveAdsProduct(firstProduct) {
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.numberStyle = .currency
                     
-                    if let formattedNumberString = numberFormatter.stringFromNumber(firstProduct.price) {
+                    if let formattedNumberString = numberFormatter.string(from: firstProduct.price) {
                         self.removeAdsButton.titleLabel?.numberOfLines = 0
-                        self.removeAdsButton.titleLabel?.textAlignment = .Center
+                        self.removeAdsButton.titleLabel?.textAlignment = .center
                         
-                        self.removeAdsButton.setTitle("\(formattedNumberString)\nRemove Ads", forState: .Normal)
+                        self.removeAdsButton.setTitle("\(formattedNumberString)\nRemove Ads", for: UIControlState())
                     }
                     
-                    self.navigationItem.rightBarButtonItem?.enabled = true
-                    self.removeAdsButton.enabled = true
+                    self.navigationItem.rightBarButtonItem?.isEnabled = true
+                    self.removeAdsButton.isEnabled = true
                 }
                 else {
-                    self.removeAdsButton.setTitle("Network Failure", forState: .Normal)
+                    self.removeAdsButton.setTitle("Network Failure", for: UIControlState())
                 }
             }
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         confetti.stopConfetti()
     }
@@ -81,7 +81,7 @@ class RemoveAdsViewController: UIViewController
     // MARK: Notifications
     func adRemovalPurchased() {
         headerLabel.text = "Thanks for your support ♥️"
-        removeAdsButton.hidden = true
+        removeAdsButton.isHidden = true
         navigationItem.rightBarButtonItem = nil
         SettingsController.sharedController.hasSupported = true
         confetti.startConfetti()
@@ -89,7 +89,7 @@ class RemoveAdsViewController: UIViewController
     
     func adRemovalFailed() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .Refresh,
+            barButtonSystemItem: .refresh,
             target: self,
             action: #selector(RemoveAdsViewController.refreshButtonPressed)
         )
@@ -97,7 +97,7 @@ class RemoveAdsViewController: UIViewController
         messageLabel.alpha = 1.0
         messageLabel.text = "Ad removal failed."
         
-        UIView.animateWithDuration(0.3, delay: 4.0, options: [], animations: {
+        UIView.animate(withDuration: 0.3, delay: 4.0, options: [], animations: {
             self.messageLabel.alpha = 0.0
         }) { _ in
             self.messageLabel.text = ""
@@ -105,12 +105,12 @@ class RemoveAdsViewController: UIViewController
     }
     
     // MARK: Actions
-    @IBAction func removeAdsButtonPressed(sender: UIButton) {
+    @IBAction func removeAdsButtonPressed(_ sender: UIButton) {
         helper.purchaseRemoveAds()
     }
     
     func refreshButtonPressed() {
-        let activityView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        let activityView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityView)
         activityView.startAnimating()
         

@@ -1,23 +1,23 @@
 
 import UIKit
 
-class NetworkOperation: NSOperation {
+class NetworkOperation: Operation {
     enum State: String {
         case Ready, Executing, Finished
         
-        private var keyPath: String {
+        fileprivate var keyPath: String {
             return "is" + rawValue
         }
     }
     
-    private(set) var state = State.Ready {
+    fileprivate(set) var state = State.Ready {
         willSet {
-            willChangeValueForKey(newValue.keyPath)
-            willChangeValueForKey(state.keyPath)
+            willChangeValue(forKey: newValue.keyPath)
+            willChangeValue(forKey: state.keyPath)
         }
         didSet {
-            didChangeValueForKey(oldValue.keyPath)
-            didChangeValueForKey(state.keyPath)
+            didChangeValue(forKey: oldValue.keyPath)
+            didChangeValue(forKey: state.keyPath)
         }
     }
     
@@ -31,12 +31,12 @@ class NetworkOperation: NSOperation {
     var debug = false
     let resultData = NSMutableData()
     
-    private var sessionTask: NSURLSessionTask?
-    private var internalURLSession: NSURLSession {
-        return NSURLSession(configuration: internalConfig, delegate: self, delegateQueue: nil)
+    fileprivate var sessionTask: URLSessionTask?
+    fileprivate var internalURLSession: Foundation.URLSession {
+        return Foundation.URLSession(configuration: internalConfig, delegate: self, delegateQueue: nil)
     }
-    private var internalConfig: NSURLSessionConfiguration {
-        return NSURLSessionConfiguration.defaultSessionConfiguration()
+    fileprivate var internalConfig: URLSessionConfiguration {
+        return URLSessionConfiguration.default
     }
     
     func handleData() {
@@ -47,42 +47,42 @@ class NetworkOperation: NSOperation {
 //MARK: NSOperation Overrides
 extension NetworkOperation {
     
-    override var ready: Bool {
-        return super.ready && state == .Ready
+    override var isReady: Bool {
+        return super.isReady && state == .Ready
     }
     
-    override var executing: Bool {
+    override var isExecuting: Bool {
         return state == .Executing
     }
     
-    override var finished: Bool {
+    override var isFinished: Bool {
         return state == .Finished
     }
     
-    override var asynchronous: Bool {
+    override var isAsynchronous: Bool {
         return true
     }
     
     override func start() {
-        if cancelled {
+        if isCancelled {
             state = .Finished
             return
         }
         
-        guard let url = NSURL(string: urlString) else { fatalError("\(self.dynamicType): Failed to build URL") }
-        let request = NSMutableURLRequest(URL: url)
+        guard let url = URL(string: urlString) else { fatalError("\(type(of: self)): Failed to build URL") }
+        var request = URLRequest(url: url)
         
-        if let jsonPostData = try? NSJSONSerialization.dataWithJSONObject(postParams, options: []) where NSJSONSerialization.isValidJSONObject(postParams) && postParams.count > 0 {
-            request.HTTPMethod = "POST"
+        if let jsonPostData = try? JSONSerialization.data(withJSONObject: postParams, options: []), JSONSerialization.isValidJSONObject(postParams) && postParams.count > 0 {
+            request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue("\(jsonPostData.length)", forHTTPHeaderField: "Content-Length")
-            request.HTTPBody = jsonPostData
+            request.setValue("\(jsonPostData.count)", forHTTPHeaderField: "Content-Length")
+            request.httpBody = jsonPostData
             
             if debug { print("Headers: \(request.allHTTPHeaderFields)") }
             if debug { print("Post Body: \(postParams)") }
         }
         
-        sessionTask = internalURLSession.dataTaskWithRequest(request)
+        sessionTask = internalURLSession.dataTask(with: request)
         sessionTask!.resume()
         
         state = .Executing
@@ -96,50 +96,50 @@ extension NetworkOperation {
 }
 
 //MARK: NSURLSession Delegate
-extension NetworkOperation: NSURLSessionDataDelegate {
+extension NetworkOperation: URLSessionDataDelegate {
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void) {
-        if cancelled {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        if isCancelled {
             state = .Finished
             sessionTask?.cancel()
             return
         }
         
-        if let httpResponse = response as? NSHTTPURLResponse {
-            if debug { print("\(self.dynamicType): Code \(httpResponse.statusCode): \(NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode))") }
+        if let httpResponse = response as? HTTPURLResponse {
+            if debug { print("\(type(of: self)): Code \(httpResponse.statusCode): \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))") }
             
             if httpResponse.statusCode == 204 || httpResponse.statusCode == 404 {
-                if debug { print("\(self.dynamicType): Canceling task because of the http status code, \(httpResponse.statusCode). Url: \(httpResponse.URL?.absoluteURL ?? "No URL")") }
+                if debug { print("\(type(of: self)): Canceling task because of the http status code, \(httpResponse.statusCode). Url: \(httpResponse.url?.absoluteString ?? "No URL")") }
                 state = .Finished
                 sessionTask?.cancel()
-                completionHandler(.Cancel)
+                completionHandler(.cancel)
             }
         }
         
-        completionHandler(.Allow)
+        completionHandler(.allow)
     }
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
-        if cancelled {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        if isCancelled {
             state = .Finished
             sessionTask?.cancel()
             return
         }
         
-        resultData.appendData(data)
+        resultData.append(data)
     }
     
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
-        if cancelled {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if isCancelled {
             state = .Finished
             sessionTask?.cancel()
             return
         }
         
-        if debug && NSThread.isMainThread() { print("\(self.dynamicType): Completed on the main thread.") }
+        if debug && Thread.isMainThread { print("\(type(of: self)): Completed on the main thread.") }
         
         if let e = error {
-            if debug { print("\(self.dynamicType): Task completed with error: \(e.localizedDescription)") }
+            if debug { print("\(type(of: self)): Task completed with error: \(e.localizedDescription)") }
             state = .Finished
             return
         }

@@ -1,12 +1,12 @@
 
 import UIKit
 
-struct PickerData
-{
+struct PickerData {
+    
     var currentIndex: Int
-    var values: Array<AnyObject>
-    var labels: Array<String>
-    var detailLabels: Array<String>?
+    var values: [Any]
+    var labels: [String]
+    var detailLabels: [String]?
     var footerDescription: String?
     var count: Int {
         get {
@@ -14,8 +14,7 @@ struct PickerData
         }
     }
     
-    init(values: Array<AnyObject>, currentIndex: Int, labels: Array<String>, detailLabels: Array<String>? = nil, footerDescription: String? = nil)
-    {
+    init(values: [Any], currentIndex: Int, labels: [String], detailLabels: [String]? = nil, footerDescription: String? = nil) {
         self.values = values
         self.currentIndex = currentIndex
         self.labels = labels
@@ -25,55 +24,50 @@ struct PickerData
 }
 
 enum PickerType {
-    case Limit
-    case Radius
-    case NotificationType
-    case NotificationAmount
+    case limit
+    case radius
+    case notificationType
+    case notificationAmount
 }
 
 protocol PickerViewControllerDelegate: class {
-    func pickerViewController(pvc: PickerViewController, didPickObject object: AnyObject)
+    func pickerViewController(_ pvc: PickerViewController, didPickObject object: Any)
 }
 
-
-class PickerViewController: UITableViewController
-{
+class PickerViewController: UITableViewController {
     
     let type: PickerType
     var dataForPicker: PickerData!
     weak var delegate: PickerViewControllerDelegate?
     
-    init(type: PickerType, data: PickerData, title: String)
-    {
+    init(type: PickerType, data: PickerData, title: String) {
         self.type = type
-        super.init(style: .Plain)
+        super.init(style: .plain)
         dataForPicker = data
         self.title = title
     }
     
-    required init?(coder aDecoder: NSCoder)
-    {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad()
-    {
+    override func viewDidLoad() {
         super.viewDidLoad()
         
         guard let data = dataForPicker else { fatalError("There was no data") }
         
-        tableView = UITableView(frame: view.bounds, style: .Grouped)
+        tableView = UITableView(frame: view.bounds, style: .grouped)
         tableView.backgroundColor = StyleController.backgroundColor
         tableView.delegate = self
         tableView.dataSource = self
         
         if data.footerDescription != nil {
-            let footerView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: CGRectGetWidth(tableView.bounds), height: 64.0))
-            footerView.backgroundColor = UIColor.clearColor()
+            let footerView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: tableView.bounds.width, height: 64.0))
+            footerView.backgroundColor = UIColor.clear
             
             let descriptionLabel = UILabel()
             descriptionLabel.numberOfLines = 0
-            descriptionLabel.font = UIFont.systemFontOfSize(12.0, weight: UIFontWeightLight)
+            descriptionLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightLight)
             descriptionLabel.text = data.footerDescription!
             descriptionLabel.bounds = footerView.bounds
             descriptionLabel.center = footerView.center
@@ -86,34 +80,29 @@ class PickerViewController: UITableViewController
     }
     
     // MARK: - UITableViewDataSource
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
-    {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 35.0
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
-    {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.0001
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-    {
-        let coloredBackgroundView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: CGRectGetWidth(tableView.bounds), height: 24.0))
-        coloredBackgroundView.backgroundColor = UIColor.clearColor()
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let coloredBackgroundView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: tableView.bounds.width, height: 24.0))
+        coloredBackgroundView.backgroundColor = UIColor.clear
         return coloredBackgroundView
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let data = dataForPicker else { fatalError("There was no data") }
         
         return data.count
     }
     
     // MARK: - UITableViewDelegate
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
-    {
-        let cell = UITableViewCell(style: .Subtitle, reuseIdentifier: "defaultCell")
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "defaultCell")
         
         guard let data = dataForPicker else { fatalError("There was no data") }
         
@@ -125,22 +114,21 @@ class PickerViewController: UITableViewController
         
         if data.currentIndex == indexPath.row {
             cell.tintColor = StyleController.darkerMainAppColor
-            cell.accessoryType = .Checkmark
+            cell.accessoryType = .checkmark
         }
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
-    {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
         guard let data = dataForPicker else { fatalError("There was no data") }
         
         if let delegate = delegate {
             delegate.pickerViewController(self, didPickObject: data.values[indexPath.row])
         }
-        navigationController?.popViewControllerAnimated(true)
+        _ = navigationController?.popViewController(animated: true)
     }
     
 }

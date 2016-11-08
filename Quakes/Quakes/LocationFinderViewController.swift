@@ -1,6 +1,30 @@
 
 import UIKit
 import CoreLocation
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 enum LocationOption: String {
     case Nearby
@@ -9,8 +33,8 @@ enum LocationOption: String {
 }
 
 protocol LocationFinderViewControllerDelegate: class {
-    func locationFinderViewControllerDidSelectPlace(placemark: CLPlacemark)
-    func locationFinderViewControllerDidSelectOption(option: LocationOption)
+    func locationFinderViewControllerDidSelectPlace(_ placemark: CLPlacemark)
+    func locationFinderViewControllerDidSelectOption(_ option: LocationOption)
 }
 
 class LocationFinderViewController: UIViewController
@@ -23,8 +47,8 @@ class LocationFinderViewController: UIViewController
     @IBOutlet weak var filterSegmentTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var controlContainerView: UIView!
     
-    private var shouldDismiss = false
-    private let manager = CLLocationManager()
+    fileprivate var shouldDismiss = false
+    fileprivate let manager = CLLocationManager()
     weak var delegate: LocationFinderViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -33,83 +57,83 @@ class LocationFinderViewController: UIViewController
         TelemetryController.sharedController.logQuakeFinderOpened()
         
         title = "Choose a Type"
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
         searchTextField.backgroundColor = StyleController.searchBarColor
         controlContainerView.backgroundColor = StyleController.backgroundColor
         filterSegment.alpha = 0
         
-        controlContainerView.hidden = SettingsController.sharedController.hasSearchedBefore()
+        controlContainerView.isHidden = SettingsController.sharedController.hasSearchedBefore()
         
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: #selector(LocationFinderViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(LocationFinderViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(LocationFinderViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(LocationFinderViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         searchTextField.delegate = self
         searchTextField.text = ""
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         searchTextField.becomeFirstResponder()
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
-        notificationCenter.removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        notificationCenter.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .Default
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .default
     }
     
-    private func dismiss() {
+    fileprivate func dismiss() {
         view.endEditing(true)
         shouldDismiss = true
     }
     
     // MARK: Notifications
-    func keyboardWillShow(notification: NSNotification) {
+    func keyboardWillShow(_ notification: Notification) {
         let userInfo = notification.userInfo!
-        let keyboardHeight = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue().height
+        let keyboardHeight = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
         
         filterViewBottomConstraint.constant = keyboardHeight
         filterSegmentTopConstraint.constant = 15
         
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        UIView.animateWithDuration(duration) {
+        UIView.animate(withDuration: duration, animations: {
             self.view.layoutIfNeeded()
             self.filterSegment.alpha = 1
-        }
+        }) 
     }
     
-    func keyboardWillHide(notification: NSNotification) {
+    func keyboardWillHide(_ notification: Notification) {
         let userInfo = notification.userInfo!
         
         filterViewBottomConstraint.constant = 0.0
         filterSegmentTopConstraint.constant = -35
         
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        UIView.animateWithDuration(duration, animations: {
+        UIView.animate(withDuration: duration, animations: {
             self.view.layoutIfNeeded()
             self.filterSegment.alpha = 0
         }, completion: { _ in
-            if self.shouldDismiss { self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil) }
+            if self.shouldDismiss { self.presentingViewController?.dismiss(animated: true, completion: nil) }
         })
     }
     
     // MARK: - Actions
-    @IBAction func cancelButtonPressed(sender: UIButton) {
+    @IBAction func cancelButtonPressed(_ sender: UIButton) {
         dismiss()
     }
     
-    @IBAction func filterSegmentWasChanged(sender: UISegmentedControl) {
+    @IBAction func filterSegmentWasChanged(_ sender: UISegmentedControl) {
         if sender.selectedSegmentIndex == 0 {
             var errorMessage = ""
             switch CLLocationManager.authorizationStatus() {
-            case .AuthorizedWhenInUse:
+            case .authorizedWhenInUse:
                 if CLLocationManager.locationServicesEnabled() {
                     delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
                 }
@@ -117,7 +141,7 @@ class LocationFinderViewController: UIViewController
                     errorMessage = "Location services are turned off."
                 }
                 break
-            case .NotDetermined:
+            case .notDetermined:
                 manager.delegate = self
                 manager.requestWhenInUseAuthorization()
                 break
@@ -129,15 +153,15 @@ class LocationFinderViewController: UIViewController
             if errorMessage.characters.count > 0 {
                 sender.selectedSegmentIndex = -1
 
-                let alertView = UIAlertController(title: "Permission Needed", message: errorMessage, preferredStyle: .Alert)
+                let alertView = UIAlertController(title: "Permission Needed", message: errorMessage, preferredStyle: .alert)
                 
-                alertView.addAction(UIAlertAction(title: "Open Settings", style: .Default, handler: { action in
-                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                alertView.addAction(UIAlertAction(title: "Open Settings", style: .default, handler: { action in
+                    UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
                 }))
                 
-                alertView.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                alertView.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 
-                presentViewController(alertView, animated: true, completion: nil)
+                present(alertView, animated: true, completion: nil)
             }
         }
         else if sender.selectedSegmentIndex == 1 {
@@ -148,16 +172,16 @@ class LocationFinderViewController: UIViewController
         }
     }
     
-    func searchForAddressWithText(searchText: String) {
+    func searchForAddressWithText(_ searchText: String) {
         let geocoder = CLGeocoder()
         
         NetworkUtility.networkOperationStarted()
         geocoder.geocodeAddressString(searchText) { places, error in
             NetworkUtility.networkOperationFinished()
-            if let place = places?.first where error == nil {
+            if let place = places?.first, error == nil {
                 
                 if let _ = place.location {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.delegate?.locationFinderViewControllerDidSelectPlace(place)
                     }
                 }
@@ -176,8 +200,8 @@ class LocationFinderViewController: UIViewController
 extension LocationFinderViewController: CLLocationManagerDelegate
 {
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .AuthorizedWhenInUse {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
             delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
         }
         else {
@@ -190,7 +214,7 @@ extension LocationFinderViewController: CLLocationManagerDelegate
 extension LocationFinderViewController: UITextFieldDelegate
 {
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField.text?.characters.count > 0 {
             searchForAddressWithText(textField.text!)
             textField.resignFirstResponder()

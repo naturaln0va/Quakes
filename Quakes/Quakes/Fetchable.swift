@@ -6,16 +6,16 @@ protocol Fetchable {
     associatedtype FetchableType: NSManagedObject
     
     static func entityName() -> String
-    static func objectsInContext(context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) throws -> [FetchableType]
-    static func singleObjectInContext(context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) throws -> FetchableType?
-    static func objectCountInContext(context: NSManagedObjectContext, predicate: NSPredicate?) -> Int
-    static func fetchRequest(context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) -> NSFetchRequest
+    static func objectsInContext(_ context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) throws -> [FetchableType]
+    static func singleObjectInContext(_ context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) throws -> FetchableType?
+    static func objectCountInContext(_ context: NSManagedObjectContext, predicate: NSPredicate?) -> Int
+    static func fetchRequest(_ context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) -> NSFetchRequest<NSFetchRequestResult>
 }
 
 extension Fetchable where Self: NSManagedObject, FetchableType == Self
 {
     
-    static func singleObjectInContext(context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> FetchableType?
+    static func singleObjectInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> FetchableType?
     {
         let managedObjects: [FetchableType] = try objectsInContext(context, predicate: predicate, sortedBy: sortedBy, ascending: ascending)
         guard managedObjects.count > 0 else { return nil }
@@ -23,16 +23,15 @@ extension Fetchable where Self: NSManagedObject, FetchableType == Self
         return managedObjects.first
     }
     
-    static func objectCountInContext(context: NSManagedObjectContext, predicate: NSPredicate? = nil) -> Int
-    {
+    static func objectCountInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil) -> Int {
         let request = fetchRequest(context, predicate: predicate)
-        return context.countForFetchRequest(request, error: nil)
+        return try! context.count(for: request)
     }
     
-    static func objectsInContext(context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> [FetchableType]
+    static func objectsInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> [FetchableType]
     {
         let request = fetchRequest(context, predicate: predicate, sortedBy: sortedBy, ascending: ascending)
-        let fetchResults = try context.executeFetchRequest(request)
+        let fetchResults = try context.fetch(request)
         
         guard let results = fetchResults as? [FetchableType] else {
             fatalError("Fetch results were not of type 'FetchableType'.")
@@ -41,10 +40,10 @@ extension Fetchable where Self: NSManagedObject, FetchableType == Self
         return results
     }
     
-    static func fetchRequest(context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) -> NSFetchRequest
+    static func fetchRequest(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) -> NSFetchRequest<NSFetchRequestResult>
     {
-        let request = NSFetchRequest()
-        let entity = NSEntityDescription.entityForName(entityName(), inManagedObjectContext: context)
+        let request = NSFetchRequest<NSFetchRequestResult>()
+        let entity = NSEntityDescription.entity(forEntityName: entityName(), in: context)
         request.entity = entity
         
         if predicate != nil {

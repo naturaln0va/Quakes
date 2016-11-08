@@ -5,13 +5,13 @@ class GetNearbyCitiesOperation: NetworkOperation {
     
     var nearbyCities: [ParsedNearbyCity]?
     
-    private let urlForNearbyCities: NSURL
+    fileprivate let urlForNearbyCities: URL
     
     override var urlString: String {
         return urlForNearbyCities.absoluteString
     }
     
-    init(urlForNearbyCities url: NSURL) {
+    init(urlForNearbyCities url: URL) {
         urlForNearbyCities = url
     }
     
@@ -19,10 +19,10 @@ class GetNearbyCitiesOperation: NetworkOperation {
         var dicts: [[String: AnyObject]]?
         
         do {
-            dicts = try NSJSONSerialization.JSONObjectWithData(resultData, options: .MutableLeaves) as? [[String: AnyObject]]
+            dicts = try JSONSerialization.jsonObject(with: resultData as Data, options: .mutableLeaves) as? [[String: AnyObject]]
         }
         catch let error {
-            if debug { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
+            if debug { print("\(type(of: self)): Error parsing JSON. Error: \(error)") }
             return
         }
         
@@ -30,7 +30,7 @@ class GetNearbyCitiesOperation: NetworkOperation {
             return
         }
         
-        if debug { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDicts)") }
+        if debug { print("\(type(of: self)): Sent: \(urlString)\nReceived: \(responseDicts)") }
         
         nearbyCities = responseDicts.map {
             return ParsedNearbyCity(dict: $0)

@@ -8,22 +8,22 @@ class StyledNavigationController: UINavigationController
         super.viewDidLoad()
 
         navigationBar.shadowImage = UIImage()
-        let navbarSzie = CGSize(width: navigationBar.frame.size.width, height: navigationBar.frame.size.height + UIApplication.sharedApplication().statusBarFrame.height)
-        navigationBar.setBackgroundImage(UIImage.imageOfColor(StyleController.mainAppColor, size: navbarSzie), forBarMetrics: .Default)
+        let navbarSzie = CGSize(width: navigationBar.frame.size.width, height: navigationBar.frame.size.height + UIApplication.shared.statusBarFrame.height)
+        navigationBar.setBackgroundImage(UIImage.imageOfColor(StyleController.mainAppColor, size: navbarSzie), for: .default)
         
         toolbar.tintColor = StyleController.contrastColor
         navigationBar.barTintColor = StyleController.mainAppColor
         navigationBar.tintColor = StyleController.contrastColor
-        navigationBar.translucent = false
+        navigationBar.isTranslucent = false
         
         navigationBar.titleTextAttributes = [
             NSForegroundColorAttributeName: StyleController.darkerMainAppColor,
-            NSFontAttributeName: UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
+            NSFontAttributeName: UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
         ]
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .Default
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .default
     }
 
 }

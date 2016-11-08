@@ -10,14 +10,14 @@ class EMSCMajorOperation: EMSCFetchQuakesOperation {
     }
     
     override var urlString: String {
-        let currentDate = NSDate()
-        let currentCalendar = NSCalendar.currentCalendar()
+        let currentDate = Date()
+        let currentCalendar = Calendar.current
         
         var dateParameterString = ""
-        if let endDate = currentCalendar.dateByAddingUnit(.Month, value: -1 * Int(page), toDate: currentDate, options: [.MatchLast]), let startDate = currentCalendar.dateByAddingUnit(.Month, value: -1, toDate: endDate, options: [.MatchLast]) {
-            let dateFormatter = NSDateFormatter()
+        if let endDate = (currentCalendar as NSCalendar).date(byAdding: .month, value: -1 * Int(page), to: currentDate, options: [.matchLast]), let startDate = (currentCalendar as NSCalendar).date(byAdding: .month, value: -1, to: endDate, options: [.matchLast]) {
+            let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
-            dateParameterString = "&endtime=\(dateFormatter.stringFromDate(endDate))&starttime=\(dateFormatter.stringFromDate(startDate))"
+            dateParameterString = "&endtime=\(dateFormatter.string(from: endDate))&starttime=\(dateFormatter.string(from: startDate))"
         }
 
         return "\(baseURLString)query?limit=\(SettingsController.sharedController.fetchLimit.rawValue)&format=json&minmag=3.8" + dateParameterString

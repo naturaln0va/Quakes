@@ -8,7 +8,7 @@ class TelemetryController
     
     let apiKey = "CSS95K93T2ZCHS3MNQWM"
     
-    private enum EventName: String {
+    fileprivate enum EventName: String {
         case FetchSize
         case NearbyRadius
         case UnitStyle
@@ -23,11 +23,11 @@ class TelemetryController
         case QuakeFinderSelected
     }
     
-    func logFetchSizeChange(newSize: Int) {
+    func logFetchSizeChange(_ newSize: Int) {
         Flurry.logEvent(EventName.FetchSize.rawValue, withParameters: ["newSize": newSize])
     }
     
-    func logNearbyRadiusChanged(newRadius: Int) {
+    func logNearbyRadiusChanged(_ newRadius: Int) {
         Flurry.logEvent(EventName.NearbyRadius.rawValue, withParameters: ["newRadius": newRadius])
     }
     
@@ -39,7 +39,7 @@ class TelemetryController
         Flurry.logEvent(EventName.SupportedApp.rawValue)
     }
     
-    func logQuakeDetailViewed(weblinkString: String) {
+    func logQuakeDetailViewed(_ weblinkString: String) {
         Flurry.logEvent(EventName.QuakeDetail.rawValue, withParameters: ["weblink": weblinkString])
     }
     
@@ -67,7 +67,7 @@ class TelemetryController
         Flurry.logEvent(EventName.QuakeFinderOpened.rawValue)
     }
     
-    func logQuakeFinderDidSelectLocation(newLocation: String) {
+    func logQuakeFinderDidSelectLocation(_ newLocation: String) {
         Flurry.logEvent(EventName.QuakeFinderSelected.rawValue, withParameters: ["newLocation": newLocation])
     }
     

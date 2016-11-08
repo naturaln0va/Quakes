@@ -7,8 +7,8 @@ class AddDeviceOperation: NetworkOperation {
     let latitude: Double
     let longitude: Double
     
-    let numberFormatter: NSNumberFormatter = {
-        let formatter = NSNumberFormatter()
+    let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
         formatter.maximumSignificantDigits = 7
         return formatter
     }()
@@ -21,9 +21,9 @@ class AddDeviceOperation: NetworkOperation {
     
     override var postParams: [String : AnyObject] {
         return [
-            "token": token,
-            "lat": numberFormatter.stringFromNumber(NSNumber(double: latitude))!,
-            "long": numberFormatter.stringFromNumber(NSNumber(double: longitude))!
+            "token": token as AnyObject,
+            "lat": numberFormatter.string(from: NSNumber(value: latitude as Double))! as AnyObject,
+            "long": numberFormatter.string(from: NSNumber(value: longitude as Double))! as AnyObject
         ]
     }
     
@@ -35,10 +35,10 @@ class AddDeviceOperation: NetworkOperation {
         var dict: [String: AnyObject]?
         
         do {
-            dict = try NSJSONSerialization.JSONObjectWithData(resultData, options: .MutableLeaves) as? [String: AnyObject]
+            dict = try JSONSerialization.jsonObject(with: resultData as Data, options: .mutableLeaves) as? [String: AnyObject]
         }
         catch let error {
-            if debug { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
+            if debug { print("\(type(of: self)): Error parsing JSON. Error: \(error)") }
             return
         }
         
@@ -46,7 +46,7 @@ class AddDeviceOperation: NetworkOperation {
             return
         }
         
-        if debug { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDict)") }
+        if debug { print("\(type(of: self)): Sent: \(urlString)\nReceived: \(responseDict)") }
     }
     
 }

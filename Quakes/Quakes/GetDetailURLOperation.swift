@@ -5,13 +5,13 @@ class GetDetailURLOperation: NetworkOperation {
     
     var detailURLString: String?
     
-    private let urlForDetail: NSURL
+    fileprivate let urlForDetail: URL
     
     override var urlString: String {
         return urlForDetail.absoluteString
     }
     
-    init(urlForDetail url: NSURL) {
+    init(urlForDetail url: URL) {
         urlForDetail = url
     }
     
@@ -19,10 +19,10 @@ class GetDetailURLOperation: NetworkOperation {
         var dict: Dictionary<String, AnyObject>?
         
         do {
-            dict = try NSJSONSerialization.JSONObjectWithData(resultData, options: .MutableLeaves) as? Dictionary<String, AnyObject>
+            dict = try JSONSerialization.jsonObject(with: resultData as Data, options: .mutableLeaves) as? Dictionary<String, AnyObject>
         }
         catch let error {
-            if debug { print("\(self.dynamicType): Error parsing JSON. Error: \(error)") }
+            if debug { print("\(type(of: self)): Error parsing JSON. Error: \(error)") }
             return
         }
         
@@ -30,15 +30,15 @@ class GetDetailURLOperation: NetworkOperation {
             return
         }
         
-        guard let firstDetailDict = ((responseDict as AnyObject).valueForKeyPath("properties.products.nearby-cities") as? [[String: AnyObject]])?.first else {
+        guard let firstDetailDict = ((responseDict as AnyObject).value(forKeyPath: "properties.products.nearby-cities") as? [[String: AnyObject]])?.first else {
             return
         }
         
-        guard let urlString = (((firstDetailDict as AnyObject).valueForKeyPath("contents") as? [String: AnyObject])?["nearby-cities.json"] as? [String: AnyObject])?["url"] as? String else {
+        guard let urlString = (((firstDetailDict as AnyObject).value(forKeyPath: "contents") as? [String: AnyObject])?["nearby-cities.json"] as? [String: AnyObject])?["url"] as? String else {
             return
         }
         
-        if debug { print("\(self.dynamicType): Sent: \(urlString)\nReceived: \(responseDict)") }
+        if debug { print("\(type(of: self)): Sent: \(urlString)\nReceived: \(responseDict)") }
         
         detailURLString = urlString
     }

@@ -4,13 +4,13 @@ import MapKit
 import CoreLocation
 
 protocol MapViewControllerDelegate: class {
-    func mapViewControllerDidFinishFetch(sucess: Bool, withPlace placemark: CLPlacemark)
+    func mapViewControllerDidFinishFetch(_ sucess: Bool, withPlace placemark: CLPlacemark)
 }
 
 class MapViewController: UIViewController
 {
     
-    private lazy var mapView: MKMapView = {
+    fileprivate lazy var mapView: MKMapView = {
         let mapView = MKMapView()
         mapView.delegate = self
         mapView.showsUserLocation = true
@@ -20,67 +20,67 @@ class MapViewController: UIViewController
         return mapView
     }()
     
-    private lazy var spaceBarButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+    fileprivate lazy var spaceBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }()
-    private lazy var locationBarButtonItem: MKUserTrackingBarButtonItem = {
+    fileprivate lazy var locationBarButtonItem: MKUserTrackingBarButtonItem = {
         return MKUserTrackingBarButtonItem(mapView: self.mapView)
     }()
-    private lazy var searchBarButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: #selector(MapViewController.searchButtonPressed))
+    fileprivate lazy var searchBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(MapViewController.searchButtonPressed))
     }()
-    private lazy var messageLabelBarButtonItem: UIBarButtonItem = {
+    fileprivate lazy var messageLabelBarButtonItem: UIBarButtonItem = {
         let messageLabel = UILabel()
-        messageLabel.font = UIFont.systemFontOfSize(11.0, weight: UIFontWeightRegular)
+        messageLabel.font = UIFont.systemFont(ofSize: 11.0, weight: UIFontWeightRegular)
         messageLabel.numberOfLines = 2
-        messageLabel.textAlignment = .Center
+        messageLabel.textAlignment = .center
         messageLabel.sizeToFit()
         return UIBarButtonItem(customView: messageLabel)
     }()
     
-    private lazy var filterHeaderView: UIView = {
+    fileprivate lazy var filterHeaderView: UIView = {
         let containerView = UIView()
-        containerView.backgroundColor = UIColor.whiteColor()
+        containerView.backgroundColor = UIColor.white
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.clipsToBounds = true
         return containerView
     }()
-    private lazy var filterTitleLabel: UILabel = {
+    fileprivate lazy var filterTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFontOfSize(20.0, weight: UIFontWeightLight)
+        label.font = UIFont.systemFont(ofSize: 20.0, weight: UIFontWeightLight)
         label.numberOfLines = 1
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.sizeToFit()
         return label
     }()
-    private lazy var filterSlider: UISlider = {
+    fileprivate lazy var filterSlider: UISlider = {
         let slider = UISlider()
         slider.translatesAutoresizingMaskIntoConstraints = false
-        slider.tintColor = UIColor.blackColor()
+        slider.tintColor = UIColor.black
         slider.minimumValue = 1
         slider.maximumValue = 30
         slider.value = 30
-        slider.addTarget(self, action: #selector(MapViewController.filterSliderChanged(_:)), forControlEvents: .ValueChanged)
-        slider.addTarget(self, action: #selector(MapViewController.filterSliderEnded(_:)), forControlEvents: .TouchUpInside)
+        slider.addTarget(self, action: #selector(MapViewController.filterSliderChanged(_:)), for: .valueChanged)
+        slider.addTarget(self, action: #selector(MapViewController.filterSliderEnded(_:)), for: .touchUpInside)
         return slider
     }()
     
-    private var quakesToDisplay: [Quake]?
-    private var quakeToDisplay: Quake?
-    private var nearbyCitiesToDisplay: [ParsedNearbyCity]?
-    private var coordinateToCenterOn: CLLocationCoordinate2D?
-    private var filterContainerViewTopConstraint: NSLayoutConstraint?
+    fileprivate var quakesToDisplay: [Quake]?
+    fileprivate var quakeToDisplay: Quake?
+    fileprivate var nearbyCitiesToDisplay: [ParsedNearbyCity]?
+    fileprivate var coordinateToCenterOn: CLLocationCoordinate2D?
+    fileprivate var filterContainerViewTopConstraint: NSLayoutConstraint?
     
     weak var delegate: MapViewControllerDelegate?
     
-    private var firstLayout = true
-    private var firstMapLoad = true
-    private var currentlySearching = false
-    private var shouldContinueUpdatingUserLocation = true
+    fileprivate var firstLayout = true
+    fileprivate var firstMapLoad = true
+    fileprivate var currentlySearching = false
+    fileprivate var shouldContinueUpdatingUserLocation = true
     
-    private lazy var manager = CLLocationManager()
-    private lazy var geocoder = CLGeocoder()
+    fileprivate lazy var manager = CLLocationManager()
+    fileprivate lazy var geocoder = CLGeocoder()
     
     init(quakeToDisplay quake: Quake?, nearbyCities: [ParsedNearbyCity]?) {
         super.init(nibName: nil, bundle: nil)
@@ -110,13 +110,13 @@ class MapViewController: UIViewController
         
         TelemetryController.sharedController.logQuakeMapOpened()
         
-        navigationController?.toolbarHidden = false
+        navigationController?.isToolbarHidden = false
         toolbarItems = [locationBarButtonItem, spaceBarButtonItem]
         
-        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && CLLocationManager.locationServicesEnabled() {
             mapView.showsUserLocation = true
         }
-        else if CLLocationManager.authorizationStatus() == .NotDetermined {
+        else if CLLocationManager.authorizationStatus() == .notDetermined {
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
         }
@@ -125,37 +125,37 @@ class MapViewController: UIViewController
             filterHeaderView.addSubview(filterTitleLabel)
             filterHeaderView.addSubview(filterSlider)
             
-            let views = ["slider": filterSlider, "label": filterTitleLabel]
-            filterHeaderView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-30-[slider]-30-|", options: [], metrics: nil, views: views))
-            filterHeaderView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-15-[label]-15-|", options: [], metrics: nil, views: views))
-            filterHeaderView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-8-[label]-4-[slider]-8-|", options: [], metrics: nil, views: views))
+            let views = ["slider": filterSlider, "label": filterTitleLabel] as [String : Any]
+            filterHeaderView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-30-[slider]-30-|", options: [], metrics: nil, views: views))
+            filterHeaderView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-15-[label]-15-|", options: [], metrics: nil, views: views))
+            filterHeaderView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-8-[label]-4-[slider]-8-|", options: [], metrics: nil, views: views))
             
             view.addSubview(filterHeaderView)
             view.addSubview(mapView)
             
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[container]|", options: [], metrics: nil, views: ["container": filterHeaderView]))
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[container]|", options: [], metrics: nil, views: ["container": filterHeaderView]))
+            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
             
-            filterContainerViewTopConstraint = NSLayoutConstraint(item: filterHeaderView, attribute: .Top, relatedBy: .Equal, toItem: topLayoutGuide, attribute: .Bottom, multiplier: 1, constant: 0)
+            filterContainerViewTopConstraint = NSLayoutConstraint(item: filterHeaderView, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
             view.addConstraint(filterContainerViewTopConstraint!)
             
-            view.addConstraint(NSLayoutConstraint(item: filterHeaderView, attribute: .Bottom, relatedBy: .Equal, toItem: mapView, attribute: .Top, multiplier: 1, constant: 0))
-            view.addConstraint(NSLayoutConstraint(item: mapView, attribute: .Bottom, relatedBy: .Equal, toItem: mapView.superview, attribute: .Bottom, multiplier: 1, constant: 0))
+            view.addConstraint(NSLayoutConstraint(item: filterHeaderView, attribute: .bottom, relatedBy: .equal, toItem: mapView, attribute: .top, multiplier: 1, constant: 0))
+            view.addConstraint(NSLayoutConstraint(item: mapView, attribute: .bottom, relatedBy: .equal, toItem: mapView.superview, attribute: .bottom, multiplier: 1, constant: 0))
         }
         else {
             view.addSubview(mapView)
             
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
+            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        navigationController?.toolbarHidden = true
+        navigationController?.isToolbarHidden = true
         
-        if geocoder.geocoding {
+        if geocoder.isGeocoding {
             geocoder.cancelGeocode()
         }
     }
@@ -174,7 +174,7 @@ class MapViewController: UIViewController
         }
     }
     
-    private func fetchQuakesAndDisplay() {
+    fileprivate func fetchQuakesAndDisplay() {
         do {
             filterTitleLabel.text = ""
             quakesToDisplay = try Quake.objectsInContext(PersistentController.sharedController.moc)
@@ -182,22 +182,22 @@ class MapViewController: UIViewController
             var maxDays = 0
             
             if let quakes = quakesToDisplay {
-                let sortedQuakes = quakes.sort { quakeTuple in
+                let sortedQuakes = quakes.sorted { quakeTuple in
                     let quakeOne = quakeTuple.0
                     let quakeTwo = quakeTuple.1
                     
-                    return NSDate().daysSince(quakeOne.timestamp) < NSDate().daysSince(quakeTwo.timestamp)
+                    return Date().daysSince(quakeOne.timestamp) < Date().daysSince(quakeTwo.timestamp)
                 }
                 if let lastSortedQuake = sortedQuakes.last {
-                    maxDays = NSDate().daysSince(lastSortedQuake.timestamp)
+                    maxDays = Date().daysSince(lastSortedQuake.timestamp)
                     if maxDays == 1 {
-                        dispatch_async(dispatch_get_main_queue()) {
+                        DispatchQueue.main.async {
                             self.filterContainerViewTopConstraint?.constant = -self.filterHeaderView.frame.height
                             self.view.layoutIfNeeded()
                         }
                     }
                     else if maxDays < 29 {
-                        dispatch_async(dispatch_get_main_queue()) {
+                        DispatchQueue.main.async {
                             self.filterContainerViewTopConstraint?.constant = 0
                             self.view.layoutIfNeeded()
                         }
@@ -206,14 +206,14 @@ class MapViewController: UIViewController
                     }
                 }
                 if let firstSortedQuake = sortedQuakes.first {
-                    minDays = NSDate().daysSince(firstSortedQuake.timestamp)
+                    minDays = Date().daysSince(firstSortedQuake.timestamp)
                     if minDays > 0 {
                         filterSlider.minimumValue = Float(minDays)
                     }
                 }
                 
                 if minDays == maxDays {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.filterContainerViewTopConstraint?.constant = -self.filterHeaderView.frame.height
                         self.view.layoutIfNeeded()
                     }
@@ -228,16 +228,16 @@ class MapViewController: UIViewController
         }
     }
     
-    private func showMessageWithText(text: String, shouldAutoDismiss dismiss: Bool) {
+    fileprivate func showMessageWithText(_ text: String, shouldAutoDismiss dismiss: Bool) {
         let messageLabel = UILabel()
-        messageLabel.font = UIFont.systemFontOfSize(11.0, weight: UIFontWeightRegular)
+        messageLabel.font = UIFont.systemFont(ofSize: 11.0, weight: UIFontWeightRegular)
         messageLabel.numberOfLines = 2
-        messageLabel.textAlignment = .Center
+        messageLabel.textAlignment = .center
         messageLabel.text = text
         messageLabel.sizeToFit()
         messageLabelBarButtonItem = UIBarButtonItem(customView: messageLabel)
         
-        if let items = navigationController?.toolbar.items where items.contains(searchBarButtonItem) {
+        if let items = navigationController?.toolbar.items, items.contains(searchBarButtonItem) {
             navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem, messageLabelBarButtonItem, spaceBarButtonItem, searchBarButtonItem], animated: true)
         }
         else {
@@ -245,8 +245,8 @@ class MapViewController: UIViewController
         }
         
         if dismiss {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(2 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                if let items = self.navigationController?.toolbar.items where items.contains(self.searchBarButtonItem) {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double((Int64)(2 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
+                if let items = self.navigationController?.toolbar.items, items.contains(self.searchBarButtonItem) {
                     self.navigationController?.toolbar.setItems([self.locationBarButtonItem, self.spaceBarButtonItem, self.searchBarButtonItem], animated: true)
                 }
                 else {
@@ -256,7 +256,7 @@ class MapViewController: UIViewController
         }
     }
     
-    private func fetchNewQuakesForPlace(placemark: CLPlacemark) {
+    fileprivate func fetchNewQuakesForPlace(_ placemark: CLPlacemark) {
         guard NetworkUtility.internetReachable() else {
             self.currentlySearching = false
             showMessageWithText("No Internet Connection", shouldAutoDismiss: false)
@@ -265,7 +265,7 @@ class MapViewController: UIViewController
         
         NetworkClient.sharedClient.getQuakesByLocation(placemark.location!.coordinate) { quakes, error in
             var sucess = false
-            if let quakes = quakes where error == nil {
+            if let quakes = quakes, error == nil {
                 sucess = quakes.count > 0
                 
                 if quakes.count > 0 {
@@ -295,12 +295,12 @@ class MapViewController: UIViewController
         
         currentlySearching = true
         
-        let loadingActivityView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        let loadingActivityView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         loadingActivityView.color = StyleController.contrastColor
         loadingActivityView.startAnimating()
         
         let loadingBarButton = UIBarButtonItem(customView: loadingActivityView)
-        if let items = navigationController?.toolbar.items where items.contains(messageLabelBarButtonItem) {
+        if let items = navigationController?.toolbar.items, items.contains(messageLabelBarButtonItem) {
             navigationController?.toolbar.setItems([locationBarButtonItem, spaceBarButtonItem, messageLabelBarButtonItem, spaceBarButtonItem, loadingBarButton], animated: false)
         }
         else {
@@ -310,10 +310,10 @@ class MapViewController: UIViewController
         NetworkUtility.networkOperationStarted()
         geocoder.reverseGeocodeLocation(CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)) { places, error in
             NetworkUtility.networkOperationFinished()
-            if let place = places?.first where error == nil {
+            if let place = places?.first, error == nil {
                 if let _ = place.location {
                     self.fetchNewQuakesForPlace(place)
-                    if let items = self.navigationController?.toolbar.items where items.contains(self.messageLabelBarButtonItem) {
+                    if let items = self.navigationController?.toolbar.items, items.contains(self.messageLabelBarButtonItem) {
                         self.navigationController?.toolbar.setItems([self.locationBarButtonItem, self.spaceBarButtonItem, self.messageLabelBarButtonItem, self.spaceBarButtonItem, self.searchBarButtonItem], animated: true)
                     }
                     else {
@@ -332,20 +332,20 @@ class MapViewController: UIViewController
         }
     }
     
-    func filterSliderChanged(sender: UISlider) {
+    func filterSliderChanged(_ sender: UISlider) {
         refreshFilterLabel()
     }
     
-    func filterSliderEnded(sender: UISlider) {
+    func filterSliderEnded(_ sender: UISlider) {
         TelemetryController.sharedController.logQuakeMapFiltered()
         
         if let quakes = quakesToDisplay {
             mapView.removeAnnotations(mapView.annotations)
-            mapView.addAnnotations(quakes.filter{ NSDate().daysSince($0.timestamp) < Int(sender.value) })
+            mapView.addAnnotations(quakes.filter{ Date().daysSince($0.timestamp) < Int(sender.value) })
         }
     }
     
-    private func refreshFilterLabel() {
+    fileprivate func refreshFilterLabel() {
         let wholeValue = Int(filterSlider.value)
         
         if wholeValue == 30 {
@@ -371,25 +371,25 @@ class MapViewController: UIViewController
         }
     }
             
-    private func refreshMapAnimated(animated: Bool) {
+    fileprivate func refreshMapAnimated(_ animated: Bool) {
         var annotationsToShowOnMap = [MKAnnotation]()
         
         if let quakes = quakesToDisplay {
-            annotationsToShowOnMap.appendContentsOf((quakes as [MKAnnotation]))
+            annotationsToShowOnMap.append(contentsOf: (quakes as [MKAnnotation]))
         }
         else if let quake = quakeToDisplay {
             annotationsToShowOnMap.append(quake)
         }
         
         if let cities = nearbyCitiesToDisplay {
-            annotationsToShowOnMap.appendContentsOf((cities as [MKAnnotation]))
+            annotationsToShowOnMap.append(contentsOf: (cities as [MKAnnotation]))
         }
         
         if mapView.annotations.count <= 1 {
             mapView.addAnnotations(annotationsToShowOnMap)
         }
         
-        if let indexOfAnnotation = annotationsToShowOnMap.indexOf({ $0.coordinate.latitude == coordinateToCenterOn?.latitude && $0.coordinate.longitude == coordinateToCenterOn?.longitude }) where coordinateToCenterOn != nil {
+        if let indexOfAnnotation = annotationsToShowOnMap.index(where: { $0.coordinate.latitude == coordinateToCenterOn?.latitude && $0.coordinate.longitude == coordinateToCenterOn?.longitude }), coordinateToCenterOn != nil {
             mapView.showAnnotations([annotationsToShowOnMap[indexOfAnnotation]], animated: true)
             return
         }
@@ -411,7 +411,7 @@ extension MapViewController: MKMapViewDelegate
 {
     
     // MARK: - MKMapView Delegate
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool)
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool)
     {
         guard NetworkUtility.internetReachable() else {
             return
@@ -429,7 +429,7 @@ extension MapViewController: MKMapViewDelegate
         }
     }
     
-    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         guard shouldContinueUpdatingUserLocation else { return }
         
         if let _ = userLocation.location {
@@ -438,22 +438,22 @@ extension MapViewController: MKMapViewDelegate
         }
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?
     {
-        if let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(String(annotation.hash)) {
+        if let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: String(annotation.hash)) {
             return annotationView
         }
         
         if annotation is Quake {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
-            annotationView.enabled = true
+            annotationView.isEnabled = true
             annotationView.animatesDrop = false
             annotationView.canShowCallout = true
             
             if nearbyCitiesToDisplay == nil {
-                let detailButton = UIButton(type: .Custom)
+                let detailButton = UIButton(type: .custom)
                 detailButton.tag = annotation.hash
-                detailButton.setImage(UIImage(named: "detail-arrow"), forState: .Normal)
+                detailButton.setImage(UIImage(named: "detail-arrow"), for: UIControlState())
                 detailButton.sizeToFit()
                 
                 annotationView.rightCalloutAccessoryView = detailButton
@@ -466,10 +466,10 @@ extension MapViewController: MKMapViewDelegate
         else if annotation is ParsedNearbyCity {
             let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
             
-            annotationView.enabled = true
+            annotationView.isEnabled = true
             annotationView.canShowCallout = true
             annotationView.image = (annotation as! ParsedNearbyCity) == nearbyCitiesToDisplay!.first ? UIImage(named: "selected-city-map-pin") : UIImage(named: "city-map-pin")
-            annotationView.tintColor = UIColor.redColor()
+            annotationView.tintColor = UIColor.red
             
             return annotationView
         }
@@ -478,15 +478,15 @@ extension MapViewController: MKMapViewDelegate
         }
     }
     
-    func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
         if views.count == quakesToDisplay?.count {
             if firstMapLoad { firstMapLoad = false }
         }
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if let quakes = quakesToDisplay, let index = quakes.indexOf({ $0.hash == control.tag }) {
-            navigationController?.popToRootViewControllerAnimated(true)
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if let quakes = quakesToDisplay, let index = quakes.index(where: { $0.hash == control.tag }) {
+            navigationController?.popToRootViewController(animated: true)
             navigationController?.pushViewController(DetailViewController(quake: quakes[index]), animated: true)
         }
     }
@@ -497,8 +497,8 @@ extension MapViewController: CLLocationManagerDelegate
 {
     
     // MARK: - CLLocationManager Delegate
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .AuthorizedWhenInUse {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
             mapView.showsUserLocation = true
         }
     }

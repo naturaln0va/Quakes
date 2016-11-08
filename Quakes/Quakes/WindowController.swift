@@ -6,23 +6,23 @@ class WindowController: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        window = UIWindow(frame: UIScreen.main.bounds)
         
         window?.rootViewController = StyledNavigationController(rootViewController: ListViewController())
         window?.makeKeyAndVisible()
         
-        if !UIDevice.currentDevice().name.hasSuffix("Simulator") {
+        if !UIDevice.current.name.hasSuffix("Simulator") {
             registerForPushNotifications(application)
         }
         
-        dispatch_async(dispatch_get_main_queue()) { 
+        DispatchQueue.main.async { 
             self.performSecondaryInitializationsWithOptions(launchOptions)
         }
         return true
     }
     
-    func performSecondaryInitializationsWithOptions(launchOptions: [NSObject: AnyObject]?) {
+    func performSecondaryInitializationsWithOptions(_ launchOptions: [AnyHashable: Any]?) {
         Flurry.setDebugLogEnabled(false)
         Flurry.setShowErrorInLogEnabled(false)
         Flurry.startSession(TelemetryController.sharedController.apiKey, withOptions: launchOptions)
@@ -36,32 +36,32 @@ class WindowController: UIResponder, UIApplicationDelegate {
         }
         
         if SettingsController.sharedController.fisrtLaunchDate == nil {
-            SettingsController.sharedController.fisrtLaunchDate = NSDate()
+            SettingsController.sharedController.fisrtLaunchDate = Date()
         }
     }
     
     // MARK: - Notifications
     
-    func registerForPushNotifications(application: UIApplication) {
+    func registerForPushNotifications(_ application: UIApplication) {
         let notificationSettings = UIUserNotificationSettings(
-            forTypes: [.Sound, .Alert],
+            types: [.sound, .alert],
             categories: nil
         )
         
         application.registerUserNotificationSettings(notificationSettings)
     }
     
-    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
-        if notificationSettings.types != .None {
+    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+        if notificationSettings.types != UIUserNotificationType() {
             application.registerForRemoteNotifications()
         }
     }
     
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        let tokenChars = UnsafePointer<CChar>(deviceToken.bytes)
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenChars = (deviceToken as NSData).bytes.bindMemory(to: CChar.self, capacity: deviceToken.count)
         var tokenString = ""
         
-        for i in 0..<deviceToken.length {
+        for i in 0..<deviceToken.count {
             tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
         }
         
@@ -70,7 +70,7 @@ class WindowController: UIResponder, UIApplicationDelegate {
         SettingsController.sharedController.pushToken = tokenString
     }
     
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register: \(error)")
     }
 }

@@ -19,18 +19,14 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
         super.init()
     }
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return duration
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        guard let containerView = transitionContext.containerView() else {
-            print("Could not parse the container view when animating.")
-            return
-        }
-        
-        let fromViewControler = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
-        let toViewControler = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let containerView = transitionContext.containerView
+        let fromViewControler = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)
+        let toViewControler = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)
         
         let viewToFade = presenting ? toViewControler : fromViewControler
         
@@ -39,13 +35,13 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             return
         }
         
-        finderVC.view.frame = UIScreen.mainScreen().bounds
-        containerView.frame = UIScreen.mainScreen().bounds
+        finderVC.view.frame = UIScreen.main.bounds
+        containerView.frame = UIScreen.main.bounds
         
         if presenting {
             let finalFrame = CGRect(
                 origin: finderVC.searchTextField.frame.origin,
-                size: CGSize(width: UIScreen.mainScreen().bounds.width - 27 * 2, height: finderVC.searchTextField.frame.height)
+                size: CGSize(width: UIScreen.main.bounds.width - 27 * 2, height: finderVC.searchTextField.frame.height)
             )
             
             containerView.addSubview(finderVC.view)
@@ -58,7 +54,7 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             buttonView.layer.cornerRadius = 4.0
             containerView.addSubview(buttonView)
             
-            UIView.animateWithDuration(transitionDuration(transitionContext),
+            UIView.animate(withDuration: transitionDuration(using: transitionContext),
                 animations: {
                     finderVC.view.alpha = 1.0
                     
@@ -82,14 +78,14 @@ class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
             
             containerView.addSubview(toVC.view)
             containerView.addSubview(finderVC.view)
-            containerView.bringSubviewToFront(finderVC.view)
+            containerView.bringSubview(toFront: finderVC.view)
             
             let buttonView = UIView(frame: finderVC.searchTextField.frame)
             buttonView.backgroundColor = StyleController.searchBarColor
             buttonView.layer.cornerRadius = 0.0
             containerView.addSubview(buttonView)
             
-            UIView.animateWithDuration(transitionDuration(transitionContext),
+            UIView.animate(withDuration: transitionDuration(using: transitionContext),
                 animations: {
                     finderVC.view.alpha = 0.0
                     finderVC.searchTextField.alpha = 0.0

@@ -2,89 +2,89 @@
 import Foundation
 import CoreLocation
 
-typealias DetailURLCompletionBlock = (urlString: String?, error: NSError?) -> Void
-typealias NearbyCityCompletionBlock = (cities: [ParsedNearbyCity]?, error: NSError?) -> Void
-typealias QuakesCompletionBlock = (quakes: [ParsedQuake]?, error: NSError?) -> Void
-typealias CountCompletionBlock = (count: Int?, error: NSError?) -> Void
-typealias ReciptCompletionBlock = (sucess: Bool) -> Void
+typealias DetailURLCompletionBlock = (_ urlString: String?, _ error: NSError?) -> Void
+typealias NearbyCityCompletionBlock = (_ cities: [ParsedNearbyCity]?, _ error: NSError?) -> Void
+typealias QuakesCompletionBlock = (_ quakes: [ParsedQuake]?, _ error: NSError?) -> Void
+typealias CountCompletionBlock = (_ count: Int?, _ error: NSError?) -> Void
+typealias ReciptCompletionBlock = (_ sucess: Bool) -> Void
 
 class NetworkClient {
     static let sharedClient = NetworkClient()
     
-    private lazy var requestsQueue: NSOperationQueue = {
-        let queue = NSOperationQueue()
-        queue.underlyingQueue = dispatch_queue_create("io.ackermann.network", nil)
-        queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
+    fileprivate lazy var requestsQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.underlyingQueue = DispatchQueue(label: "io.ackermann.network", attributes: [])
+        queue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
         return queue
     }()
     
-    private let noResponseError = NSError(domain: "io.ackermann.network", code: 1539, userInfo: [NSLocalizedDescriptionKey: "No response from server"])
+    fileprivate let noResponseError = NSError(domain: "io.ackermann.network", code: 1539, userInfo: [NSLocalizedDescriptionKey: "No response from server"])
     
-    func verifyInAppRecipt(completion: ReciptCompletionBlock) {
-        guard let url = NSBundle.mainBundle().appStoreReceiptURL else {
-            dispatch_async(dispatch_get_main_queue()) {
-                completion(sucess: false)
+    func verifyInAppRecipt(_ completion: @escaping ReciptCompletionBlock) {
+        guard let url = Bundle.main.appStoreReceiptURL else {
+            DispatchQueue.main.async {
+                completion(false)
             }
             return
         }
         
-        guard let receiptData = NSData(contentsOfURL: url) else {
-            dispatch_async(dispatch_get_main_queue()) {
-                completion(sucess: false)
+        guard let receiptData = try? Data(contentsOf: url) else {
+            DispatchQueue.main.async {
+                completion(false)
             }
             return
         }
         
         // testing: https://sandbox.itunes.apple.com/verifyReceipt
         // production: https://buy.itunes.apple.com/verifyReceipt
-        guard let storeURL = NSURL(string: "https://buy.itunes.apple.com/verifyReceipt") else {
-            dispatch_async(dispatch_get_main_queue()) {
-                completion(sucess: false)
+        guard let storeURL = URL(string: "https://buy.itunes.apple.com/verifyReceipt") else {
+            DispatchQueue.main.async {
+                completion(false)
             }
             return
         }
         
-        let storeRequest = NSMutableURLRequest(URL: storeURL)
-        storeRequest.HTTPMethod = "POST"
+        let storeRequest = NSMutableURLRequest(url: storeURL)
+        storeRequest.httpMethod = "POST"
         
         do {
-            storeRequest.HTTPBody = try NSJSONSerialization.dataWithJSONObject(
-                ["receipt-data" : receiptData.base64EncodedStringWithOptions([])],
-                options: .PrettyPrinted
+            storeRequest.httpBody = try JSONSerialization.data(
+                withJSONObject: ["receipt-data" : receiptData.base64EncodedString(options: [])],
+                options: .prettyPrinted
             )
         }
         
         catch {
-            dispatch_async(dispatch_get_main_queue()) {
-                completion(sucess: false)
+            DispatchQueue.main.async {
+                completion(false)
             }
             return
         }
         
         NetworkUtility.networkOperationStarted()
-        dispatch_async(dispatch_queue_create("io.ackermann.iap.verify", nil)) {
-            NSURLSession.sharedSession().dataTaskWithRequest(storeRequest) { data, response, error in
-                var success = false
-                
-                defer {
-                    NetworkUtility.networkOperationFinished()
-                    dispatch_async(dispatch_get_main_queue()) {
-                        completion(sucess: success)
-                    }
-                }
-                
-                guard error == nil else { return }
-                guard let data = data else { return }
-                guard let receiptInfo = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? [String: AnyObject] ?? [:] else { return }
-                
-                if let status = receiptInfo["status"] as? Int where status == 0 {
-                    success = true
-                }
-            }.resume()
+        DispatchQueue(label: "io.ackermann.iap.verify", attributes: []).async {
+//            URLSession.shared.dataTask(with: storeRequest, completionHandler: { data, response, error in
+//                var success = false
+//                
+//                defer {
+//                    NetworkUtility.networkOperationFinished()
+//                    DispatchQueue.main.async {
+//                        completion(sucess: success)
+//                    }
+//                }
+//                
+//                guard error == nil else { return }
+//                guard let data = data else { return }
+//                guard let receiptInfo = try? JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as? [String: AnyObject] ?? [:] else { return }
+//                
+//                if let status = receiptInfo["status"] as? Int, status == 0 {
+//                    success = true
+//                }
+//            }) .resume()
         }
     }
     
-    func registerForNotificationsWithToken(token: String, location: CLLocation) {
+    func registerForNotificationsWithToken(_ token: String, location: CLLocation) {
         NetworkUtility.networkOperationStarted()
         let operation = AddDeviceOperation(
             token: token,
@@ -92,8 +92,8 @@ class NetworkClient {
             longitude: location.coordinate.longitude
         )
         
-        operation.qualityOfService = .Background
-        operation.queuePriority = .Normal
+        operation.qualityOfService = .background
+        operation.queuePriority = .normal
         
         operation.completionBlock = {
             NetworkUtility.networkOperationFinished()
@@ -102,22 +102,22 @@ class NetworkClient {
         requestsQueue.addOperation(operation)
     }
     
-    func getNearbyCitiesWithURL(urlForNearbyCities url: NSURL, completion: NearbyCityCompletionBlock) {
+    func getNearbyCitiesWithURL(urlForNearbyCities url: URL, completion: @escaping NearbyCityCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         let fetchOperation = GetNearbyCitiesOperation(urlForNearbyCities: url)
         
-        fetchOperation.qualityOfService = .Background
-        fetchOperation.queuePriority = .Normal
+        fetchOperation.qualityOfService = .background
+        fetchOperation.queuePriority = .normal
         
         fetchOperation.completionBlock = { [weak self] in
-            dispatch_sync(dispatch_get_main_queue()) {
+            DispatchQueue.main.sync {
                 NetworkUtility.networkOperationFinished()
                 
                 if let nearbyCities = fetchOperation.nearbyCities {
-                    completion(cities: nearbyCities, error: nil)
+                    completion(nearbyCities, nil)
                 }
                 else {
-                    completion(cities: nil, error: self?.noResponseError)
+                    completion(nil, self?.noResponseError)
                 }
             }
         }
@@ -125,22 +125,22 @@ class NetworkClient {
         requestsQueue.addOperation(fetchOperation)
     }
     
-    func getDetailForQuakeWithURL(urlForDetail url: NSURL, completion: DetailURLCompletionBlock) {
+    func getDetailForQuakeWithURL(urlForDetail url: URL, completion: @escaping DetailURLCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         let fetchOperation = GetDetailURLOperation(urlForDetail: url)
         
-        fetchOperation.qualityOfService = .Background
-        fetchOperation.queuePriority = .Normal
+        fetchOperation.qualityOfService = .background
+        fetchOperation.queuePriority = .normal
         
         fetchOperation.completionBlock = { [weak self] in
-            dispatch_sync(dispatch_get_main_queue()) {
+            DispatchQueue.main.sync {
                 NetworkUtility.networkOperationFinished()
                 
                 if let detailURLString = fetchOperation.detailURLString {
-                    completion(urlString: detailURLString, error: nil)
+                    completion(detailURLString, nil)
                 }
                 else {
-                    completion(urlString: nil, error: self?.noResponseError)
+                    completion(nil, self?.noResponseError)
                 }
             }
         }
@@ -148,23 +148,23 @@ class NetworkClient {
         requestsQueue.addOperation(fetchOperation)
     }
     
-    func getQuakesByLocation(coordinate: CLLocationCoordinate2D, completion: QuakesCompletionBlock?) {
+    func getQuakesByLocation(_ coordinate: CLLocationCoordinate2D, completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
 
         let USGSFetchOperation = USGSLocationOperation(coordinate: coordinate)
-        USGSFetchOperation.qualityOfService = .UserInitiated
-        USGSFetchOperation.queuePriority = .VeryHigh
+        USGSFetchOperation.qualityOfService = .userInitiated
+        USGSFetchOperation.queuePriority = .veryHigh
         
         USGSFetchOperation.completionBlock = { [weak self] in
-            dispatch_sync(dispatch_get_main_queue()) {
+            DispatchQueue.main.sync {
                 NetworkUtility.networkOperationFinished()
-                SettingsController.sharedController.lastFetchDate = NSDate()
+                SettingsController.sharedController.lastFetchDate = Date()
                 
                 if let recievedQuakes = USGSFetchOperation.quakes {
-                    completion?(quakes: recievedQuakes, error: nil)
+                    completion?(recievedQuakes, nil)
                 }
                 else {
-                    completion?(quakes: nil, error: self?.noResponseError)
+                    completion?(nil, self?.noResponseError)
                 }
             }
         }
@@ -172,23 +172,23 @@ class NetworkClient {
         requestsQueue.addOperations([USGSFetchOperation], waitUntilFinished: false)
     }
     
-    func getMajorQuakes(completion: QuakesCompletionBlock?) {
+    func getMajorQuakes(_ completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
         
         let USGSFetchOperation = USGSMajorOperation()
-        USGSFetchOperation.qualityOfService = .UserInitiated
-        USGSFetchOperation.queuePriority = .VeryHigh
+        USGSFetchOperation.qualityOfService = .userInitiated
+        USGSFetchOperation.queuePriority = .veryHigh
         
         USGSFetchOperation.completionBlock = { [weak self] in
-            dispatch_sync(dispatch_get_main_queue()) {
+            DispatchQueue.main.sync {
                 NetworkUtility.networkOperationFinished()
-                SettingsController.sharedController.lastFetchDate = NSDate()
+                SettingsController.sharedController.lastFetchDate = Date()
                 
                 if let recievedQuakes = USGSFetchOperation.quakes {
-                    completion?(quakes: recievedQuakes, error: nil)
+                    completion?(recievedQuakes, nil)
                 }
                 else {
-                    completion?(quakes: nil, error: self?.noResponseError)
+                    completion?(nil, self?.noResponseError)
                 }
             }
         }
@@ -196,23 +196,23 @@ class NetworkClient {
         requestsQueue.addOperations([USGSFetchOperation], waitUntilFinished: false)
     }
     
-    func getWorldQuakes(completion: QuakesCompletionBlock?) {
+    func getWorldQuakes(_ completion: QuakesCompletionBlock?) {
         NetworkUtility.networkOperationStarted()
         
         let USGSFetchOperation = USGSWorldOperation()
-        USGSFetchOperation.qualityOfService = .UserInitiated
-        USGSFetchOperation.queuePriority = .VeryHigh
+        USGSFetchOperation.qualityOfService = .userInitiated
+        USGSFetchOperation.queuePriority = .veryHigh
         
         USGSFetchOperation.completionBlock = { [weak self] in
-            dispatch_sync(dispatch_get_main_queue()) {
+            DispatchQueue.main.sync {
                 NetworkUtility.networkOperationFinished()
-                SettingsController.sharedController.lastFetchDate = NSDate()
+                SettingsController.sharedController.lastFetchDate = Date()
                 
                 if let recievedQuakes = USGSFetchOperation.quakes {
-                    completion?(quakes: recievedQuakes, error: nil)
+                    completion?(recievedQuakes, nil)
                 }
                 else {
-                    completion?(quakes: nil, error: self?.noResponseError)
+                    completion?(nil, self?.noResponseError)
                 }
             }
         }
@@ -220,14 +220,14 @@ class NetworkClient {
         requestsQueue.addOperations([USGSFetchOperation], waitUntilFinished: false)
     }
     
-    func getNotificationCountFromStartDate(startDate: NSDate, completion: CountCompletionBlock) {
+    func getNotificationCountFromStartDate(_ startDate: Date, completion: CountCompletionBlock) {
         NetworkUtility.networkOperationStarted()
         let fetchOperation = RecentQuakeCountOperation()
-        fetchOperation.qualityOfService = .Background
-        fetchOperation.queuePriority = .Low
+        fetchOperation.qualityOfService = .background
+        fetchOperation.queuePriority = .low
         
         fetchOperation.completionBlock = {
-            dispatch_sync(dispatch_get_main_queue()) {
+            DispatchQueue.main.sync {
                 NetworkUtility.networkOperationFinished()
             }
         }

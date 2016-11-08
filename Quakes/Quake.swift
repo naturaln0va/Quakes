@@ -8,19 +8,19 @@ import MapKit
 class Quake: NSManagedObject {
     
     // MARK: Formatters
-    static let timestampFormatter: NSDateFormatter = {
-        let timestampFormatter = NSDateFormatter()
+    static let timestampFormatter: DateFormatter = {
+        let timestampFormatter = DateFormatter()
         
-        timestampFormatter.dateStyle = .MediumStyle
-        timestampFormatter.timeStyle = .ShortStyle
+        timestampFormatter.dateStyle = .medium
+        timestampFormatter.timeStyle = .short
         
         return timestampFormatter
     }()
     
-    static let magnitudeFormatter: NSNumberFormatter = {
-        let magnitudeFormatter = NSNumberFormatter()
+    static let magnitudeFormatter: NumberFormatter = {
+        let magnitudeFormatter = NumberFormatter()
         
-        magnitudeFormatter.numberStyle = .DecimalStyle
+        magnitudeFormatter.numberStyle = .decimal
         magnitudeFormatter.maximumFractionDigits = 1
         magnitudeFormatter.minimumFractionDigits = 1
         
@@ -29,14 +29,14 @@ class Quake: NSManagedObject {
     
     static let distanceFormatter: MKDistanceFormatter = {
         let formatter = MKDistanceFormatter()
-        formatter.unitStyle = .Abbreviated
-        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
+        formatter.unitStyle = .abbreviated
+        formatter.units = SettingsController.sharedController.isUnitStyleImperial ? .imperial : .metric
         return formatter
     }()
     
     // MARK: - Properties
     @NSManaged var depth: Double
-    @NSManaged var timestamp: NSDate
+    @NSManaged var timestamp: Date
     @NSManaged var name: String
     @NSManaged var magnitude: Double
     @NSManaged var longitude: Double
@@ -47,14 +47,14 @@ class Quake: NSManagedObject {
     @NSManaged var provider: Int16
 
     @NSManaged var weblink: String?
-    @NSManaged var polyData: NSData?
-    @NSManaged var nearbyCitiesData: NSData?
+    @NSManaged var polyData: Data?
+    @NSManaged var nearbyCitiesData: Data?
     @NSManaged var distance: NSNumber?
     @NSManaged var countryCode: String?
     
     var additionalInfoString: String {        
-        Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .Imperial : .Metric
-        return "Depth: \(Quake.distanceFormatter.stringFromDistance(depth))"
+        Quake.distanceFormatter.units = SettingsController.sharedController.isUnitStyleImperial ? .imperial : .metric
+        return "Depth: \(Quake.distanceFormatter.string(fromDistance: depth))"
     }
     
     var coordinate: CLLocationCoordinate2D {
@@ -81,12 +81,12 @@ class Quake: NSManagedObject {
     }
     
     var stringForProvider: String {
-        return Int(provider) == SourceProvider.USGS.rawValue ? "USGS" : "EMSC"
+        return Int(provider) == SourceProvider.usgs.rawValue ? "USGS" : "EMSC"
     }
     
     var nearbyCities: [ParsedNearbyCity]? {
         if let data = nearbyCitiesData {
-            if let cities = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [ParsedNearbyCity] {
+            if let cities = NSKeyedUnarchiver.unarchiveObject(with: data) as? [ParsedNearbyCity] {
                 return cities
             }
         }
@@ -99,8 +99,7 @@ extension Quake: Fetchable {
     
     typealias FetchableType = Quake
     
-    static func entityName() -> String
-    {
+    static func entityName() -> String {
         return "Quake"
     }
     
@@ -113,17 +112,17 @@ extension Quake: MKAnnotation {
     }
     
     var subtitle: String? {
-        let formatter = NSNumberFormatter()
+        let formatter = NumberFormatter()
         
-        formatter.numberStyle = .DecimalStyle
+        formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 1
         formatter.minimumFractionDigits = 1
         
-        let timestampFormatter = NSDateFormatter()
+        let timestampFormatter = DateFormatter()
         
-        timestampFormatter.dateStyle = .MediumStyle
-        timestampFormatter.timeStyle = .MediumStyle
+        timestampFormatter.dateStyle = .medium
+        timestampFormatter.timeStyle = .medium
 
-        return formatter.stringFromNumber(magnitude)! + ", at " + timestampFormatter.stringFromDate(timestamp)
+        return formatter.string(from: NSNumber(value: magnitude))! + ", at " + timestampFormatter.string(from: timestamp)
     }
 }

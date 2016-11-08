@@ -5,10 +5,10 @@ extension String
 {
     
     init?(contentsOfBundleFileNamed fileName: String) {
-        let comps = fileName.componentsSeparatedByString(".")
-        if let path = NSBundle.mainBundle().pathForResource(comps.first, ofType: comps.last) where comps.count == 2 {
+        let comps = fileName.components(separatedBy: ".")
+        if let path = Bundle.main.path(forResource: comps.first, ofType: comps.last), comps.count == 2 {
             do {
-                self = try String(contentsOfFile: path, encoding: NSUTF8StringEncoding)
+                self = try String(contentsOfFile: path, encoding: String.Encoding.utf8)
             }
             
             catch {
