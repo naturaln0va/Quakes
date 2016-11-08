@@ -137,7 +137,7 @@ class ListViewController: UITableViewController
         titleViewButton.sizeToFit()
     }
     
-    fileprivate func presentFinder() {
+    func presentFinder() {
         titleViewButton.isHidden = true
         transitionAnimator = TextBarAnimator(duration: 0.3, presentingViewController: true, originatingFrame: titleViewButton.frame) {
             self.titleViewButton.isHidden = false
