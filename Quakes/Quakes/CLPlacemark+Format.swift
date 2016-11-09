@@ -3,8 +3,7 @@ import CoreLocation
 
 extension CLPlacemark {
     
-    func cityStateString() -> String
-    {
+    func cityStateString() -> String {
         var wholeString = ""
         
         if let city = self.locality {

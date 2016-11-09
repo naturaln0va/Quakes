@@ -1,9 +1,7 @@
 
-
 import UIKit
 
-struct StyleController
-{
+struct StyleController {
     
     static let backgroundColor = UIColor(red: 0.933,  green: 0.933,  blue: 0.933, alpha: 1.0)
     static let mainAppColor = UIColor(white: 1.0, alpha: 1.0)

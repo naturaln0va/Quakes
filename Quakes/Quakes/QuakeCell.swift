@@ -1,8 +1,7 @@
 
 import UIKit
 
-class QuakeCell: UITableViewCell
-{
+class QuakeCell: UITableViewCell {
     
     static let reuseIdentifier = "QuakeCell"
     static let cellHeight: CGFloat = 85.0

@@ -5,8 +5,8 @@ protocol DetailDataProvider {
     var urlString: String? { get }
 }
 
-class DownloadDetailOperation: ConcurrentOperation
-{
+class DownloadDetailOperation: ConcurrentOperation {
+    
     fileprivate let url: URL
     var detailURLString: String?
 
@@ -26,9 +26,11 @@ class DownloadDetailOperation: ConcurrentOperation
             self.state = .Finished
         }
     }
+    
 }
 
-extension DownloadDetailOperation: DetailDataProvider
-{
+extension DownloadDetailOperation: DetailDataProvider {
+    
     var urlString: String? { return detailURLString }
+    
 }

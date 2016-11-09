@@ -1,8 +1,7 @@
 
 import Foundation
 
-class TelemetryController
-{
+class TelemetryController {
     
     static let sharedController = TelemetryController()
     

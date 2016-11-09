@@ -1,15 +1,13 @@
 
 import UIKit
 
-
-extension UIDevice
-{
+extension UIDevice {
     
-    public var hasForceTouch: Bool {
+    var hasForceTouch: Bool {
         return UIScreen.main.traitCollection.forceTouchCapability == .available
     }
     
-    public var deviceCode: String {
+    var deviceCode: String {
         var systemInfo = utsname()
         uname(&systemInfo)
         let mirror = Mirror(reflecting: systemInfo.machine)
@@ -21,17 +19,17 @@ extension UIDevice
         return code
     }
     
-    public var appVersionAndBuildString: String {
+    var appVersionAndBuildString: String {
         let identifer = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
         let build = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
         return "\(identifer).\(build)"
     }
     
-    public var deviceFamily: String {
+    var deviceFamily: String {
         return UIDevice.current.model
     }
     
-    public var deviceModel: String {
+    var deviceModel: String {
         var model: String
         let deviceCode = UIDevice().deviceCode
         switch deviceCode {
@@ -71,7 +69,7 @@ extension UIDevice
         return model
     }
     
-    public var deviceIOSVersion: String {
+    var deviceIOSVersion: String {
         return UIDevice.current.systemVersion
     }
     

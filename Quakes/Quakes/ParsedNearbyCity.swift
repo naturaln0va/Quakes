@@ -2,8 +2,7 @@
 import Foundation
 import MapKit
 
-class ParsedNearbyCity: NSObject, NSCoding
-{
+class ParsedNearbyCity: NSObject, NSCoding {
     
     // MARK: - Properties
     let distance, latitude, longitude: Double
@@ -31,8 +30,7 @@ class ParsedNearbyCity: NSObject, NSCoding
     }
     
     // MARK: NSCoding
-    required init?(coder decoder: NSCoder)
-    {
+    required init?(coder decoder: NSCoder) {
         distance = decoder.decodeDouble(forKey: "distance")
         latitude = decoder.decodeDouble(forKey: "latitude")
         longitude = decoder.decodeDouble(forKey: "longitude")
@@ -41,8 +39,7 @@ class ParsedNearbyCity: NSObject, NSCoding
         directionString = decoder.decodeObject(forKey: "directionString") as? String ?? ""
     }
     
-    func encode(with coder: NSCoder)
-    {
+    func encode(with coder: NSCoder) {
         coder.encode(distance, forKey: "distance")
         coder.encode(latitude, forKey: "latitude")
         coder.encode(longitude, forKey: "longitude")
@@ -52,8 +49,7 @@ class ParsedNearbyCity: NSObject, NSCoding
     
 }
 
-extension ParsedNearbyCity: MKAnnotation
-{
+extension ParsedNearbyCity: MKAnnotation {
     
     var title: String? {
         return [directionString, cityName].joined(separator: " ")

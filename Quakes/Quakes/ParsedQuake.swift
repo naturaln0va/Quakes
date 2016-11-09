@@ -68,7 +68,7 @@ struct ParsedQuake {
         }
         else {
             if let flynnRegionName = properties["flynn_region"] as? String {
-                name = flynnRegionName.lowercased().capitalized ?? ""
+                name = flynnRegionName.lowercased().capitalized
                 distance = nil
             }
             else {

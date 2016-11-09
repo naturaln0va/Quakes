@@ -3,33 +3,8 @@ import UIKit
 import CoreData
 import CoreLocation
 import GoogleMobileAds
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
 
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
-
-class ListViewController: UITableViewController
-{
+class ListViewController: UITableViewController {
     
     fileprivate lazy var noResultsLabel: UILabel = {
         let label = UILabel()
@@ -54,13 +29,10 @@ class ListViewController: UITableViewController
         return button
     }()
     
-    fileprivate lazy var locationManager = CLLocationManager()
+    fileprivate let locationHelper = LocationHelper()
     fileprivate lazy var defaults = UserDefaults.standard
-    fileprivate lazy var geocoder = CLGeocoder()
     fileprivate var transitionAnimator: TextBarAnimator?
     fileprivate var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
-
-    fileprivate var currentLocation: CLLocation?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -154,7 +126,7 @@ class ListViewController: UITableViewController
             PersistentController.sharedController.saveQuakes(recievedQuakes)
         }
         
-        if fetchedResultsController?.sections?.count > 0 {
+        if fetchedResultsController?.sections?.count ?? 0 > 0 {
             if noResultsLabel.superview != nil {
                 noResultsLabel.removeFromSuperview()
             }
@@ -335,7 +307,7 @@ class ListViewController: UITableViewController
         if let option = SettingsController.sharedController.lastLocationOption {
             switch option {
             case LocationOption.Nearby.rawValue:
-                if let current = currentLocation {
+                if let current = locationHelper.currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
                     NetworkClient.sharedClient.getQuakesByLocation(current.coordinate) { quakes, error in
@@ -344,20 +316,7 @@ class ListViewController: UITableViewController
                 }
                 else {
                     setTitleButtonText("Locating...")
-                    
-                    switch CLLocationManager.authorizationStatus() {
-                    case .authorizedWhenInUse:
-                        if CLLocationManager.locationServicesEnabled() {
-                            startLocationManager()
-                        }
-                    case .notDetermined:
-                        locationManager.delegate = self
-                        locationManager.requestWhenInUseAuthorization()
-                    default:
-                        SettingsController.sharedController.lastLocationOption = nil
-                        presentFinder()
-                        break
-                    }
+                    locationHelper.startHelper()
                 }
                 break
             case LocationOption.World.rawValue:
@@ -383,76 +342,43 @@ class ListViewController: UITableViewController
     
 }
 
-extension ListViewController: CLLocationManagerDelegate
-{
-    // MARK: - Location Manager Delegate
-    func startLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-        locationManager.requestLocation()
-    }
+extension ListViewController: LocationHelperDelegate {
     
-    func stopLocationManager() {
-        locationManager.stopUpdatingLocation()
-        locationManager.delegate = nil
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse {
-            startLocationManager()
-        }
-        else if status == .denied {
-            stopLocationManager()
+    func locationHelperFailedWithError(error: LocationHelperError) {
+        switch error {
+            
+        case .auth:
             SettingsController.sharedController.lastLocationOption = nil
             presentFinder()
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let lastLocation = locations.last else {
-            return
-        }
-        
-        currentLocation = lastLocation
-        stopLocationManager()
-        
-        NetworkUtility.networkOperationStarted()
-        geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in
-            NetworkUtility.networkOperationFinished()
             
-            if let placemark = place?.first, error == nil {
-                SettingsController.sharedController.cachedAddress = placemark
-                self.setTitleButtonText("\(placemark.cityStateString())")
+        case .location:
+            if let cachedAddress = SettingsController.sharedController.cachedAddress {
+                setTitleButtonText(cachedAddress.cityStateString())
             }
             else {
-                self.setTitleButtonText("Location Error")
+                setTitleButtonText("Location Error")
                 
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double((Int64)(2 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
                     self.presentFinder()
                 }
             }
             
-            self.fetchQuakes()
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-//        if error.code == CLError.Code.locationUnknown.rawValue {
-//            return
-//        }
-        
-        if let cachedAddress = SettingsController.sharedController.cachedAddress {
-            setTitleButtonText(cachedAddress.cityStateString())
-        }
-        else {
+        case .placemark:
             setTitleButtonText("Location Error")
-            
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double((Int64)(2 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
                 self.presentFinder()
             }
+            
         }
+    }
+    
+    func locationHelperRecievedLocation(location: CLLocation) {
         
-        stopLocationManager()
+    }
+    
+    func locationHelperRecievedPlacemark(placemark: CLPlacemark) {
+        SettingsController.sharedController.cachedAddress = placemark
+        setTitleButtonText("\(placemark.cityStateString())")
     }
     
 }

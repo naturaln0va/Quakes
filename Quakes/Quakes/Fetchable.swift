@@ -1,7 +1,6 @@
 
 import CoreData
 
-
 protocol Fetchable {
     associatedtype FetchableType: NSManagedObject
     
@@ -12,11 +11,9 @@ protocol Fetchable {
     static func fetchRequest(_ context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) -> NSFetchRequest<NSFetchRequestResult>
 }
 
-extension Fetchable where Self: NSManagedObject, FetchableType == Self
-{
+extension Fetchable where Self: NSManagedObject, FetchableType == Self {
     
-    static func singleObjectInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> FetchableType?
-    {
+    static func singleObjectInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> FetchableType? {
         let managedObjects: [FetchableType] = try objectsInContext(context, predicate: predicate, sortedBy: sortedBy, ascending: ascending)
         guard managedObjects.count > 0 else { return nil }
         
@@ -25,11 +22,15 @@ extension Fetchable where Self: NSManagedObject, FetchableType == Self
     
     static func objectCountInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil) -> Int {
         let request = fetchRequest(context, predicate: predicate)
-        return try! context.count(for: request)
+        
+        if let count = try? context.count(for: request) {
+            return count
+        }
+        
+        return 0
     }
     
-    static func objectsInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> [FetchableType]
-    {
+    static func objectsInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> [FetchableType] {
         let request = fetchRequest(context, predicate: predicate, sortedBy: sortedBy, ascending: ascending)
         let fetchResults = try context.fetch(request)
         
@@ -40,8 +41,7 @@ extension Fetchable where Self: NSManagedObject, FetchableType == Self
         return results
     }
     
-    static func fetchRequest(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) -> NSFetchRequest<NSFetchRequestResult>
-    {
+    static func fetchRequest(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) -> NSFetchRequest<NSFetchRequestResult> {
         let request = NSFetchRequest<NSFetchRequestResult>()
         let entity = NSEntityDescription.entity(forEntityName: entityName(), in: context)
         request.entity = entity

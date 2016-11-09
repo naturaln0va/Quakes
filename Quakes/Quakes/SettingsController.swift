@@ -2,9 +2,7 @@
 import Foundation
 import CoreLocation
 
-
-class SettingsController
-{
+class SettingsController {
     
     static let kSettingsControllerDidChangeUnitStyleNotification = "settingsControllerDidChangeUnitStyle"
     static let kSettingsControllerDidChangePurchaseAdRemovalNotification = "settingsControllerDidChangePurchaseAdRemoval"

@@ -1,8 +1,7 @@
 
 import UIKit
 
-extension UIImage
-{
+extension UIImage {
     
     static func imageOfColor(_ color: UIColor, size: CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)

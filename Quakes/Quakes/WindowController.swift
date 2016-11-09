@@ -121,6 +121,7 @@ class WindowController: UIResponder, UIApplicationDelegate {
             break
             
         case ShortcutItem.felt.rawValue:
+            // show the felt view
             handled = true
             break
             
@@ -157,7 +158,7 @@ class WindowController: UIResponder, UIApplicationDelegate {
         
         let feltAction = UIApplicationShortcutItem(
             type: "\(identifier).\(ShortcutItem.felt.rawValue)",
-            localizedTitle: "I Felt That",
+            localizedTitle: "Was that an Earthquake?",
             localizedSubtitle: nil,
             icon: UIApplicationShortcutIcon(type: .confirmation),
             userInfo: nil
@@ -167,7 +168,7 @@ class WindowController: UIResponder, UIApplicationDelegate {
         UIApplication.shared.shortcutItems = shortcutItems
     }
     
-    func delay(_ delay:Double, closure:@escaping ()->()) {
+    func delay(_ delay: Double, closure: @escaping ()->()) {
         DispatchQueue.main.asyncAfter(
             deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC),
             execute: closure

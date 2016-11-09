@@ -1,9 +1,7 @@
 
 import UIKit
 
-
-class NetworkUtility
-{
+class NetworkUtility {
     
     fileprivate static var loadingCount = 0
     

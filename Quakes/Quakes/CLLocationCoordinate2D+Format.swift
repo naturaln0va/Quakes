@@ -3,8 +3,7 @@ import CoreLocation
 
 extension CLLocationCoordinate2D {
     
-    func formatedString() -> String
-    {
+    func formatedString() -> String {
         var resultingString = ""
         let coords = [self.latitude, self.longitude]
         

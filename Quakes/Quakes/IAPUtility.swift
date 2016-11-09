@@ -2,9 +2,7 @@
 import StoreKit
 import Foundation
 
-
-class IAPUtility: NSObject
-{
+class IAPUtility: NSObject {
     
     static let IAPHelperPurchaseNotification = "IAPHelperPurchaseNotification"
     static let IAPHelperFailedNotification = "IAPHelperFailedNotification"
@@ -28,8 +26,7 @@ class IAPUtility: NSObject
 }
 
 //MARK: Public Methods
-extension IAPUtility
-{
+extension IAPUtility {
     
     static func isRemoveAdsProduct(_ product: SKProduct) -> Bool {
         return product.productIdentifier == "io.ackermann.quakes.removeads"
@@ -62,11 +59,9 @@ extension IAPUtility
 }
 
 //MARK: SKProductsRequestDelegate
-extension IAPUtility: SKProductsRequestDelegate
-{
+extension IAPUtility: SKProductsRequestDelegate {
     
-    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse)
-    {
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         for product in response.products {
             if product.productIdentifier == removeAdsProductIdentifier {
                 removeAdsProduct = product
@@ -77,23 +72,21 @@ extension IAPUtility: SKProductsRequestDelegate
         clearRequest()
     }
     
-    func request(_ request: SKRequest, didFailWithError error: Error)
-    {
+    func request(_ request: SKRequest, didFailWithError error: Error) {
         print("Failed to load list of products. Error: \(error)")
         productsRequestCompletionHandler?(.none)
         clearRequest()
     }
     
-    fileprivate func clearRequest()
-    {
+    fileprivate func clearRequest() {
         productsRequestCompletionHandler = .none
         productsRequest = nil
     }
     
 }
 
-extension IAPUtility: SKPaymentTransactionObserver
-{
+//MARK: SKPaymentTransactionObserver
+extension IAPUtility: SKPaymentTransactionObserver {
     
     func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
@@ -101,8 +94,7 @@ extension IAPUtility: SKPaymentTransactionObserver
         }
     }
     
-    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])
-    {
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
             switch (transaction.transactionState) {
             case .purchased:

@@ -37,14 +37,14 @@ class NetworkClient {
         
         // testing: https://sandbox.itunes.apple.com/verifyReceipt
         // production: https://buy.itunes.apple.com/verifyReceipt
-        guard let storeURL = URL(string: "https://buy.itunes.apple.com/verifyReceipt") else {
+        guard let storeURL = URL(string: "https://sandbox.itunes.apple.com/verifyReceipt") else {
             DispatchQueue.main.async {
                 completion(false)
             }
             return
         }
         
-        let storeRequest = NSMutableURLRequest(url: storeURL)
+        var storeRequest = URLRequest(url: storeURL)
         storeRequest.httpMethod = "POST"
         
         do {
@@ -63,24 +63,22 @@ class NetworkClient {
         
         NetworkUtility.networkOperationStarted()
         DispatchQueue(label: "io.ackermann.iap.verify", attributes: []).async {
-//            URLSession.shared.dataTask(with: storeRequest, completionHandler: { data, response, error in
-//                var success = false
-//                
-//                defer {
-//                    NetworkUtility.networkOperationFinished()
-//                    DispatchQueue.main.async {
-//                        completion(sucess: success)
-//                    }
-//                }
-//                
-//                guard error == nil else { return }
-//                guard let data = data else { return }
-//                guard let receiptInfo = try? JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as? [String: AnyObject] ?? [:] else { return }
-//                
-//                if let status = receiptInfo["status"] as? Int, status == 0 {
-//                    success = true
-//                }
-//            }) .resume()
+            URLSession.shared.dataTask(with: storeRequest, completionHandler: { data, response, error in
+                var success = false
+                
+                defer {
+                    NetworkUtility.networkOperationFinished()
+                    DispatchQueue.main.async {
+                        completion(success)
+                    }
+                }
+                
+                guard error == nil else { return }
+                guard let data = data else { return }
+                guard let receiptInfo = try? JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as? [String: Any] else { return }
+                
+                print("information of recipt: \(receiptInfo)")
+            }).resume()
         }
     }
     

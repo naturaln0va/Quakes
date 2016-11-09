@@ -13,6 +13,7 @@
 		48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */; };
 		48190D381C559601009712F6 /* PickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D371C559601009712F6 /* PickerViewController.swift */; };
 		48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48190D391C55A02F009712F6 /* UIDevice+Additions.swift */; };
+		4822A36F1DD27D3C003C8686 /* LocationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4822A36E1DD27D3C003C8686 /* LocationHelper.swift */; };
 		483A624E1CD4FF26008CA19D /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A624D1CD4FF26008CA19D /* NetworkOperation.swift */; };
 		483A62501CD505B5008CA19D /* USGSLocationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */; };
 		483A62521CD50BD4008CA19D /* USGSFetchQuakesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */; };
@@ -32,7 +33,6 @@
 		4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4872AB9D1C55C76000B6CF37 /* StoreKit.framework */; };
 		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
-		48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */; };
 		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
 		48C420F21CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F11CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift */; };
 		48C420F41CD7804E00DB3037 /* EMSCLocationOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F31CD7804E00DB3037 /* EMSCLocationOperation.swift */; };
@@ -89,6 +89,7 @@
 		48190D321C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadNearbyCitiesOperation.swift; sourceTree = "<group>"; };
 		48190D371C559601009712F6 /* PickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerViewController.swift; sourceTree = "<group>"; };
 		48190D391C55A02F009712F6 /* UIDevice+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Additions.swift"; sourceTree = "<group>"; };
+		4822A36E1DD27D3C003C8686 /* LocationHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationHelper.swift; sourceTree = "<group>"; };
 		483A624D1CD4FF26008CA19D /* NetworkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
 		483A624F1CD505B5008CA19D /* USGSLocationOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSLocationOperation.swift; sourceTree = "<group>"; };
 		483A62511CD50BD4008CA19D /* USGSFetchQuakesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = USGSFetchQuakesOperation.swift; sourceTree = "<group>"; };
@@ -109,7 +110,6 @@
 		4872AB9D1C55C76000B6CF37 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
-		48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedPolyQuake.swift; sourceTree = "<group>"; };
 		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		48C420F11CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCFetchQuakesOperation.swift; sourceTree = "<group>"; };
 		48C420F31CD7804E00DB3037 /* EMSCLocationOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCLocationOperation.swift; sourceTree = "<group>"; };
@@ -222,6 +222,23 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		4822A3701DD29312003C8686 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				694269EC1C46E74300BAA5C9 /* Animators */,
+				69150F251C3DDC9D00D9D3BF /* Cells */,
+				69B30FF81C3B121C00241D79 /* Controllers */,
+				483D1B151C3C806E003A5970 /* Extensions */,
+				48190D361C558B63009712F6 /* Frameworks */,
+				699CA6071C3C529F0094F48A /* Model */,
+				69B30FF71C3B0AF100241D79 /* Networking */,
+				48190D2D1C553A9B009712F6 /* Operations */,
+				69B30FF91C3B122300241D79 /* ViewControllers */,
+				480205011C5986B800DB19A0 /* Views */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 		483D1B151C3C806E003A5970 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -271,7 +288,6 @@
 				699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */,
 				699CA60E1C3C55E10094F48A /* Fetchable.swift */,
 				48190D301C553F81009712F6 /* ParsedNearbyCity.swift */,
-				48BA1A751C89C94E00F69A00 /* ParsedPolyQuake.swift */,
 				69D235361C3D75E100C9AA50 /* ParsedQuake.swift */,
 				699CA6091C3C543F0094F48A /* Quake.swift */,
 			);
@@ -297,17 +313,8 @@
 		69B30FE11C3B051600241D79 /* Quakes */ = {
 			isa = PBXGroup;
 			children = (
-				694269EC1C46E74300BAA5C9 /* Animators */,
-				69150F251C3DDC9D00D9D3BF /* Cells */,
-				69B30FF81C3B121C00241D79 /* Controllers */,
-				483D1B151C3C806E003A5970 /* Extensions */,
-				48190D361C558B63009712F6 /* Frameworks */,
-				699CA6071C3C529F0094F48A /* Model */,
-				69B30FF71C3B0AF100241D79 /* Networking */,
-				48190D2D1C553A9B009712F6 /* Operations */,
+				4822A3701DD29312003C8686 /* Classes */,
 				69B30FF41C3B056400241D79 /* Resources */,
-				69B30FF91C3B122300241D79 /* ViewControllers */,
-				480205011C5986B800DB19A0 /* Views */,
 			);
 			path = Quakes;
 			sourceTree = "<group>";
@@ -340,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */,
+				4822A36E1DD27D3C003C8686 /* LocationHelper.swift */,
 				699E4EF01C3D69A00049C7F4 /* StyleController.swift */,
 				69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */,
 				48C713191C4090C600196225 /* SettingsController.swift */,
@@ -509,9 +517,9 @@
 				699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */,
 				483A62521CD50BD4008CA19D /* USGSFetchQuakesOperation.swift in Sources */,
 				699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */,
+				4822A36F1DD27D3C003C8686 /* LocationHelper.swift in Sources */,
 				48C420F81CD786F500DB3037 /* EMSCMajorOperation.swift in Sources */,
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
-				48BA1A761C89C94E00F69A00 /* ParsedPolyQuake.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* ListViewController.swift in Sources */,
 				483A62561CD50CD4008CA19D /* USGSMajorOperation.swift in Sources */,
 				48190D381C559601009712F6 /* PickerViewController.swift in Sources */,

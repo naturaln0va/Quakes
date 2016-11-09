@@ -3,8 +3,7 @@ import UIKit
 
 typealias DismisalBlock = (()->())?
 
-class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning
-{
+class TextBarAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     let duration: Double
     var presenting: Bool

@@ -3,8 +3,7 @@ import UIKit
 import CoreData
 import CoreLocation
 
-class PersistentController
-{
+class PersistentController {
     
     static let sharedController = PersistentController()
     fileprivate static let contextName = "Quakes"

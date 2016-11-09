@@ -4,7 +4,6 @@ import CoreData
 import CoreLocation
 import MapKit
 
-
 class Quake: NSManagedObject {
     
     // MARK: Formatters
@@ -125,4 +124,5 @@ extension Quake: MKAnnotation {
 
         return formatter.string(from: NSNumber(value: magnitude))! + ", at " + timestampFormatter.string(from: timestamp)
     }
+    
 }

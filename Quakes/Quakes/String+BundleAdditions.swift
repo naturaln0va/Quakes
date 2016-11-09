@@ -1,8 +1,7 @@
 
 import Foundation
 
-extension String
-{
+extension String {
     
     init?(contentsOfBundleFileNamed fileName: String) {
         let comps = fileName.components(separatedBy: ".")
