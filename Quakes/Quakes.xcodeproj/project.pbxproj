@@ -33,6 +33,7 @@
 		4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */; };
 		4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */; };
 		4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4872AB9D1C55C76000B6CF37 /* StoreKit.framework */; };
+		4896D1F91DDDD985004EE9FE /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */; };
 		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
 		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
@@ -41,7 +42,6 @@
 		48C420F61CD786AD00DB3037 /* EMSCWorldOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F51CD786AD00DB3037 /* EMSCWorldOperation.swift */; };
 		48C420F81CD786F500DB3037 /* EMSCMajorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C420F71CD786F500DB3037 /* EMSCMajorOperation.swift */; };
 		48C7131A1C4090C600196225 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C713191C4090C600196225 /* SettingsController.swift */; };
-		48C736481CEE7DD600CBFEE7 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C736471CEE7DD600CBFEE7 /* GoogleMobileAds.framework */; };
 		690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690C289A1C580A750035F47A /* NSDate+Relative.swift */; };
 		69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */; };
 		69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69150F211C3DDC9900D9D3BF /* QuakeCell.swift */; };
@@ -107,6 +107,7 @@
 		4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RemoveAdsViewController.xib; sourceTree = "<group>"; };
 		4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPUtility.swift; sourceTree = "<group>"; };
 		4872AB9D1C55C76000B6CF37 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
 		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -115,7 +116,6 @@
 		48C420F51CD786AD00DB3037 /* EMSCWorldOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCWorldOperation.swift; sourceTree = "<group>"; };
 		48C420F71CD786F500DB3037 /* EMSCMajorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMSCMajorOperation.swift; sourceTree = "<group>"; };
 		48C713191C4090C600196225 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
-		48C736471CEE7DD600CBFEE7 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		690C289A1C580A750035F47A /* NSDate+Relative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Relative.swift"; sourceTree = "<group>"; };
 		69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
 		69150F211C3DDC9900D9D3BF /* QuakeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuakeCell.swift; sourceTree = "<group>"; };
@@ -164,8 +164,8 @@
 			files = (
 				69497A841C80797500AB2654 /* SystemConfiguration.framework in Frameworks */,
 				483E283B1CFD0C7000871229 /* libFlurry_7.6.3.a in Frameworks */,
+				4896D1F91DDDD985004EE9FE /* GoogleMobileAds.framework in Frameworks */,
 				69497A821C80796900AB2654 /* Security.framework in Frameworks */,
-				48C736481CEE7DD600CBFEE7 /* GoogleMobileAds.framework in Frameworks */,
 				4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -200,7 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				483E28341CFD0C7000871229 /* Flurry */,
-				48C736471CEE7DD600CBFEE7 /* GoogleMobileAds.framework */,
+				4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */,
 				69497A831C80797500AB2654 /* SystemConfiguration.framework */,
 				69497A811C80796900AB2654 /* Security.framework */,
 				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,

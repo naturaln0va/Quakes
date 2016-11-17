@@ -613,14 +613,14 @@ extension ListViewController: PeekableDetailViewControllerDelegate {
 extension ListViewController: GADNativeExpressAdViewDelegate {
     
     // MARK: - GADBannerView Delegate
-    func nativeExpressAdViewDidReceiveAd(_ nativeExpressAdView: GADNativeExpressAdView!) {
+    func nativeExpressAdViewDidReceiveAd(_ nativeExpressAdView: GADNativeExpressAdView) {
         adContainerViewHeightConstraint.constant = 85.0
         UIView.animate(withDuration: 0.23, animations: {
             self.view.layoutIfNeeded()
         })
     }
     
-    func nativeExpressAdView(_ nativeExpressAdView: GADNativeExpressAdView!, didFailToReceiveAdWithError error: GADRequestError!) {
+    func nativeExpressAdView(_ nativeExpressAdView: GADNativeExpressAdView, didFailToReceiveAdWithError error: GADRequestError) {
         print("Native ad view 'didFailToReceiveAdWithError' | Error: \(error)")
         adContainerViewHeightConstraint.constant = 0
         UIView.animate(withDuration: 0.23, animations: {
