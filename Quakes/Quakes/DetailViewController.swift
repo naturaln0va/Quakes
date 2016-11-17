@@ -77,6 +77,8 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        RateMyApp.sharedInstance.trackAppUsage()
+        
         TelemetryController.sharedController.logQuakeDetailViewed(quakeToDisplay.weblink ?? "Unknown URL")
         
         if let nearbyCities = quakeToDisplay.nearbyCities {

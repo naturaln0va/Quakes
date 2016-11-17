@@ -12,7 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ListViewController" customModule="Quakes" customModuleProvider="target">
             <connections>
                 <outlet property="adContainerView" destination="7dP-Ri-1cq" id="PQr-Wa-cIl"/>
-                <outlet property="adContainerViewHeightConstraint" destination="bDf-Sv-YmF" id="reV-FC-TBI"/>
+                <outlet property="adContainerViewBottomConstraint" destination="TXM-Lz-BZg" id="jp4-8L-A8o"/>
                 <outlet property="noQuakesBodyLabel" destination="IUX-8G-qhk" id="fd5-hn-Kvh"/>
                 <outlet property="noQuakesTitleLabel" destination="hd1-GH-awI" id="cf5-IL-THE"/>
                 <outlet property="tableView" destination="SaX-2C-0rt" id="efX-C3-Woa"/>
@@ -25,10 +25,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7dP-Ri-1cq">
-                    <rect key="frame" x="0.0" y="667" width="375" height="0.0"/>
+                    <rect key="frame" x="0.0" y="667" width="375" height="85"/>
                     <color key="backgroundColor" red="1" green="0.094447544642857137" blue="0.22145647321428572" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="height" id="bDf-Sv-YmF"/>
+                        <constraint firstAttribute="height" constant="85" id="bDf-Sv-YmF"/>
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Quakes to Display" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hd1-GH-awI">
@@ -57,7 +57,7 @@
                 <constraint firstItem="7dP-Ri-1cq" firstAttribute="top" secondItem="SaX-2C-0rt" secondAttribute="bottom" id="L6T-uf-Xg3"/>
                 <constraint firstItem="SaX-2C-0rt" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="LJ1-9G-8mE"/>
                 <constraint firstAttribute="trailing" secondItem="SaX-2C-0rt" secondAttribute="trailing" id="Lkk-fm-lrb"/>
-                <constraint firstAttribute="bottom" secondItem="7dP-Ri-1cq" secondAttribute="bottom" id="TXM-Lz-BZg"/>
+                <constraint firstAttribute="bottom" secondItem="7dP-Ri-1cq" secondAttribute="bottom" constant="-85" id="TXM-Lz-BZg"/>
                 <constraint firstItem="hd1-GH-awI" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="120" id="e1u-mU-kT2"/>
                 <constraint firstAttribute="trailing" secondItem="hd1-GH-awI" secondAttribute="trailing" constant="20" id="opG-es-ZlS"/>
                 <constraint firstAttribute="trailing" secondItem="7dP-Ri-1cq" secondAttribute="trailing" id="qwv-pi-gXm"/>

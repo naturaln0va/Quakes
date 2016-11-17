@@ -12,7 +12,7 @@ class ListViewController: UIViewController {
     @IBOutlet var adContainerView: UIView!
     @IBOutlet var noQuakesTitleLabel: UILabel!
     @IBOutlet var noQuakesBodyLabel: UILabel!
-    @IBOutlet var adContainerViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var adContainerViewBottomConstraint: NSLayoutConstraint!
     
     fileprivate lazy var titleViewButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -67,18 +67,6 @@ class ListViewController: UIViewController {
         locationHelper.delegate = self
         navigationItem.rightBarButtonItem?.isEnabled = false
         
-        nativeExpressAdView = GADNativeExpressAdView()
-        nativeExpressAdView.delegate = self
-        nativeExpressAdView.rootViewController = self
-        nativeExpressAdView.adUnitID = "ca-app-pub-6493864895252732/5256701203"
-        nativeExpressAdView.backgroundColor = StyleController.backgroundColor
-        nativeExpressAdView.translatesAutoresizingMaskIntoConstraints = false
-        
-        adContainerView.addSubview(nativeExpressAdView)
-        adContainerView.backgroundColor = StyleController.backgroundColor
-        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
-        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
-        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.estimatedRowHeight = QuakeCell.cellHeight
@@ -107,17 +95,26 @@ class ListViewController: UIViewController {
         beginObserving()
         preformFetch()
         fetchQuakes()
+        
+        guard !SettingsController.sharedController.hasSupported else { return }
+        
+        nativeExpressAdView = GADNativeExpressAdView(adSize: kGADAdSizeSmartBannerPortrait)
+        nativeExpressAdView.delegate = self
+        nativeExpressAdView.isAutoloadEnabled = true
+        nativeExpressAdView.rootViewController = self
+        nativeExpressAdView.adUnitID = "ca-app-pub-6493864895252732/5256701203"
+        nativeExpressAdView.backgroundColor = StyleController.backgroundColor
+        nativeExpressAdView.translatesAutoresizingMaskIntoConstraints = false
+        
+        adContainerView.addSubview(nativeExpressAdView)
+        adContainerView.backgroundColor = StyleController.backgroundColor
+        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
+        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
-        
-        if !SettingsController.sharedController.hasSupported {
-            let request = GADRequest()
-            request.testDevices = [kGADSimulatorID]
-            nativeExpressAdView.load(request)
-        }
     }
     
     fileprivate func preformFetch() {
@@ -169,12 +166,6 @@ class ListViewController: UIViewController {
             name: NSNotification.Name.UIApplicationDidBecomeActive,
             object: nil
         )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(ListViewController.settingsDidUpdateLocationForPush),
-            name: NSNotification.Name(rawValue: SettingsController.kSettingsControllerDidUpdateLocationForPushNotification),
-            object: nil
-        )
     }
     
     // MARK: - Notifications
@@ -183,7 +174,9 @@ class ListViewController: UIViewController {
     }
     
     func settingsDidPurchaseAdRemoval() {
-        adContainerViewHeightConstraint.constant = 0
+        nativeExpressAdView.delegate = nil
+        nativeExpressAdView.removeFromSuperview()
+        adContainerViewBottomConstraint.constant = -85
         UIView.animate(withDuration: 0.23, animations: {
             self.view.layoutIfNeeded()
         })
@@ -191,12 +184,6 @@ class ListViewController: UIViewController {
     
     func settingsDidChangeUnitStyle() {
         tableView.reloadData()
-    }
-    
-    func settingsDidUpdateLocationForPush() {
-        guard let token = SettingsController.sharedController.pushToken else { return }
-        guard let location = SettingsController.sharedController.locationEligableForNotifications() else { return }
-        NetworkClient.sharedClient.registerForNotificationsWithToken(token, location: location)
     }
     
     // MARK: - Actions
@@ -614,7 +601,7 @@ extension ListViewController: GADNativeExpressAdViewDelegate {
     
     // MARK: - GADBannerView Delegate
     func nativeExpressAdViewDidReceiveAd(_ nativeExpressAdView: GADNativeExpressAdView) {
-        adContainerViewHeightConstraint.constant = 85.0
+        adContainerViewBottomConstraint.constant = 0
         UIView.animate(withDuration: 0.23, animations: {
             self.view.layoutIfNeeded()
         })
@@ -622,7 +609,7 @@ extension ListViewController: GADNativeExpressAdViewDelegate {
     
     func nativeExpressAdView(_ nativeExpressAdView: GADNativeExpressAdView, didFailToReceiveAdWithError error: GADRequestError) {
         print("Native ad view 'didFailToReceiveAdWithError' | Error: \(error)")
-        adContainerViewHeightConstraint.constant = 0
+        adContainerViewBottomConstraint.constant = -85
         UIView.animate(withDuration: 0.23, animations: {
             self.view.layoutIfNeeded()
         })

@@ -34,6 +34,7 @@
 		4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */; };
 		4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4872AB9D1C55C76000B6CF37 /* StoreKit.framework */; };
 		4896D1F91DDDD985004EE9FE /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */; };
+		4896D1FC1DDDE256004EE9FE /* RateMyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4896D1FB1DDDE256004EE9FE /* RateMyApp.swift */; };
 		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
 		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
@@ -108,6 +109,7 @@
 		4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPUtility.swift; sourceTree = "<group>"; };
 		4872AB9D1C55C76000B6CF37 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
+		4896D1FB1DDDE256004EE9FE /* RateMyApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RateMyApp.swift; sourceTree = "<group>"; };
 		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
 		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4896D1FA1DDDE24B004EE9FE /* RateMyApp */,
 				483E28341CFD0C7000871229 /* Flurry */,
 				4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */,
 				69497A831C80797500AB2654 /* SystemConfiguration.framework */,
@@ -249,6 +252,14 @@
 				483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */,
 			);
 			path = Flurry;
+			sourceTree = "<group>";
+		};
+		4896D1FA1DDDE24B004EE9FE /* RateMyApp */ = {
+			isa = PBXGroup;
+			children = (
+				4896D1FB1DDDE256004EE9FE /* RateMyApp.swift */,
+			);
+			name = RateMyApp;
 			sourceTree = "<group>";
 		};
 		69150F251C3DDC9D00D9D3BF /* Cells */ = {
@@ -517,6 +528,7 @@
 				483A62501CD505B5008CA19D /* USGSLocationOperation.swift in Sources */,
 				69150F291C3DE60600D9D3BF /* String+BundleAdditions.swift in Sources */,
 				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Format.swift in Sources */,
+				4896D1FC1DDDE256004EE9FE /* RateMyApp.swift in Sources */,
 				69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */,
 				483A625C1CD518FE008CA19D /* GetDetailURLOperation.swift in Sources */,
 				699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */,
