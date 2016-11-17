@@ -40,14 +40,13 @@ class RateMyApp: UIViewController {
     var promptAfterDays: Double = 30
     var promptAfterUses = 7
     var promptAfterCustomEventsCount = 25
-    var daysBeforeReminding: Double = 1
+    var daysBeforeReminding: Double = 3
     
     var alertTitle = "Rate the app"
     var alertMessage = "Ratings help others find this app."
     var alertOKTitle = "Rate it now"
     var alertCancelTitle = "Cancel"
     var alertRemindLaterTitle = "Remind me later"
-    var appID = ""
     
     static let sharedInstance = RateMyApp()
     

@@ -8,7 +8,7 @@ class WindowController: UIResponder, UIApplicationDelegate {
     private enum ShortcutItem: String {
         case search
         case nearby
-        case felt
+        case major
     }
     
     var window: UIWindow?
@@ -78,14 +78,15 @@ class WindowController: UIResponder, UIApplicationDelegate {
             
         case ShortcutItem.nearby.rawValue:
             delay(0.5) {
-                SettingsController.sharedController.lastLocationOption = LocationOption.Nearby.rawValue
-                self.rootListViewController.tableView.reloadData()
+                self.rootListViewController.show(.Nearby)
             }
             handled = true
             break
             
-        case ShortcutItem.felt.rawValue:
-            // show the felt view
+        case ShortcutItem.major.rawValue:
+            delay(0.5) {
+                self.rootListViewController.show(.Major)
+            }
             handled = true
             break
             
@@ -120,14 +121,14 @@ class WindowController: UIResponder, UIApplicationDelegate {
             shortcutItems.append(recentAction)
         }
         
-        let feltAction = UIApplicationShortcutItem(
-            type: "\(identifier).\(ShortcutItem.felt.rawValue)",
-            localizedTitle: "Was that an Earthquake?",
+        let majorAction = UIApplicationShortcutItem(
+            type: "\(identifier).\(ShortcutItem.major.rawValue)",
+            localizedTitle: "Major",
             localizedSubtitle: nil,
-            icon: UIApplicationShortcutIcon(type: .confirmation),
+            icon: UIApplicationShortcutIcon(type: .prohibit),
             userInfo: nil
         )
-        shortcutItems.append(feltAction)
+        shortcutItems.append(majorAction)
         
         UIApplication.shared.shortcutItems = shortcutItems
     }

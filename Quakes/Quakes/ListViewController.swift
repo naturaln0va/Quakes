@@ -267,6 +267,15 @@ class ListViewController: UIViewController {
     
     // MARK: - Helpers
     
+    func show(_ locationOption: LocationOption) {
+        SettingsController.sharedController.lastLocationOption = locationOption.rawValue
+        SettingsController.sharedController.lastSearchedPlace = nil
+        
+        PersistentController.sharedController.deleteAllQuakes()
+        
+        fetchQuakes()
+    }
+        
     fileprivate func commonFinishedFetch(_ quakes: [ParsedQuake]?) {
         if let recievedQuakes = quakes, recievedQuakes.count > 0 {
             PersistentController.sharedController.saveQuakes(recievedQuakes)
