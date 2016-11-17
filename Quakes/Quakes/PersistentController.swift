@@ -15,7 +15,7 @@ class PersistentController {
         }
         
         guard let model = NSManagedObjectModel(contentsOf: modelURL) else {
-            fatalError("error initializing model from: \(modelURL)")
+            fatalError("Error initializing model from: \(modelURL)")
         }
         
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
@@ -58,13 +58,13 @@ class PersistentController {
     }
     
     func attemptCleanup() {
-        let maxQuakesToStore = SettingsController.sharedController.fetchLimit.rawValue
+        let maxQuakesToStore = SettingsController.sharedController.fetchLimit.rawValue * 2
         
         if let quakes = try? Quake.objectsInContext(moc, predicate: nil, sortedBy: "timestamp", ascending: false) {
             var quakesCopy = quakes
             
             for quake in quakesCopy {
-                if quake.timestamp.isMoreThanAMonthOld() {
+                if Date().monthsSince(quake.timestamp) > 3 {
                     moc.delete(quake)
                     quakesCopy.removeLast()
                 }
@@ -160,19 +160,16 @@ class PersistentController {
         for quake in parsedQuake {
             do {
                 if let savedQuake = try Quake.singleObjectInContext(moc, predicate: NSPredicate(format: "identifier == %@", quake.identifier), sortedBy: nil, ascending: false) {
-                    
-                    if savedQuake.felt == quake.felt {
-                        continue
-                    }
-                    else {
-                        savedQuake.felt = quake.felt
-                        continue
-                    }
+                    savedQuake.timestamp = quake.date
+                    savedQuake.depth = quake.depth
+                    savedQuake.name = quake.name
+                    savedQuake.magnitude = quake.magnitude
+                    savedQuake.felt = quake.felt
+                    continue
                 }
             }
-                
-            catch {
-                print("Failed to get a single object from the managed context.")
+            catch let error {
+                print("Failed to get a single object from the managed context. Error: \(error).")
             }
             
             guard let dataToSave = NSEntityDescription.insertNewObject(forEntityName: Quake.entityName(), into: moc) as? Quake else {

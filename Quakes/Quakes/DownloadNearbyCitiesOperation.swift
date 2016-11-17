@@ -1,8 +1,8 @@
 
 import Foundation
 
-class DownloadNearbyCitiesOperation: ConcurrentOperation
-{
+class DownloadNearbyCitiesOperation: ConcurrentOperation {
+    
     var urlString: String?
     var downloadedCities: [ParsedNearbyCity]?
     

@@ -4,9 +4,7 @@ import MapKit
 import CoreLocation
 import SafariServices
 
-
-class DetailViewController: UIViewController
-{
+class DetailViewController: UIViewController {
 
     @IBOutlet var nameHeaderLabel: UILabel!
     @IBOutlet var tableView: UITableView!
@@ -101,7 +99,7 @@ class DetailViewController: UIViewController
                 }
             }
             
-            downloadDetailOperation |> downloadNearbyCitiesOperation
+            downloadNearbyCitiesOperation.addDependency(downloadDetailOperation)
             
             mainQueue.maxConcurrentOperationCount = 1
             mainQueue.qualityOfService = .userInitiated
@@ -131,7 +129,10 @@ class DetailViewController: UIViewController
         
         mapView.removeAnnotation(quakeToDisplay)
         mapView.addAnnotation(quakeToDisplay)
-        mapView.showAnnotations(mapView.annotations, animated: true)
+        mapView.region = MKCoordinateRegion(
+            center: quakeToDisplay.coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+        )
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -168,8 +169,16 @@ class DetailViewController: UIViewController
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.set(bottomDividerLineHidden: true)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        navigationController?.navigationBar.set(bottomDividerLineHidden: false)
         
         if titleIndicatorView.superview != nil {
             titleIndicatorView.removeFromSuperview()
@@ -211,7 +220,7 @@ class DetailViewController: UIViewController
     // MARK: - Actions
     internal func openInMapButtonPressed() {
         if let rootVC = navigationController?.viewControllers.first as? ListViewController {
-            navigationController?.popViewController(animated: true)
+            _ = navigationController?.popViewController(animated: true)
             
             let mapVC = MapViewController(centeredOnLocation: quakeToDisplay.coordinate)
             mapVC.delegate = rootVC
@@ -221,9 +230,16 @@ class DetailViewController: UIViewController
     }
     
     internal func feltButtonPressed() {
-        if let url = URL(string: "\(quakeToDisplay.weblink)#impact_tellus") {
+        if let urlString = quakeToDisplay.weblink, let url = URL(string: "\(urlString)#tellus") {
             let safariVC = SFSafariViewController(url: url)
-            safariVC.view.tintColor = quakeToDisplay.severityColor
+            
+            if #available(iOS 10.0, *) {
+                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
+            }
+            else {
+                safariVC.view.tintColor = quakeToDisplay.severityColor
+            }
+            
             DispatchQueue.main.async {
                 self.present(safariVC, animated: true, completion: nil)
             }
@@ -257,10 +273,10 @@ class DetailViewController: UIViewController
                     pin.image?.draw(at: point)
                 }
                 
-                let compositeImage = UIGraphicsGetImageFromCurrentImageContext()
+                if let compositeImage = UIGraphicsGetImageFromCurrentImageContext() {
+                    items.append(compositeImage)
+                }
                 UIGraphicsEndImageContext()
-                
-                items.append(compositeImage)
             }
             
             DispatchQueue.main.async {
@@ -278,8 +294,7 @@ class DetailViewController: UIViewController
     
 }
 
-extension DetailViewController: UITableViewDelegate, UITableViewDataSource
-{
+extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - UITableView Delegate
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -343,7 +358,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
                 websiteLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFontWeightMedium)
                 websiteLabel.translatesAutoresizingMaskIntoConstraints = false
                 websiteLabel.textColor = quakeToDisplay.severityColor
-                websiteLabel.text = Int(quakeToDisplay.provider) == SourceProvider.usgs.rawValue ? "Open in USGS" : "Open in EMSC"
+                websiteLabel.text = "Open in USGS"
                 websiteLabel.textAlignment = .center
                 
                 cell.translatesAutoresizingMaskIntoConstraints = true
@@ -395,7 +410,14 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource
         
         if let urlString = quakeToDisplay.weblink, let url = URL(string: urlString), parsedNearbyCities != nil ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(url: url)
-            safariVC.view.tintColor = quakeToDisplay.severityColor
+            
+            if #available(iOS 10.0, *) {
+                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
+            }
+            else {
+                safariVC.view.tintColor = quakeToDisplay.severityColor
+            }
+            
             DispatchQueue.main.async {
                 self.present(safariVC, animated: true, completion: { _ in
                     TelemetryController.sharedController.logQuakeOpenedInBrowser()

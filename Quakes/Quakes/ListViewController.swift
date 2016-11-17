@@ -1,19 +1,18 @@
 
 import UIKit
+import MapKit
 import CoreData
 import CoreLocation
+import SafariServices
 import GoogleMobileAds
 
-class ListViewController: UITableViewController {
+class ListViewController: UIViewController {
     
-    fileprivate lazy var noResultsLabel: UILabel = {
-        let label = UILabel()
-        label.text = "No Recent Quakes"
-        label.font = UIFont.systemFont(ofSize: 22.0, weight: UIFontWeightMedium)
-        label.textColor = UIColor(white: 0.0, alpha: 0.25)
-        label.sizeToFit()
-        return label
-    }()
+    @IBOutlet var tableView: UITableView!
+    @IBOutlet var adContainerView: UIView!
+    @IBOutlet var noQuakesTitleLabel: UILabel!
+    @IBOutlet var noQuakesBodyLabel: UILabel!
+    @IBOutlet var adContainerViewHeightConstraint: NSLayoutConstraint!
     
     fileprivate lazy var titleViewButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -29,10 +28,21 @@ class ListViewController: UITableViewController {
         return button
     }()
     
+    fileprivate lazy var refreshControl: UIRefreshControl = {
+        let refresher = UIRefreshControl()
+        
+        refresher.tintColor = StyleController.contrastColor
+        refresher.backgroundColor = StyleController.backgroundColor
+        refresher.addTarget(self, action: #selector(ListViewController.fetchQuakes), for: .valueChanged)
+        
+        return refresher
+    }()
+    
     fileprivate let locationHelper = LocationHelper()
     fileprivate lazy var defaults = UserDefaults.standard
     fileprivate var transitionAnimator: TextBarAnimator?
     fileprivate var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
+    fileprivate var nativeExpressAdView: GADNativeExpressAdView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,22 +63,34 @@ class ListViewController: UITableViewController {
             target: self,
             action: #selector(ListViewController.settingsButtonPressed)
         )
+        
+        locationHelper.delegate = self
         navigationItem.rightBarButtonItem?.isEnabled = false
         
+        nativeExpressAdView = GADNativeExpressAdView()
+        nativeExpressAdView.delegate = self
+        nativeExpressAdView.rootViewController = self
+        nativeExpressAdView.adUnitID = "ca-app-pub-6493864895252732/5256701203"
+        nativeExpressAdView.backgroundColor = StyleController.backgroundColor
+        nativeExpressAdView.translatesAutoresizingMaskIntoConstraints = false
+        
+        adContainerView.addSubview(nativeExpressAdView)
+        adContainerView.backgroundColor = StyleController.backgroundColor
+        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
+        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
+        
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.estimatedRowHeight = QuakeCell.cellHeight
         tableView.backgroundColor = StyleController.backgroundColor
         tableView.register(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
-        tableView.register(UINib(nibName: NativeAdCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: NativeAdCell.reuseIdentifier)
         
-        refreshControl = {
-            let refresher = UIRefreshControl()
-            
-            refresher.tintColor = StyleController.contrastColor
-            refresher.backgroundColor = StyleController.backgroundColor
-            refresher.addTarget(self, action: #selector(ListViewController.fetchQuakes), for: .valueChanged)
-            
-            return refresher
-        }()
+        if #available(iOS 10.0, *) {
+            tableView.refreshControl = refreshControl
+        }
+        else {
+            tableView.addSubview(refreshControl)
+        }
         
         fetchedResultsController = {
             let moc = PersistentController.sharedController.moc
@@ -80,6 +102,8 @@ class ListViewController: UITableViewController {
         }()
         fetchedResultsController?.delegate = self
         
+        registerForPreviewing(with: self, sourceView: tableView)
+        
         beginObserving()
         preformFetch()
         fetchQuakes()
@@ -88,6 +112,12 @@ class ListViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
+        
+        if !SettingsController.sharedController.hasSupported {
+            let request = GADRequest()
+            request.testDevices = [kGADSimulatorID]
+            nativeExpressAdView.load(request)
+        }
     }
     
     fileprivate func preformFetch() {
@@ -97,8 +127,7 @@ class ListViewController: UITableViewController {
                 navigationItem.rightBarButtonItem?.isEnabled = true
             }
         }
-            
-        catch {
+        catch let error {
             print("Error fetching for the results controller: \(error)")
             navigationItem.rightBarButtonItem?.isEnabled = false
         }
@@ -119,35 +148,6 @@ class ListViewController: UITableViewController {
         finderVC.delegate = self
         finderVC.transitioningDelegate = self
         present(finderVC, animated: true, completion: nil)
-    }
-    
-    fileprivate func commonFinishedFetch(_ quakes: [ParsedQuake]?) {
-        if let recievedQuakes = quakes, recievedQuakes.count > 0 {
-            PersistentController.sharedController.saveQuakes(recievedQuakes)
-        }
-        
-        if fetchedResultsController?.sections?.count ?? 0 > 0 {
-            if noResultsLabel.superview != nil {
-                noResultsLabel.removeFromSuperview()
-            }
-            
-            navigationItem.rightBarButtonItem?.isEnabled = true
-        }
-        else {
-            noResultsLabel.center = CGPoint(x: view.center.x, y: 115.0)
-            tableView.addSubview(noResultsLabel)
-            
-            navigationItem.rightBarButtonItem?.isEnabled = false
-        }
-        
-        if let refresher = refreshControl, refresher.isRefreshing {
-            refresher.endRefreshing()
-        }
-    }
-    
-    fileprivate func shouldLoadAdAtIndexPath(_ indexPath: IndexPath) -> Bool {
-        guard !SettingsController.sharedController.hasSupported else { return false }
-        return indexPath.section == 0
     }
     
     fileprivate func beginObserving() {
@@ -177,74 +177,16 @@ class ListViewController: UITableViewController {
         )
     }
     
-    // MARK: - UITableView Delegate
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if shouldLoadAdAtIndexPath(indexPath) {
-            return NativeAdCell.cellHeight
-        }
-        else {
-            return QuakeCell.cellHeight
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if shouldLoadAdAtIndexPath(indexPath) {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: NativeAdCell.reuseIdentifier) as? NativeAdCell else {
-                fatalError("Expected to dequeue a 'NativeAdCell'.")
-            }
-            
-            cell.nativeExpressAdView.rootViewController = self
-            cell.loadRequest()
-            
-            return cell
-        }
-        else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: QuakeCell.reuseIdentifier) as? QuakeCell else {
-                fatalError("Expected to dequeue a 'QuakeCell'.")
-            }
-            
-            if let quake = fetchedResultsController?.fetchedObjects?[indexPath.row] as? Quake {
-                cell.configure(quake)
-            }
-            
-            return cell
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.0001
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.0001
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        if let quake = fetchedResultsController?.fetchedObjects?[indexPath.row] as? Quake {
-            navigationController?.pushViewController(DetailViewController(quake: quake), animated: true)
-        }
-    }
-    
-    // MARK: - UITableView DataSource
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard section > 0 else { return 1 }
-        let objectCount = fetchedResultsController?.fetchedObjects?.count ?? 0
-        return objectCount
-    }
-    
     // MARK: - Notifications
     func applicationDidEnterForeground() {
         tableView.reloadData()
     }
     
     func settingsDidPurchaseAdRemoval() {
-        tableView.reloadData()
+        adContainerViewHeightConstraint.constant = 0
+        UIView.animate(withDuration: 0.23, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
     
     func settingsDidChangeUnitStyle() {
@@ -259,9 +201,7 @@ class ListViewController: UITableViewController {
     
     // MARK: - Actions
     func mapButtonPressed() {
-        guard NetworkUtility.internetReachable() else {
-            return
-        }
+        guard NetworkUtility.internetReachable() else { return }
         let mapVC = MapViewController(quakeToDisplay: nil, nearbyCities: nil)
         mapVC.delegate = self
         navigationController?.pushViewController(mapVC, animated: true)
@@ -280,15 +220,13 @@ class ListViewController: UITableViewController {
         navigationItem.rightBarButtonItem?.isEnabled = false
         
         guard NetworkUtility.internetReachable() else {
-            if let refresher = refreshControl, refresher.isRefreshing {
-                refresher.endRefreshing()
+            if refreshControl.isRefreshing {
+                refreshControl.endRefreshing()
             }
             return
         }
         
-        if noResultsLabel.superview != nil {
-            noResultsLabel.removeFromSuperview()
-        }
+        tableView.isHidden = false
         
         if SettingsController.sharedController.lastLocationOption == nil && SettingsController.sharedController.lastSearchedPlace == nil {
             presentFinder()
@@ -340,6 +278,77 @@ class ListViewController: UITableViewController {
         }
     }
     
+    // MARK: - Helpers
+    
+    fileprivate func commonFinishedFetch(_ quakes: [ParsedQuake]?) {
+        if let recievedQuakes = quakes, recievedQuakes.count > 0 {
+            PersistentController.sharedController.saveQuakes(recievedQuakes)
+        }
+        
+        let fetchedCount = (fetchedResultsController?.fetchedObjects?.count) ?? 0
+        
+        if fetchedCount > 0 {
+            tableView.isHidden = false
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+        else {
+            tableView.isHidden = true
+            navigationItem.rightBarButtonItem?.isEnabled = false
+        }
+        
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
+    }
+    
+}
+
+extension ListViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    
+    // MARK: - UITableView Delegate
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return QuakeCell.cellHeight
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: QuakeCell.reuseIdentifier) as? QuakeCell else {
+            fatalError("Expected to dequeue a 'QuakeCell'.")
+        }
+        
+        if let quake = fetchedResultsController?.fetchedObjects?[indexPath.row] as? Quake {
+            cell.configure(quake)
+        }
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.0001
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.0001
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        if let quake = fetchedResultsController?.fetchedObjects?[indexPath.row] as? Quake {
+            navigationController?.pushViewController(DetailViewController(quake: quake), animated: true)
+        }
+    }
+    
+    // MARK: - UITableView DataSource
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let objectCount = fetchedResultsController?.fetchedObjects?.count ?? 0
+        return objectCount
+    }
+    
 }
 
 extension ListViewController: LocationHelperDelegate {
@@ -379,12 +388,12 @@ extension ListViewController: LocationHelperDelegate {
     func locationHelperRecievedPlacemark(placemark: CLPlacemark) {
         SettingsController.sharedController.cachedAddress = placemark
         setTitleButtonText("\(placemark.cityStateString())")
+        fetchQuakes()
     }
     
 }
 
-extension ListViewController: NSFetchedResultsControllerDelegate
-{
+extension ListViewController: NSFetchedResultsControllerDelegate {
     
     // MARK: - NSFetchedResultsController Delegate
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -397,22 +406,18 @@ extension ListViewController: NSFetchedResultsControllerDelegate
         switch type {
         case .insert:
             if let newIndexPathToInsert = newIndexPath {
-                let adjustedIndexPath = IndexPath(row: newIndexPathToInsert.row, section: 1)
-                tableView.insertRows(at: [adjustedIndexPath], with: .automatic)
+                tableView.insertRows(at: [newIndexPathToInsert], with: .automatic)
             }
             
         case .delete:
             if let oldIndexPathToDelete = indexPath {
-                let adjustedIndexPath = IndexPath(row: oldIndexPathToDelete.row, section: 1)
-                tableView.deleteRows(at: [adjustedIndexPath], with: .automatic)
+                tableView.deleteRows(at: [oldIndexPathToDelete], with: .automatic)
             }
             
         case .update:
-            if let indexPath = indexPath {
-                let adjustedIndexPath = IndexPath(row: indexPath.row, section: 1)
-                
-                if let cell = tableView.cellForRow(at: adjustedIndexPath) as? QuakeCell {
-                    if let quake = fetchedResultsController?.object(at: adjustedIndexPath) as? Quake {
+            if let updatedIndexPath = indexPath {
+                if let cell = tableView.cellForRow(at: updatedIndexPath) as? QuakeCell {
+                    if let quake = fetchedResultsController?.object(at: updatedIndexPath) as? Quake {
                         cell.configure(quake)
                     }
                 }
@@ -420,11 +425,8 @@ extension ListViewController: NSFetchedResultsControllerDelegate
             
         case .move:
             if let newIndexPathToInsert = newIndexPath, let oldIndexPathToDelete = indexPath {
-                let newAdjustedIndexPath = IndexPath(row: newIndexPathToInsert.row, section: 1)
-                let oldAdjustedIndexPath = IndexPath(row: oldIndexPathToDelete.row, section: 1)
-
-                tableView.deleteRows(at: [oldAdjustedIndexPath], with: .automatic)
-                tableView.insertRows(at: [newAdjustedIndexPath], with: .automatic)
+                tableView.deleteRows(at: [oldIndexPathToDelete], with: .automatic)
+                tableView.insertRows(at: [newIndexPathToInsert], with: .automatic)
             }
         }
     }
@@ -435,8 +437,7 @@ extension ListViewController: NSFetchedResultsControllerDelegate
     
 }
 
-extension ListViewController: LocationFinderViewControllerDelegate
-{
+extension ListViewController: LocationFinderViewControllerDelegate {
     
     // MARK: - LocationFinderViewController Delegate
     func locationFinderViewControllerDidSelectPlace(_ placemark: CLPlacemark) {
@@ -467,8 +468,7 @@ extension ListViewController: LocationFinderViewControllerDelegate
     
 }
 
-extension ListViewController: MapViewControllerDelegate
-{
+extension ListViewController: MapViewControllerDelegate {
     
     // MARK: - MapViewController Delegate
     func mapViewControllerDidFinishFetch(_ sucess: Bool, withPlace placemark: CLPlacemark) {
@@ -476,21 +476,19 @@ extension ListViewController: MapViewControllerDelegate
             setTitleButtonText("\(placemark.cityStateString())")
         }
         
-        if !sucess && fetchedResultsController?.fetchedObjects?.count == 0 && tableView.numberOfRows(inSection: 0) == 0 {
-            noResultsLabel.center = CGPoint(x: view.center.x, y: 65.0)
-            tableView.addSubview(noResultsLabel)
+        let fetchedCount = (fetchedResultsController?.fetchedObjects?.count) ?? 0
+        
+        if !sucess && fetchedCount == 0 {
+            tableView.isHidden = true
         }
         else {
-            if noResultsLabel.superview != nil {
-                noResultsLabel.removeFromSuperview()
-            }
+            tableView.isHidden = false
         }
     }
     
 }
 
-extension ListViewController: UIViewControllerTransitioningDelegate
-{
+extension ListViewController: UIViewControllerTransitioningDelegate {
     
     // MARK: - UIViewControllerTransitioning Delegate
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -500,6 +498,134 @@ extension ListViewController: UIViewControllerTransitioningDelegate
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         transitionAnimator?.presenting = false
         return transitionAnimator
+    }
+    
+}
+
+extension ListViewController: UIViewControllerPreviewingDelegate {
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = tableView.indexPathForRow(at: location) {
+            previewingContext.sourceRect = tableView.rectForRow(at: indexPath)
+            if let quake = fetchedResultsController?.object(at: indexPath) as? Quake {
+                let vc = PeekableDetailViewController(quake: quake)
+                vc.delegate = self
+                vc.preferredContentSize = CGSize(width: 0, height: 400)
+                return vc
+            }
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        if let peekVC = viewControllerToCommit as? PeekableDetailViewController {
+            let detailVC = DetailViewController(quake: peekVC.quakeToDisplay)
+            navigationController?.pushViewController(detailVC, animated: true)
+        }
+    }
+    
+}
+
+extension ListViewController: PeekableDetailViewControllerDelegate {
+    
+    func peekableViewController(viewController: PeekableDetailViewController, didSelect actionType: PeekableActionType) {
+        let quakeToDisplay = viewController.quakeToDisplay
+        guard let urlString = quakeToDisplay.weblink, let url = URL(string: urlString) else { return }
+
+        switch actionType {
+        case .share:
+            let options = MKMapSnapshotOptions()
+            options.region = MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1 / 2, longitudeDelta: 1 / 2))
+            options.size = viewController.mapView.frame.size
+            options.scale = UIScreen.main.scale
+            options.mapType = .hybrid
+            
+            MKMapSnapshotter(options: options).start (completionHandler: { snapshot, error in
+                let prompt = "A \(Quake.magnitudeFormatter.string(from: NSNumber(value: quakeToDisplay.magnitude))!) magnitude earthquake happened \(quakeToDisplay.timestamp.relativeString()) ago near \(quakeToDisplay.name.components(separatedBy: " of ").last!)."
+                var items: [Any] = [prompt, url, quakeToDisplay.location]
+                
+                if let shot = snapshot, error == nil {
+                    let pin = MKPinAnnotationView(annotation: nil, reuseIdentifier: nil)
+                    let image = shot.image
+                    
+                    UIGraphicsBeginImageContextWithOptions(image.size, true, image.scale)
+                    image.draw(at: CGPoint.zero)
+                    
+                    let visibleRect = CGRect(origin: CGPoint.zero, size: image.size)
+                    var point = shot.point(for: quakeToDisplay.coordinate)
+                    if visibleRect.contains(point) {
+                        point.x = point.x + pin.centerOffset.x - (pin.bounds.size.width / 2)
+                        point.y = point.y + pin.centerOffset.y - (pin.bounds.size.height / 2)
+                        pin.image?.draw(at: point)
+                    }
+                    
+                    if let compositeImage = UIGraphicsGetImageFromCurrentImageContext() {
+                        items.append(compositeImage)
+                    }
+                    UIGraphicsEndImageContext()
+                }
+                
+                
+                DispatchQueue.main.async {
+                    self.present(UIActivityViewController(activityItems: items, applicationActivities: nil), animated: true, completion: { _ in
+                        TelemetryController.sharedController.logQuakeShare()
+                    })
+                }
+            })
+            
+        case .felt:
+            let safariVC = SFSafariViewController(url: URL(string: "\(urlString)#tellus")!)
+            
+            if #available(iOS 10.0, *) {
+                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
+            }
+            else {
+                safariVC.view.tintColor = quakeToDisplay.severityColor
+            }
+            
+            DispatchQueue.main.async {
+                self.present(safariVC, animated: true, completion: { _ in
+                    TelemetryController.sharedController.logQuakeOpenedInBrowser()
+                })
+            }
+            
+        case .open:
+            let safariVC = SFSafariViewController(url: url)
+            
+            if #available(iOS 10.0, *) {
+                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
+            }
+            else {
+                safariVC.view.tintColor = quakeToDisplay.severityColor
+            }
+            
+            DispatchQueue.main.async {
+                self.present(safariVC, animated: true, completion: { _ in
+                    TelemetryController.sharedController.logQuakeOpenedInBrowser()
+                })
+            }
+
+        }
+    }
+    
+}
+
+extension ListViewController: GADNativeExpressAdViewDelegate {
+    
+    // MARK: - GADBannerView Delegate
+    func nativeExpressAdViewDidReceiveAd(_ nativeExpressAdView: GADNativeExpressAdView!) {
+        adContainerViewHeightConstraint.constant = 85.0
+        UIView.animate(withDuration: 0.23, animations: {
+            self.view.layoutIfNeeded()
+        })
+    }
+    
+    func nativeExpressAdView(_ nativeExpressAdView: GADNativeExpressAdView!, didFailToReceiveAdWithError error: GADRequestError!) {
+        print("Native ad view 'didFailToReceiveAdWithError' | Error: \(error)")
+        adContainerViewHeightConstraint.constant = 0
+        UIView.animate(withDuration: 0.23, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
     
 }

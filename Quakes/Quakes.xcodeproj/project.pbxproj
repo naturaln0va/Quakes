@@ -25,6 +25,8 @@
 		483D1B141C3C8064003A5970 /* CLPlacemark+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */; };
 		483E283A1CFD0C7000871229 /* FlurryEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = 483E28361CFD0C7000871229 /* FlurryEmpty.m */; };
 		483E283B1CFD0C7000871229 /* libFlurry_7.6.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */; };
+		485D6A2F1DDC826000072DC9 /* ListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 485D6A2E1DDC826000072DC9 /* ListViewController.xib */; };
+		485D6A311DDC91FA00072DC9 /* UINavigationBar+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485D6A301DDC91FA00072DC9 /* UINavigationBar+Additions.swift */; };
 		486CFE531CF31E8300762587 /* AddDeviceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486CFE521CF31E8300762587 /* AddDeviceOperation.swift */; };
 		4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4871B7A71C4AC96800C466DD /* MapViewController.swift */; };
 		4872AB991C55C15300B6CF37 /* RemoveAdsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */; };
@@ -52,17 +54,12 @@
 		694269EB1C46E55800BAA5C9 /* TextBarAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */; };
 		69497A821C80796900AB2654 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69497A811C80796900AB2654 /* Security.framework */; };
 		69497A841C80797500AB2654 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69497A831C80797500AB2654 /* SystemConfiguration.framework */; };
-		695DB0871CF63DCC0040EC43 /* NativeAdCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695DB0851CF63DCC0040EC43 /* NativeAdCell.swift */; };
-		695DB0881CF63DCC0040EC43 /* NativeAdCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 695DB0861CF63DCC0040EC43 /* NativeAdCell.xib */; };
 		696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */; };
 		696031BA1C593D3000F71B93 /* PeekableDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */; };
-		696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031BB1C5948EF00F71B93 /* SeverityView.swift */; };
 		696031BE1C5953F000F71B93 /* country-to-code.plist in Resources */ = {isa = PBXBuildFile; fileRef = 696031BD1C5953F000F71B93 /* country-to-code.plist */; };
 		696031C01C59554300F71B93 /* FlagKit.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 696031BF1C59554300F71B93 /* FlagKit.xcassets */; };
 		696031C31C595BD200F71B93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031C11C595BD200F71B93 /* DetailViewController.swift */; };
 		696031C41C595BD200F71B93 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031C21C595BD200F71B93 /* DetailViewController.xib */; };
-		696031C71C596C4000F71B93 /* convert.py in Resources */ = {isa = PBXBuildFile; fileRef = 696031C51C596C4000F71B93 /* convert.py */; };
-		696031C81C596C4000F71B93 /* countrytocode.txt in Resources */ = {isa = PBXBuildFile; fileRef = 696031C61C596C4000F71B93 /* countrytocode.txt */; };
 		6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696067291C7FB67900068B72 /* TelemetryController.swift */; };
 		699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */; };
 		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
@@ -102,6 +99,8 @@
 		483E28351CFD0C7000871229 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		483E28361CFD0C7000871229 /* FlurryEmpty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlurryEmpty.m; sourceTree = "<group>"; };
 		483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.6.3.a; sourceTree = "<group>"; };
+		485D6A2E1DDC826000072DC9 /* ListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListViewController.xib; sourceTree = "<group>"; };
+		485D6A301DDC91FA00072DC9 /* UINavigationBar+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Additions.swift"; sourceTree = "<group>"; };
 		486CFE521CF31E8300762587 /* AddDeviceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDeviceOperation.swift; sourceTree = "<group>"; };
 		4871B7A71C4AC96800C466DD /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveAdsViewController.swift; sourceTree = "<group>"; };
@@ -129,11 +128,8 @@
 		694269EA1C46E55800BAA5C9 /* TextBarAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextBarAnimator.swift; sourceTree = "<group>"; };
 		69497A811C80796900AB2654 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		69497A831C80797500AB2654 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		695DB0851CF63DCC0040EC43 /* NativeAdCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeAdCell.swift; sourceTree = "<group>"; };
-		695DB0861CF63DCC0040EC43 /* NativeAdCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NativeAdCell.xib; sourceTree = "<group>"; };
 		696031B71C593D3000F71B93 /* PeekableDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekableDetailViewController.swift; sourceTree = "<group>"; };
 		696031B81C593D3000F71B93 /* PeekableDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PeekableDetailViewController.xib; sourceTree = "<group>"; };
-		696031BB1C5948EF00F71B93 /* SeverityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityView.swift; sourceTree = "<group>"; };
 		696031BD1C5953F000F71B93 /* country-to-code.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "country-to-code.plist"; sourceTree = "<group>"; };
 		696031BF1C59554300F71B93 /* FlagKit.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FlagKit.xcassets; sourceTree = "<group>"; };
 		696031C11C595BD200F71B93 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DetailViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -177,14 +173,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		480205011C5986B800DB19A0 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				696031BB1C5948EF00F71B93 /* SeverityView.swift */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
 		48190D2D1C553A9B009712F6 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,7 +222,6 @@
 				69B30FF71C3B0AF100241D79 /* Networking */,
 				48190D2D1C553A9B009712F6 /* Operations */,
 				69B30FF91C3B122300241D79 /* ViewControllers */,
-				480205011C5986B800DB19A0 /* Views */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -249,6 +236,7 @@
 				48190D391C55A02F009712F6 /* UIDevice+Additions.swift */,
 				690C289A1C580A750035F47A /* NSDate+Relative.swift */,
 				692FA24E1C66732700E4C7E5 /* Int+Random.swift */,
+				485D6A301DDC91FA00072DC9 /* UINavigationBar+Additions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -268,8 +256,6 @@
 			children = (
 				69150F211C3DDC9900D9D3BF /* QuakeCell.swift */,
 				69150F221C3DDC9900D9D3BF /* QuakeCell.xib */,
-				695DB0851CF63DCC0040EC43 /* NativeAdCell.swift */,
-				695DB0861CF63DCC0040EC43 /* NativeAdCell.xib */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -369,6 +355,7 @@
 				696031C11C595BD200F71B93 /* DetailViewController.swift */,
 				696031C21C595BD200F71B93 /* DetailViewController.xib */,
 				699CA6121C3C5D6F0094F48A /* ListViewController.swift */,
+				485D6A2E1DDC826000072DC9 /* ListViewController.xib */,
 				4872AB971C55C15300B6CF37 /* RemoveAdsViewController.swift */,
 				4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */,
 				48C000661C543B960046CC8F /* SettingsViewController.swift */,
@@ -461,13 +448,11 @@
 			files = (
 				696031C01C59554300F71B93 /* FlagKit.xcassets in Resources */,
 				69D163511C5C52E6000294A5 /* confetti.png in Resources */,
-				696031C81C596C4000F71B93 /* countrytocode.txt in Resources */,
+				485D6A2F1DDC826000072DC9 /* ListViewController.xib in Resources */,
 				696031BA1C593D3000F71B93 /* PeekableDetailViewController.xib in Resources */,
-				696031C71C596C4000F71B93 /* convert.py in Resources */,
 				69150F241C3DDC9900D9D3BF /* QuakeCell.xib in Resources */,
 				696031BE1C5953F000F71B93 /* country-to-code.plist in Resources */,
 				69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */,
-				695DB0881CF63DCC0040EC43 /* NativeAdCell.xib in Resources */,
 				48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */,
 				692FA24D1C6662C300E4C7E5 /* NotificationPromptViewController.xib in Resources */,
 				69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */,
@@ -487,7 +472,6 @@
 				48190D331C5541F7009712F6 /* DownloadNearbyCitiesOperation.swift in Sources */,
 				48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */,
 				69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */,
-				696031BC1C5948EF00F71B93 /* SeverityView.swift in Sources */,
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
 				486CFE531CF31E8300762587 /* AddDeviceOperation.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
@@ -522,8 +506,8 @@
 				48C7131A1C4090C600196225 /* SettingsController.swift in Sources */,
 				699CA6141C3C5D6F0094F48A /* ListViewController.swift in Sources */,
 				483A62561CD50CD4008CA19D /* USGSMajorOperation.swift in Sources */,
+				485D6A311DDC91FA00072DC9 /* UINavigationBar+Additions.swift in Sources */,
 				48190D381C559601009712F6 /* PickerViewController.swift in Sources */,
-				695DB0871CF63DCC0040EC43 /* NativeAdCell.swift in Sources */,
 				692FA24C1C6662C300E4C7E5 /* NotificationPromptViewController.swift in Sources */,
 				69B30FE31C3B051600241D79 /* WindowController.swift in Sources */,
 				48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */,
@@ -660,7 +644,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Quakes/Flurry",
 					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
@@ -693,7 +676,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Quakes/Flurry",
 					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;

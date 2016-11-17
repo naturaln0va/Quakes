@@ -21,6 +21,10 @@ class LocationHelper: NSObject {
     var delegate: LocationHelperDelegate?
     var currentLocation: CLLocation?
     
+    static var isLocationEnabled: Bool {
+        return CLLocationManager.authorizationStatus() == .authorizedWhenInUse && CLLocationManager.locationServicesEnabled()
+    }
+    
     func startHelper() {
         let status = CLLocationManager.authorizationStatus()
         
@@ -65,6 +69,7 @@ extension LocationHelper: CLLocationManagerDelegate {
         
         stopHelper()
         currentLocation = lastLocation
+        delegate?.locationHelperRecievedLocation(location: lastLocation)
         
         NetworkUtility.networkOperationStarted()
         geocoder.reverseGeocodeLocation(lastLocation) { [unowned self] place, error in

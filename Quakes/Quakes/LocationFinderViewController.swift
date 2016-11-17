@@ -1,30 +1,6 @@
 
 import UIKit
 import CoreLocation
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
 
 enum LocationOption: String {
     case Nearby
@@ -37,8 +13,7 @@ protocol LocationFinderViewControllerDelegate: class {
     func locationFinderViewControllerDidSelectOption(_ option: LocationOption)
 }
 
-class LocationFinderViewController: UIViewController
-{
+class LocationFinderViewController: UIViewController {
 
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var filterSegment: UISegmentedControl!
@@ -197,8 +172,7 @@ class LocationFinderViewController: UIViewController
 
 }
 
-extension LocationFinderViewController: CLLocationManagerDelegate
-{
+extension LocationFinderViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
@@ -211,11 +185,10 @@ extension LocationFinderViewController: CLLocationManagerDelegate
     
 }
 
-extension LocationFinderViewController: UITextFieldDelegate
-{
+extension LocationFinderViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField.text?.characters.count > 0 {
+        if textField.text?.characters.count ?? 0 > 0 {
             searchForAddressWithText(textField.text!)
             textField.resignFirstResponder()
             return true

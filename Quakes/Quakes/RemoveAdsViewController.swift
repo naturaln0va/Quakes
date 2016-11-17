@@ -1,9 +1,7 @@
 
 import UIKit
 
-
-class RemoveAdsViewController: UIViewController
-{
+class RemoveAdsViewController: UIViewController {
 
     @IBOutlet weak var removeAdsButton: UIButton!
     @IBOutlet weak var headerLabel: UILabel!
@@ -73,9 +71,15 @@ class RemoveAdsViewController: UIViewController
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.set(bottomDividerLineHidden: true)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         confetti.stopConfetti()
+        navigationController?.navigationBar.set(bottomDividerLineHidden: false)
     }
     
     // MARK: Notifications

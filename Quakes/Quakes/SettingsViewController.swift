@@ -180,8 +180,6 @@ class SettingsViewController: UITableViewController
             case GeneralSectionRows.contactRow.rawValue:
                 cell.textLabel?.text = "Contact the Developer"
                 cell.accessoryType = .disclosureIndicator
-                cell.isUserInteractionEnabled = MFMailComposeViewController.canSendMail()
-                cell.textLabel?.isEnabled = MFMailComposeViewController.canSendMail()
                 break
                 
             default:
@@ -229,24 +227,36 @@ class SettingsViewController: UITableViewController
                 alertVC.addAction(
                     UIAlertAction(title: "Visit the Website", style: .default, handler: { action in
                         let safariVC = SFSafariViewController(url: URL(string: "http://www.ackermann.io/quakes")!)
-                        safariVC.view.tintColor = StyleController.darkerMainAppColor
+                        
+                        if #available(iOS 10.0, *) {
+                            safariVC.preferredControlTintColor = StyleController.darkerMainAppColor
+                        }
+                        else {
+                            safariVC.view.tintColor = StyleController.darkerMainAppColor
+                        }
+
                         DispatchQueue.main.async {
                             self.present(safariVC, animated: true, completion: nil)
                         }
                     })
                 )
-                alertVC.addAction(
-                    UIAlertAction(title: "Email the Developer", style: .default, handler: { action in
-                        let mailVC = MFMailComposeViewController()
-                        mailVC.setSubject("Quakes Feedback")
-                        mailVC.setToRecipients(["support@ackermann.io"])
-                        let devInfo = "• iOS Version: \(UIDevice.current.deviceIOSVersion)<br>• Hardware: \(UIDevice.current.deviceModel)<br>• App Version: \(UIDevice.current.appVersionAndBuildString)<br>• Has Supported: \(SettingsController.sharedController.hasSupported ? "Yes" : "No")"
-                        mailVC.setMessageBody("<br><br><br><br><br><br><br><br><br><br><br><br><hr> <center>Developer Info</center> <br>\(devInfo)<hr>", isHTML: true)
-                        mailVC.mailComposeDelegate = self
-                        self.present(mailVC, animated: true, completion: nil)
-                    })
-                )
+                
+                if MFMailComposeViewController.canSendMail() {
+                    alertVC.addAction(
+                        UIAlertAction(title: "Email the Developer", style: .default, handler: { action in
+                            let mailVC = MFMailComposeViewController()
+                            mailVC.setSubject("Quakes Feedback")
+                            mailVC.setToRecipients(["support@ackermann.io"])
+                            let devInfo = "• iOS Version: \(UIDevice.current.deviceIOSVersion)<br>• Hardware: \(UIDevice.current.deviceModel)<br>• App Version: \(UIDevice.current.appVersionAndBuildString)<br>• Has Supported: \(SettingsController.sharedController.hasSupported ? "Yes" : "No")"
+                            mailVC.setMessageBody("<br><br><br><br><br><br><br><br><br><br><br><br><hr> <center>Developer Info</center> <br>\(devInfo)<hr>", isHTML: true)
+                            mailVC.mailComposeDelegate = self
+                            self.present(mailVC, animated: true, completion: nil)
+                        })
+                    )
+                }
+                
                 alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
                 present(alertVC, animated: true, completion: nil)
                 break
                 
@@ -346,7 +356,14 @@ class SettingsViewController: UITableViewController
             case ExtraSectionRows.privacyRow.rawValue:
                 if let url = URL(string: "http://www.ackermann.io/privacy") {
                     let safariVC = SFSafariViewController(url: url)
-                    safariVC.view.tintColor = StyleController.darkerMainAppColor
+                    
+                    if #available(iOS 10.0, *) {
+                        safariVC.preferredControlTintColor = StyleController.darkerMainAppColor
+                    }
+                    else {
+                        safariVC.view.tintColor = StyleController.darkerMainAppColor
+                    }
+                    
                     present(safariVC, animated: true, completion: nil)
                 }
                 break
@@ -374,19 +391,16 @@ class SettingsViewController: UITableViewController
 
 }
 
-extension SettingsViewController: MFMailComposeViewControllerDelegate
-{
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
     
     // MARK: - MFMailComposeViewController Delegate
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?)
-    {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         dismiss(animated: true, completion: nil)
     }
     
 }
 
-extension SettingsViewController: PickerViewControllerDelegate
-{
+extension SettingsViewController: PickerViewControllerDelegate {
     
     // MARK: - PickerViewController Delegate
     func pickerViewController(_ pvc: PickerViewController, didPickObject object: Any) {

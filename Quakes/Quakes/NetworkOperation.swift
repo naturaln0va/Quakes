@@ -2,6 +2,7 @@
 import UIKit
 
 class NetworkOperation: Operation {
+    
     enum State: String {
         case Ready, Executing, Finished
         

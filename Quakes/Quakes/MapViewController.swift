@@ -7,8 +7,7 @@ protocol MapViewControllerDelegate: class {
     func mapViewControllerDidFinishFetch(_ sucess: Bool, withPlace placemark: CLPlacemark)
 }
 
-class MapViewController: UIViewController
-{
+class MapViewController: UIViewController {
     
     fileprivate lazy var mapView: MKMapView = {
         let mapView = MKMapView()
@@ -150,9 +149,16 @@ class MapViewController: UIViewController
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.set(bottomDividerLineHidden: true)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        navigationController?.navigationBar.set(bottomDividerLineHidden: false)
         navigationController?.isToolbarHidden = true
         
         if geocoder.isGeocoding {
@@ -486,7 +492,7 @@ extension MapViewController: MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if let quakes = quakesToDisplay, let index = quakes.index(where: { $0.hash == control.tag }) {
-            navigationController?.popToRootViewController(animated: true)
+            _ = navigationController?.popToRootViewController(animated: true)
             navigationController?.pushViewController(DetailViewController(quake: quakes[index]), animated: true)
         }
     }

@@ -21,12 +21,6 @@
 */
 import Foundation
 
-infix operator |> { associativity left precedence 160 }
-public func |>(lhs: Operation, rhs: Operation) -> Operation {
-    rhs.addDependency(lhs)
-    return rhs
-}
-
 open class ConcurrentOperation: Operation {
     public enum State: String {
         case Ready, Executing, Finished

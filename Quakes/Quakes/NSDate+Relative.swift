@@ -4,11 +4,15 @@ import Foundation
 extension Date {
     
     func hoursSince(_ date: Date) -> Int {
-        return (Calendar.current as NSCalendar).components(.hour, from: date, to: self, options: []).hour!
+        return Calendar.current.dateComponents([.hour], from: date, to: self).hour ?? 0
     }
     
     func daysSince(_ date: Date) -> Int {
-        return (Calendar.current as NSCalendar).components(.day, from: date, to: self, options: []).day!
+        return Calendar.current.dateComponents([.day], from: date, to: self).day ?? 0
+    }
+    
+    func monthsSince(_ date: Date) -> Int {
+        return Calendar.current.dateComponents([.month], from: date, to: self).month ?? 0
     }
     
     func isToday() -> Bool {
