@@ -23,8 +23,9 @@
 		483A625A1CD515A9008CA19D /* GetNearbyCitiesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */; };
 		483A625C1CD518FE008CA19D /* GetDetailURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */; };
 		483D1B141C3C8064003A5970 /* CLPlacemark+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */; };
-		483E283A1CFD0C7000871229 /* FlurryEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = 483E28361CFD0C7000871229 /* FlurryEmpty.m */; };
-		483E283B1CFD0C7000871229 /* libFlurry_7.6.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */; };
+		4857B52F1FC20559008DC4D3 /* RatingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4857B52E1FC20559008DC4D3 /* RatingHelper.swift */; };
+		4857B5311FC20632008DC4D3 /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4857B5301FC20631008DC4D3 /* Quake.swift */; };
+		4857B5331FC20642008DC4D3 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4857B5321FC20642008DC4D3 /* Reachability.swift */; };
 		485D6A2F1DDC826000072DC9 /* ListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 485D6A2E1DDC826000072DC9 /* ListViewController.xib */; };
 		485D6A311DDC91FA00072DC9 /* UINavigationBar+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485D6A301DDC91FA00072DC9 /* UINavigationBar+Additions.swift */; };
 		486CFE531CF31E8300762587 /* AddDeviceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486CFE521CF31E8300762587 /* AddDeviceOperation.swift */; };
@@ -33,8 +34,6 @@
 		4872AB9A1C55C15300B6CF37 /* RemoveAdsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */; };
 		4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */; };
 		4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4872AB9D1C55C76000B6CF37 /* StoreKit.framework */; };
-		4896D1F91DDDD985004EE9FE /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */; };
-		4896D1FC1DDDE256004EE9FE /* RateMyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4896D1FB1DDDE256004EE9FE /* RateMyApp.swift */; };
 		48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */; };
 		48B01C5E1C418A3F00838433 /* LocationFinderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */; };
 		48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C000661C543B960046CC8F /* SettingsViewController.swift */; };
@@ -61,22 +60,19 @@
 		696031C01C59554300F71B93 /* FlagKit.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 696031BF1C59554300F71B93 /* FlagKit.xcassets */; };
 		696031C31C595BD200F71B93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696031C11C595BD200F71B93 /* DetailViewController.swift */; };
 		696031C41C595BD200F71B93 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 696031C21C595BD200F71B93 /* DetailViewController.xib */; };
-		6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696067291C7FB67900068B72 /* TelemetryController.swift */; };
 		699CA6061C3C52980094F48A /* Quakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6041C3C52980094F48A /* Quakes.xcdatamodeld */; };
-		699CA60B1C3C543F0094F48A /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6091C3C543F0094F48A /* Quake.swift */; };
 		699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA60E1C3C55E10094F48A /* Fetchable.swift */; };
 		699CA6141C3C5D6F0094F48A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699CA6121C3C5D6F0094F48A /* ListViewController.swift */; };
 		699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */; };
 		699E4EF11C3D69A00049C7F4 /* StyleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF01C3D69A00049C7F4 /* StyleController.swift */; };
 		699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */; };
-		69B30FE31C3B051600241D79 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FE21C3B051600241D79 /* WindowController.swift */; };
+		69B30FE31C3B051600241D79 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FE21C3B051600241D79 /* AppDelegate.swift */; };
 		69B30FEA1C3B051600241D79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69B30FE91C3B051600241D79 /* Assets.xcassets */; };
 		69B30FED1C3B051600241D79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69B30FEB1C3B051600241D79 /* LaunchScreen.storyboard */; };
 		69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */; };
 		69D163511C5C52E6000294A5 /* confetti.png in Resources */ = {isa = PBXBuildFile; fileRef = 69D1634F1C5C52E6000294A5 /* confetti.png */; };
 		69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D163501C5C52E6000294A5 /* SAConfettiView.swift */; };
 		69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D235361C3D75E100C9AA50 /* ParsedQuake.swift */; };
-		69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB431C5AAA990028AD81 /* Reachability.swift */; };
 		69F9CB461C5AABFA0028AD81 /* NetworkUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */; };
 /* End PBXBuildFile section */
 
@@ -97,9 +93,9 @@
 		483A62591CD515A9008CA19D /* GetNearbyCitiesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetNearbyCitiesOperation.swift; sourceTree = "<group>"; };
 		483A625B1CD518FE008CA19D /* GetDetailURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDetailURLOperation.swift; sourceTree = "<group>"; };
 		483D1B131C3C8064003A5970 /* CLPlacemark+Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Format.swift"; sourceTree = "<group>"; };
-		483E28351CFD0C7000871229 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
-		483E28361CFD0C7000871229 /* FlurryEmpty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlurryEmpty.m; sourceTree = "<group>"; };
-		483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.6.3.a; sourceTree = "<group>"; };
+		4857B52E1FC20559008DC4D3 /* RatingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingHelper.swift; sourceTree = "<group>"; };
+		4857B5301FC20631008DC4D3 /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quake.swift; sourceTree = "<group>"; };
+		4857B5321FC20642008DC4D3 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		485D6A2E1DDC826000072DC9 /* ListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListViewController.xib; sourceTree = "<group>"; };
 		485D6A301DDC91FA00072DC9 /* UINavigationBar+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Additions.swift"; sourceTree = "<group>"; };
 		486CFE521CF31E8300762587 /* AddDeviceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDeviceOperation.swift; sourceTree = "<group>"; };
@@ -108,8 +104,6 @@
 		4872AB981C55C15300B6CF37 /* RemoveAdsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RemoveAdsViewController.xib; sourceTree = "<group>"; };
 		4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPUtility.swift; sourceTree = "<group>"; };
 		4872AB9D1C55C76000B6CF37 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
-		4896D1FB1DDDE256004EE9FE /* RateMyApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RateMyApp.swift; sourceTree = "<group>"; };
 		48B01C5B1C418A3F00838433 /* LocationFinderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFinderViewController.swift; sourceTree = "<group>"; };
 		48B01C5C1C418A3F00838433 /* LocationFinderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationFinderViewController.xib; sourceTree = "<group>"; };
 		48C000661C543B960046CC8F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -138,16 +132,14 @@
 		696031C21C595BD200F71B93 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
 		696031C51C596C4000F71B93 /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		696031C61C596C4000F71B93 /* countrytocode.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countrytocode.txt; sourceTree = "<group>"; };
-		696067291C7FB67900068B72 /* TelemetryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryController.swift; sourceTree = "<group>"; };
 		699CA6051C3C52980094F48A /* Quakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Quakes.xcdatamodel; sourceTree = "<group>"; };
-		699CA6091C3C543F0094F48A /* Quake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Quake.swift; path = ../Quake.swift; sourceTree = "<group>"; };
 		699CA60E1C3C55E10094F48A /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		699CA6121C3C5D6F0094F48A /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		699E4EEE1C3D69490049C7F4 /* StyledNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyledNavigationController.swift; sourceTree = "<group>"; };
 		699E4EF01C3D69A00049C7F4 /* StyleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleController.swift; sourceTree = "<group>"; };
 		699E4EF21C3D6BA20049C7F4 /* UIImage+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Additions.swift"; sourceTree = "<group>"; };
 		69B30FDF1C3B051600241D79 /* Quakes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quakes.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		69B30FE21C3B051600241D79 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		69B30FE21C3B051600241D79 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		69B30FE91C3B051600241D79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		69B30FEC1C3B051600241D79 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		69B30FEE1C3B051600241D79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -155,7 +147,6 @@
 		69D1634F1C5C52E6000294A5 /* confetti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = confetti.png; sourceTree = "<group>"; };
 		69D163501C5C52E6000294A5 /* SAConfettiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAConfettiView.swift; sourceTree = "<group>"; };
 		69D235361C3D75E100C9AA50 /* ParsedQuake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedQuake.swift; sourceTree = "<group>"; };
-		69F9CB431C5AAA990028AD81 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../Reachability.swift; sourceTree = "<group>"; };
 		69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkUtility.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
@@ -165,8 +156,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				69497A841C80797500AB2654 /* SystemConfiguration.framework in Frameworks */,
-				483E283B1CFD0C7000871229 /* libFlurry_7.6.3.a in Frameworks */,
-				4896D1F91DDDD985004EE9FE /* GoogleMobileAds.framework in Frameworks */,
 				69497A821C80796900AB2654 /* Security.framework in Frameworks */,
 				4872AB9E1C55C76000B6CF37 /* StoreKit.framework in Frameworks */,
 			);
@@ -201,9 +190,6 @@
 		48190D361C558B63009712F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4896D1FA1DDDE24B004EE9FE /* RateMyApp */,
-				483E28341CFD0C7000871229 /* Flurry */,
-				4896D1F81DDDD985004EE9FE /* GoogleMobileAds.framework */,
 				69497A831C80797500AB2654 /* SystemConfiguration.framework */,
 				69497A811C80796900AB2654 /* Security.framework */,
 				4872AB9D1C55C76000B6CF37 /* StoreKit.framework */,
@@ -244,24 +230,6 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
-		483E28341CFD0C7000871229 /* Flurry */ = {
-			isa = PBXGroup;
-			children = (
-				483E28351CFD0C7000871229 /* Flurry.h */,
-				483E28361CFD0C7000871229 /* FlurryEmpty.m */,
-				483E28381CFD0C7000871229 /* libFlurry_7.6.3.a */,
-			);
-			path = Flurry;
-			sourceTree = "<group>";
-		};
-		4896D1FA1DDDE24B004EE9FE /* RateMyApp */ = {
-			isa = PBXGroup;
-			children = (
-				4896D1FB1DDDE256004EE9FE /* RateMyApp.swift */,
-			);
-			name = RateMyApp;
-			sourceTree = "<group>";
-		};
 		69150F251C3DDC9D00D9D3BF /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,7 +254,7 @@
 				699CA60E1C3C55E10094F48A /* Fetchable.swift */,
 				48190D301C553F81009712F6 /* ParsedNearbyCity.swift */,
 				69D235361C3D75E100C9AA50 /* ParsedQuake.swift */,
-				699CA6091C3C543F0094F48A /* Quake.swift */,
+				4857B5301FC20631008DC4D3 /* Quake.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -333,7 +301,7 @@
 		69B30FF71C3B0AF100241D79 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				69F9CB431C5AAA990028AD81 /* Reachability.swift */,
+				4857B5321FC20642008DC4D3 /* Reachability.swift */,
 				69B30FF51C3B0AEC00241D79 /* NetworkClient.swift */,
 				69F9CB451C5AABFA0028AD81 /* NetworkUtility.swift */,
 			);
@@ -343,13 +311,13 @@
 		69B30FF81C3B121C00241D79 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				69B30FE21C3B051600241D79 /* AppDelegate.swift */,
 				4872AB9B1C55C6C100B6CF37 /* IAPUtility.swift */,
 				4822A36E1DD27D3C003C8686 /* LocationHelper.swift */,
-				699E4EF01C3D69A00049C7F4 /* StyleController.swift */,
 				69150F1D1C3DD5FB00D9D3BF /* PersistentController.swift */,
+				4857B52E1FC20559008DC4D3 /* RatingHelper.swift */,
+				699E4EF01C3D69A00049C7F4 /* StyleController.swift */,
 				48C713191C4090C600196225 /* SettingsController.swift */,
-				696067291C7FB67900068B72 /* TelemetryController.swift */,
-				69B30FE21C3B051600241D79 /* WindowController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -413,13 +381,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = "Ryan Ackermann";
 				TargetAttributes = {
 					69B30FDE1C3B051600241D79 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = WK4Y48HVH2;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0910;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -428,7 +396,7 @@
 								enabled = 1;
 							};
 							com.apple.Push = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -484,26 +452,24 @@
 				48190D3A1C55A02F009712F6 /* UIDevice+Additions.swift in Sources */,
 				69D163521C5C52E6000294A5 /* SAConfettiView.swift in Sources */,
 				699E4EEF1C3D69490049C7F4 /* StyledNavigationController.swift in Sources */,
+				4857B5331FC20642008DC4D3 /* Reachability.swift in Sources */,
 				486CFE531CF31E8300762587 /* AddDeviceOperation.swift in Sources */,
 				48C000671C543B960046CC8F /* SettingsViewController.swift in Sources */,
 				4872AB9C1C55C6C100B6CF37 /* IAPUtility.swift in Sources */,
-				69F9CB441C5AAA990028AD81 /* Reachability.swift in Sources */,
 				483A62581CD50DE1008CA19D /* RecentQuakeCountOperation.swift in Sources */,
 				48C420F41CD7804E00DB3037 /* EMSCLocationOperation.swift in Sources */,
 				48C420F21CD7758C00DB3037 /* EMSCFetchQuakesOperation.swift in Sources */,
 				483A624E1CD4FF26008CA19D /* NetworkOperation.swift in Sources */,
 				690C289B1C580A750035F47A /* NSDate+Relative.swift in Sources */,
-				6960672A1C7FB67900068B72 /* TelemetryController.swift in Sources */,
 				69150F1E1C3DD5FB00D9D3BF /* PersistentController.swift in Sources */,
 				696031B91C593D3000F71B93 /* PeekableDetailViewController.swift in Sources */,
-				483E283A1CFD0C7000871229 /* FlurryEmpty.m in Sources */,
+				4857B52F1FC20559008DC4D3 /* RatingHelper.swift in Sources */,
 				696031C31C595BD200F71B93 /* DetailViewController.swift in Sources */,
 				4871B7A91C4AC96800C466DD /* MapViewController.swift in Sources */,
 				699CA60F1C3C55E10094F48A /* Fetchable.swift in Sources */,
 				48C420F61CD786AD00DB3037 /* EMSCWorldOperation.swift in Sources */,
 				48190D2C1C553A96009712F6 /* DownloadDetailOperation.swift in Sources */,
 				483A62541CD50C5F008CA19D /* USGSWorldOperation.swift in Sources */,
-				699CA60B1C3C543F0094F48A /* Quake.swift in Sources */,
 				692FA24F1C66732700E4C7E5 /* Int+Random.swift in Sources */,
 				69150F231C3DDC9900D9D3BF /* QuakeCell.swift in Sources */,
 				69D235371C3D75E100C9AA50 /* ParsedQuake.swift in Sources */,
@@ -520,7 +486,7 @@
 				485D6A311DDC91FA00072DC9 /* UINavigationBar+Additions.swift in Sources */,
 				48190D381C559601009712F6 /* PickerViewController.swift in Sources */,
 				692FA24C1C6662C300E4C7E5 /* NotificationPromptViewController.swift in Sources */,
-				69B30FE31C3B051600241D79 /* WindowController.swift in Sources */,
+				69B30FE31C3B051600241D79 /* AppDelegate.swift in Sources */,
 				48B01C5D1C418A3F00838433 /* LocationFinderViewController.swift in Sources */,
 				694269EB1C46E55800BAA5C9 /* TextBarAnimator.swift in Sources */,
 				48190D2F1C553C9B009712F6 /* ConcurrentOperation.swift in Sources */,
@@ -528,7 +494,7 @@
 				483A62501CD505B5008CA19D /* USGSLocationOperation.swift in Sources */,
 				69150F291C3DE60600D9D3BF /* String+BundleAdditions.swift in Sources */,
 				69150F271C3DE52000D9D3BF /* CLLocationCoordinate2D+Format.swift in Sources */,
-				4896D1FC1DDDE256004EE9FE /* RateMyApp.swift in Sources */,
+				4857B5311FC20632008DC4D3 /* Quake.swift in Sources */,
 				69B30FF61C3B0AEC00241D79 /* NetworkClient.swift in Sources */,
 				483A625C1CD518FE008CA19D /* GetDetailURLOperation.swift in Sources */,
 				699E4EF31C3D6BA20049C7F4 /* UIImage+Additions.swift in Sources */,
@@ -558,14 +524,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -588,7 +560,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -604,14 +576,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -628,7 +606,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -651,19 +629,19 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Quakes/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SWIFT_MODULE_NAME)-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -683,19 +661,19 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Quakes/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.ackermann.quakes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SWIFT_MODULE_NAME)-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

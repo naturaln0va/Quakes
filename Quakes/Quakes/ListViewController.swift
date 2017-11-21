@@ -4,21 +4,18 @@ import MapKit
 import CoreData
 import CoreLocation
 import SafariServices
-import GoogleMobileAds
 
 class ListViewController: UIViewController {
     
     @IBOutlet var tableView: UITableView!
-    @IBOutlet var adContainerView: UIView!
     @IBOutlet var noQuakesTitleLabel: UILabel!
     @IBOutlet var noQuakesBodyLabel: UILabel!
-    @IBOutlet var adContainerViewBottomConstraint: NSLayoutConstraint!
     
     fileprivate lazy var titleViewButton: UIButton = {
         let button = UIButton(type: .custom)
         
         button.backgroundColor = StyleController.searchBarColor
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFont.Weight.medium)
         button.setTitleColor(UIColor.black, for: UIControlState())
         button.addTarget(self, action: #selector(ListViewController.titleButtonPressed), for: .touchUpInside)
         button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
@@ -42,7 +39,6 @@ class ListViewController: UIViewController {
     fileprivate lazy var defaults = UserDefaults.standard
     fileprivate var transitionAnimator: TextBarAnimator?
     fileprivate var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
-    fileprivate var nativeExpressAdView: GADNativeExpressAdView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,13 +68,7 @@ class ListViewController: UIViewController {
         tableView.estimatedRowHeight = QuakeCell.cellHeight
         tableView.backgroundColor = StyleController.backgroundColor
         tableView.register(UINib(nibName: QuakeCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: QuakeCell.reuseIdentifier)
-        
-        if #available(iOS 10.0, *) {
-            tableView.refreshControl = refreshControl
-        }
-        else {
-            tableView.addSubview(refreshControl)
-        }
+        tableView.refreshControl = refreshControl
         
         fetchedResultsController = {
             let moc = PersistentController.sharedController.moc
@@ -98,18 +88,6 @@ class ListViewController: UIViewController {
         
         guard !SettingsController.sharedController.hasSupported else { return }
         
-        nativeExpressAdView = GADNativeExpressAdView(adSize: kGADAdSizeSmartBannerPortrait)
-        nativeExpressAdView.delegate = self
-        nativeExpressAdView.isAutoloadEnabled = true
-        nativeExpressAdView.rootViewController = self
-        nativeExpressAdView.adUnitID = "ca-app-pub-6493864895252732/5256701203"
-        nativeExpressAdView.backgroundColor = StyleController.backgroundColor
-        nativeExpressAdView.translatesAutoresizingMaskIntoConstraints = false
-        
-        adContainerView.addSubview(nativeExpressAdView)
-        adContainerView.backgroundColor = StyleController.backgroundColor
-        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
-        adContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: ["view": nativeExpressAdView]))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -156,12 +134,6 @@ class ListViewController: UIViewController {
         )
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(ListViewController.settingsDidPurchaseAdRemoval),
-            name: NSNotification.Name(rawValue: SettingsController.kSettingsControllerDidChangePurchaseAdRemovalNotification),
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
             selector: #selector(ListViewController.applicationDidEnterForeground),
             name: NSNotification.Name.UIApplicationDidBecomeActive,
             object: nil
@@ -169,41 +141,32 @@ class ListViewController: UIViewController {
     }
     
     // MARK: - Notifications
-    func applicationDidEnterForeground() {
+    @objc func applicationDidEnterForeground() {
         tableView.reloadData()
     }
     
-    func settingsDidPurchaseAdRemoval() {
-        nativeExpressAdView.delegate = nil
-        nativeExpressAdView.removeFromSuperview()
-        adContainerViewBottomConstraint.constant = -85
-        UIView.animate(withDuration: 0.23, animations: {
-            self.view.layoutIfNeeded()
-        })
-    }
-    
-    func settingsDidChangeUnitStyle() {
+    @objc func settingsDidChangeUnitStyle() {
         tableView.reloadData()
     }
     
     // MARK: - Actions
-    func mapButtonPressed() {
+    @objc func mapButtonPressed() {
         guard NetworkUtility.internetReachable() else { return }
         let mapVC = MapViewController(quakeToDisplay: nil, nearbyCities: nil)
         mapVC.delegate = self
         navigationController?.pushViewController(mapVC, animated: true)
     }
     
-    func titleButtonPressed() {
+    @objc func titleButtonPressed() {
         guard NetworkUtility.internetReachable() else { return }
         presentFinder()
     }
     
-    func settingsButtonPressed() {
+    @objc func settingsButtonPressed() {
         present(StyledNavigationController(rootViewController: SettingsViewController()), animated: true, completion: nil)
     }
     
-    func fetchQuakes() {
+    @objc func fetchQuakes() {
         navigationItem.rightBarButtonItem?.isEnabled = false
         
         guard NetworkUtility.internetReachable() else {
@@ -231,7 +194,7 @@ class ListViewController: UIViewController {
         
         if let option = SettingsController.sharedController.lastLocationOption {
             switch option {
-            case LocationOption.Nearby.rawValue:
+            case LocationOption.nearby.rawValue:
                 if let current = locationHelper.currentLocation {
                     setTitleButtonText("\(SettingsController.sharedController.cachedAddress!.cityStateString())")
                     
@@ -244,14 +207,14 @@ class ListViewController: UIViewController {
                     locationHelper.startHelper()
                 }
                 break
-            case LocationOption.World.rawValue:
+            case LocationOption.world.rawValue:
                 setTitleButtonText("Worldwide Quakes")
                 
                 NetworkClient.sharedClient.getWorldQuakes() { quakes, error in
                     self.commonFinishedFetch(quakes)
                 }
                 break
-            case LocationOption.Major.rawValue:
+            case LocationOption.major.rawValue:
                 setTitleButtonText("Major Quakes")
                 
                 NetworkClient.sharedClient.getMajorQuakes() { quakes, error in
@@ -439,8 +402,6 @@ extension ListViewController: LocationFinderViewControllerDelegate {
     func locationFinderViewControllerDidSelectPlace(_ placemark: CLPlacemark) {
         dismiss(animated: true, completion: nil)
         
-        TelemetryController.sharedController.logQuakeFinderDidSelectLocation(placemark.cityStateString())
-        
         SettingsController.sharedController.lastSearchedPlace = placemark
         SettingsController.sharedController.lastLocationOption = nil
         
@@ -451,8 +412,6 @@ extension ListViewController: LocationFinderViewControllerDelegate {
     
     func locationFinderViewControllerDidSelectOption(_ option: LocationOption) {
         dismiss(animated: true, completion: nil)
-        
-        TelemetryController.sharedController.logQuakeFinderDidSelectLocation(option.rawValue)
         
         SettingsController.sharedController.lastLocationOption = option.rawValue
         SettingsController.sharedController.lastSearchedPlace = nil
@@ -563,65 +522,27 @@ extension ListViewController: PeekableDetailViewControllerDelegate {
                 
                 
                 DispatchQueue.main.async {
-                    self.present(UIActivityViewController(activityItems: items, applicationActivities: nil), animated: true, completion: { _ in
-                        TelemetryController.sharedController.logQuakeShare()
-                    })
+                    self.present(UIActivityViewController(activityItems: items, applicationActivities: nil), animated: true, completion: nil)
                 }
             })
             
         case .felt:
             let safariVC = SFSafariViewController(url: URL(string: "\(urlString)#tellus")!)
-            
-            if #available(iOS 10.0, *) {
-                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
-            }
-            else {
-                safariVC.view.tintColor = quakeToDisplay.severityColor
-            }
+            safariVC.preferredControlTintColor = quakeToDisplay.severityColor
             
             DispatchQueue.main.async {
-                self.present(safariVC, animated: true, completion: { _ in
-                    TelemetryController.sharedController.logQuakeOpenedInBrowser()
-                })
+                self.present(safariVC, animated: true, completion: nil)
             }
             
         case .open:
             let safariVC = SFSafariViewController(url: url)
-            
-            if #available(iOS 10.0, *) {
-                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
-            }
-            else {
-                safariVC.view.tintColor = quakeToDisplay.severityColor
-            }
+            safariVC.preferredControlTintColor = quakeToDisplay.severityColor
             
             DispatchQueue.main.async {
-                self.present(safariVC, animated: true, completion: { _ in
-                    TelemetryController.sharedController.logQuakeOpenedInBrowser()
-                })
+                self.present(safariVC, animated: true, completion: nil)
             }
 
         }
-    }
-    
-}
-
-extension ListViewController: GADNativeExpressAdViewDelegate {
-    
-    // MARK: - GADBannerView Delegate
-    func nativeExpressAdViewDidReceiveAd(_ nativeExpressAdView: GADNativeExpressAdView) {
-        adContainerViewBottomConstraint.constant = 0
-        UIView.animate(withDuration: 0.23, animations: {
-            self.view.layoutIfNeeded()
-        })
-    }
-    
-    func nativeExpressAdView(_ nativeExpressAdView: GADNativeExpressAdView, didFailToReceiveAdWithError error: GADRequestError) {
-        print("Native ad view 'didFailToReceiveAdWithError' | Error: \(error)")
-        adContainerViewBottomConstraint.constant = -85
-        UIView.animate(withDuration: 0.23, animations: {
-            self.view.layoutIfNeeded()
-        })
     }
     
 }

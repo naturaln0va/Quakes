@@ -68,17 +68,16 @@ class SettingsViewController: UITableViewController
     }
     
     // MARK: - Actions
-    func doneButtonPressed()
+    @objc func doneButtonPressed()
     {
         dismiss(animated: true, completion: nil)
     }
     
-    func switchWasToggled(_ sender: UISwitch)
+    @objc func switchWasToggled(_ sender: UISwitch)
     {
         switch sender.tag {
             
         case SwitchTag.unit.rawValue:
-            TelemetryController.sharedController.logUnitStyleToggled()
             SettingsController.sharedController.isUnitStyleImperial = !sender.isOn
             formatter.units = !sender.isOn ? .imperial : .metric
             tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
@@ -219,7 +218,9 @@ class SettingsViewController: UITableViewController
         if indexPath.section == TableSections.generalSection.rawValue {
             switch indexPath.row {
             case GeneralSectionRows.rateRow.rawValue:
-                UIApplication.shared.openURL(URL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8")!)
+                if let rateURL = URL(string: "https://itunes.apple.com/us/app/quakes-earthquake-utility/id1071904740?ls=1&mt=8&action=write-review") {
+                    UIApplication.shared.open(rateURL, options: [:], completionHandler: nil)
+                }
                 break
                 
             case GeneralSectionRows.contactRow.rawValue:
@@ -227,13 +228,7 @@ class SettingsViewController: UITableViewController
                 alertVC.addAction(
                     UIAlertAction(title: "Visit the Website", style: .default, handler: { action in
                         let safariVC = SFSafariViewController(url: URL(string: "http://www.ackermann.io/quakes")!)
-                        
-                        if #available(iOS 10.0, *) {
-                            safariVC.preferredControlTintColor = StyleController.darkerMainAppColor
-                        }
-                        else {
-                            safariVC.view.tintColor = StyleController.darkerMainAppColor
-                        }
+                        safariVC.preferredControlTintColor = StyleController.darkerMainAppColor
 
                         DispatchQueue.main.async {
                             self.present(safariVC, animated: true, completion: nil)
@@ -272,11 +267,11 @@ class SettingsViewController: UITableViewController
             guard !ProcessInfo.processInfo.isLowPowerModeEnabled else {
                 let alertVC = UIAlertController(title: "Low Power Mode", message: "This setting cannot be changed when your device is in Low Power Mode.", preferredStyle: .alert)
                 alertVC.addAction(
-                    UIAlertAction(title: "Open Settings", style: .default, handler: { action in
+                    UIAlertAction(title: "Open Settings", style: .default) { action in
                         if let url = URL(string: UIApplicationOpenSettingsURLString) {
-                            UIApplication.shared.openURL(url)
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
                         }
-                    })
+                    }
                 )
                 alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 present(alertVC, animated: true, completion: nil)
@@ -356,13 +351,7 @@ class SettingsViewController: UITableViewController
             case ExtraSectionRows.privacyRow.rawValue:
                 if let url = URL(string: "http://www.ackermann.io/privacy") {
                     let safariVC = SFSafariViewController(url: url)
-                    
-                    if #available(iOS 10.0, *) {
-                        safariVC.preferredControlTintColor = StyleController.darkerMainAppColor
-                    }
-                    else {
-                        safariVC.view.tintColor = StyleController.darkerMainAppColor
-                    }
+                    safariVC.preferredControlTintColor = StyleController.darkerMainAppColor
                     
                     present(safariVC, animated: true, completion: nil)
                 }
@@ -370,7 +359,7 @@ class SettingsViewController: UITableViewController
                 
             case ExtraSectionRows.permissionRow.rawValue:
                 if let url = URL(string: UIApplicationOpenSettingsURLString) {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
                 break
                 
@@ -410,12 +399,10 @@ extension SettingsViewController: PickerViewControllerDelegate {
             
         case .limit:
             SettingsController.sharedController.fetchLimit = SettingsController.APIFetchSize.closestValueForInteger(object as! Int)
-            TelemetryController.sharedController.logFetchSizeChange(object as! Int)
             break
             
         case .radius:
             SettingsController.sharedController.searchRadius = SettingsController.SearchRadiusSize.closestValueForInteger(object as! Int)
-            TelemetryController.sharedController.logNearbyRadiusChanged(object as! Int)
             break
             
         default:

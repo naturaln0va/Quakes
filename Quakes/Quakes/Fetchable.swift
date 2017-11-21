@@ -11,7 +11,7 @@ protocol Fetchable {
     static func fetchRequest(_ context: NSManagedObjectContext, predicate: NSPredicate?, sortedBy: String?, ascending: Bool) -> NSFetchRequest<NSFetchRequestResult>
 }
 
-extension Fetchable where Self: NSManagedObject, FetchableType == Self {
+extension Fetchable {
     
     static func singleObjectInContext(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortedBy: String? = nil, ascending: Bool = false) throws -> FetchableType? {
         let managedObjects: [FetchableType] = try objectsInContext(context, predicate: predicate, sortedBy: sortedBy, ascending: ascending)

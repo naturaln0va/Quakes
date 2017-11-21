@@ -15,7 +15,7 @@ extension CLLocationCoordinate2D {
             seconds %= 60
             
             let cardinal: String
-            let first: Bool = resultingString.characters.count == 0
+            let first: Bool = resultingString.count == 0
             if first {
                 cardinal = coord >= 0 ? "N" : "S"
             }

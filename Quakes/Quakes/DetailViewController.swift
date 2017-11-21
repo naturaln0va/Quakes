@@ -21,7 +21,7 @@ class DetailViewController: UIViewController {
         button.setTitle("View on Map", for: UIControlState())
         button.setTitleColor(UIColor.black, for: UIControlState())
         button.titleLabel?.textAlignment = .center
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFont.Weight.medium)
         button.addTarget(self, action: #selector(DetailViewController.openInMapButtonPressed), for: .touchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
@@ -33,7 +33,7 @@ class DetailViewController: UIViewController {
         button.setTitle("I Felt This", for: UIControlState())
         button.setTitleColor(UIColor.black, for: UIControlState())
         button.titleLabel?.textAlignment = .center
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFont.Weight.medium)
         button.addTarget(self, action: #selector(DetailViewController.feltButtonPressed), for: .touchUpInside)
         button.backgroundColor = StyleController.backgroundColor
         button.sizeToFit()
@@ -77,9 +77,7 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        RateMyApp.sharedInstance.trackAppUsage()
-        
-        TelemetryController.sharedController.logQuakeDetailViewed(quakeToDisplay.weblink ?? "Unknown URL")
+        RatingHelper.incrementAction(for: .detailView)
         
         if let nearbyCities = quakeToDisplay.nearbyCities {
             parsedNearbyCities = nearbyCities
@@ -213,14 +211,14 @@ class DetailViewController: UIViewController {
             headerContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[open][feels(==open)]|", options: [], metrics: ["size": view.frame.width / 2], views: views))
             headerContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[map][open(==44)]|", options: [], metrics: nil, views: views))
             headerContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[map][feels(==44)]|", options: [], metrics: nil, views: views))
-            openInMapButton.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
+            openInMapButton.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
             
             tableView.tableHeaderView = headerContainerView
         }
     }
     
     // MARK: - Actions
-    internal func openInMapButtonPressed() {
+    @objc internal func openInMapButtonPressed() {
         if let rootVC = navigationController?.viewControllers.first as? ListViewController {
             _ = navigationController?.popViewController(animated: true)
             
@@ -231,16 +229,10 @@ class DetailViewController: UIViewController {
         }
     }
     
-    internal func feltButtonPressed() {
+    @objc internal func feltButtonPressed() {
         if let urlString = quakeToDisplay.weblink, let url = URL(string: "\(urlString)#tellus") {
             let safariVC = SFSafariViewController(url: url)
-            
-            if #available(iOS 10.0, *) {
-                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
-            }
-            else {
-                safariVC.view.tintColor = quakeToDisplay.severityColor
-            }
+            safariVC.preferredControlTintColor = quakeToDisplay.severityColor
             
             DispatchQueue.main.async {
                 self.present(safariVC, animated: true, completion: nil)
@@ -248,7 +240,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    internal func shareButtonPressed() {
+    @objc internal func shareButtonPressed() {
         guard let urlString = quakeToDisplay.weblink, let url = URL(string: urlString) else { return }
         let options = MKMapSnapshotOptions()
         options.region = MKCoordinateRegion(center: quakeToDisplay.coordinate, span: MKCoordinateSpan(latitudeDelta: 1 / 2, longitudeDelta: 1 / 2))
@@ -286,9 +278,7 @@ class DetailViewController: UIViewController {
                     activityItems: items,
                     applicationActivities: nil),
                     animated: true,
-                    completion: { _ in
-                        TelemetryController.sharedController.logQuakeShare()
-                    }
+                    completion: nil
                 )
             }
         })
@@ -357,7 +347,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
             }
             else {
                 let websiteLabel = UILabel()
-                websiteLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFontWeightMedium)
+                websiteLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFont.Weight.medium)
                 websiteLabel.translatesAutoresizingMaskIntoConstraints = false
                 websiteLabel.textColor = quakeToDisplay.severityColor
                 websiteLabel.text = "Open in USGS"
@@ -373,7 +363,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
         }
         else {
             let websiteLabel = UILabel()
-            websiteLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFontWeightMedium)
+            websiteLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFont.Weight.medium)
             websiteLabel.translatesAutoresizingMaskIntoConstraints = false
             websiteLabel.textColor = quakeToDisplay.severityColor
             websiteLabel.text = "Open in USGS"
@@ -412,24 +402,15 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
         
         if let urlString = quakeToDisplay.weblink, let url = URL(string: urlString), parsedNearbyCities != nil ? indexPath.section == 2 : indexPath.section == 1 && indexPath.row == 0 {
             let safariVC = SFSafariViewController(url: url)
-            
-            if #available(iOS 10.0, *) {
-                safariVC.preferredControlTintColor = quakeToDisplay.severityColor
-            }
-            else {
-                safariVC.view.tintColor = quakeToDisplay.severityColor
-            }
+            safariVC.preferredControlTintColor = quakeToDisplay.severityColor
             
             DispatchQueue.main.async {
-                self.present(safariVC, animated: true, completion: { _ in
-                    TelemetryController.sharedController.logQuakeOpenedInBrowser()
-                })
+                self.present(safariVC, animated: true, completion: nil)
             }
         }
         else if let citiesToDisplay = parsedNearbyCities, indexPath.section == 1 && parsedNearbyCities != nil {
-            TelemetryController.sharedController.logQuakeCitiesViewed()
             let selectedCity = citiesToDisplay[indexPath.row]
-            let sortedCities = citiesToDisplay.sorted(by: { $0.0.cityName == selectedCity.cityName })
+            let sortedCities = citiesToDisplay.filter({ $0.cityName == selectedCity.cityName })
             navigationController?.pushViewController(MapViewController(quakeToDisplay: quakeToDisplay, nearbyCities: sortedCities), animated: true)
         }
     }

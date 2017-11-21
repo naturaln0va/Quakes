@@ -3,9 +3,9 @@ import UIKit
 import CoreLocation
 
 enum LocationOption: String {
-    case Nearby
-    case World
-    case Major
+    case nearby
+    case world
+    case major
 }
 
 protocol LocationFinderViewControllerDelegate: class {
@@ -28,8 +28,6 @@ class LocationFinderViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        TelemetryController.sharedController.logQuakeFinderOpened()
         
         title = "Choose a Type"
         view.backgroundColor = UIColor.white
@@ -70,7 +68,7 @@ class LocationFinderViewController: UIViewController {
     }
     
     // MARK: Notifications
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         let userInfo = notification.userInfo!
         let keyboardHeight = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
         
@@ -84,7 +82,7 @@ class LocationFinderViewController: UIViewController {
         }) 
     }
     
-    func keyboardWillHide(_ notification: Notification) {
+    @objc func keyboardWillHide(_ notification: Notification) {
         let userInfo = notification.userInfo!
         
         filterViewBottomConstraint.constant = 0.0
@@ -110,7 +108,7 @@ class LocationFinderViewController: UIViewController {
             switch CLLocationManager.authorizationStatus() {
             case .authorizedWhenInUse:
                 if CLLocationManager.locationServicesEnabled() {
-                    delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
+                    delegate?.locationFinderViewControllerDidSelectOption(.nearby)
                 }
                 else {
                     errorMessage = "Location services are turned off."
@@ -125,13 +123,15 @@ class LocationFinderViewController: UIViewController {
                 break
             }
             
-            if errorMessage.characters.count > 0 {
+            if errorMessage.count > 0 {
                 sender.selectedSegmentIndex = -1
 
                 let alertView = UIAlertController(title: "Permission Needed", message: errorMessage, preferredStyle: .alert)
                 
                 alertView.addAction(UIAlertAction(title: "Open Settings", style: .default, handler: { action in
-                    UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
+                    if let settingsURL = URL(string: UIApplicationOpenSettingsURLString) {
+                        UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+                    }
                 }))
                 
                 alertView.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -140,10 +140,10 @@ class LocationFinderViewController: UIViewController {
             }
         }
         else if sender.selectedSegmentIndex == 1 {
-            delegate?.locationFinderViewControllerDidSelectOption(.World)
+            delegate?.locationFinderViewControllerDidSelectOption(.world)
         }
         else if sender.selectedSegmentIndex == 2 {
-            delegate?.locationFinderViewControllerDidSelectOption(.Major)
+            delegate?.locationFinderViewControllerDidSelectOption(.major)
         }
     }
     
@@ -176,7 +176,7 @@ extension LocationFinderViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
-            delegate?.locationFinderViewControllerDidSelectOption(.Nearby)
+            delegate?.locationFinderViewControllerDidSelectOption(.nearby)
         }
         else {
             filterSegment.selectedSegmentIndex = -1
@@ -188,7 +188,7 @@ extension LocationFinderViewController: CLLocationManagerDelegate {
 extension LocationFinderViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField.text?.characters.count ?? 0 > 0 {
+        if textField.text?.count ?? 0 > 0 {
             searchForAddressWithText(textField.text!)
             textField.resignFirstResponder()
             return true

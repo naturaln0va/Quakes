@@ -30,7 +30,7 @@ class MapViewController: UIViewController {
     }()
     fileprivate lazy var messageLabelBarButtonItem: UIBarButtonItem = {
         let messageLabel = UILabel()
-        messageLabel.font = UIFont.systemFont(ofSize: 11.0, weight: UIFontWeightRegular)
+        messageLabel.font = UIFont.systemFont(ofSize: 11.0, weight: UIFont.Weight.regular)
         messageLabel.numberOfLines = 2
         messageLabel.textAlignment = .center
         messageLabel.sizeToFit()
@@ -47,7 +47,7 @@ class MapViewController: UIViewController {
     fileprivate lazy var filterTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 20.0, weight: UIFontWeightLight)
+        label.font = UIFont.systemFont(ofSize: 20.0, weight: UIFont.Weight.light)
         label.numberOfLines = 1
         label.textAlignment = .center
         label.sizeToFit()
@@ -107,8 +107,6 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        TelemetryController.sharedController.logQuakeMapOpened()
-        
         navigationController?.isToolbarHidden = false
         toolbarItems = [locationBarButtonItem, spaceBarButtonItem]
         
@@ -120,7 +118,7 @@ class MapViewController: UIViewController {
             manager.requestWhenInUseAuthorization()
         }
         
-        if nearbyCitiesToDisplay == nil && quakeToDisplay == nil && SettingsController.sharedController.lastLocationOption != LocationOption.World.rawValue {
+        if nearbyCitiesToDisplay == nil && quakeToDisplay == nil && SettingsController.sharedController.lastLocationOption != LocationOption.world.rawValue {
             filterHeaderView.addSubview(filterTitleLabel)
             filterHeaderView.addSubview(filterSlider)
             
@@ -135,7 +133,7 @@ class MapViewController: UIViewController {
             view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[container]|", options: [], metrics: nil, views: ["container": filterHeaderView]))
             view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[map]|", options: [], metrics: nil, views: ["map": mapView]))
             
-            filterContainerViewTopConstraint = NSLayoutConstraint(item: filterHeaderView, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
+            filterContainerViewTopConstraint = NSLayoutConstraint(item: filterHeaderView, attribute: .top, relatedBy: .equal, toItem: view.safeAreaLayoutGuide.topAnchor, attribute: .bottom, multiplier: 1, constant: 0)
             view.addConstraint(filterContainerViewTopConstraint!)
             
             view.addConstraint(NSLayoutConstraint(item: filterHeaderView, attribute: .bottom, relatedBy: .equal, toItem: mapView, attribute: .top, multiplier: 1, constant: 0))
@@ -188,10 +186,7 @@ class MapViewController: UIViewController {
             var maxDays = 0
             
             if let quakes = quakesToDisplay {
-                let sortedQuakes = quakes.sorted { quakeTuple in
-                    let quakeOne = quakeTuple.0
-                    let quakeTwo = quakeTuple.1
-                    
+                let sortedQuakes = quakes.sorted { quakeOne, quakeTwo in
                     return Date().daysSince(quakeOne.timestamp) < Date().daysSince(quakeTwo.timestamp)
                 }
                 if let lastSortedQuake = sortedQuakes.last {
@@ -236,7 +231,7 @@ class MapViewController: UIViewController {
     
     fileprivate func showMessageWithText(_ text: String, shouldAutoDismiss dismiss: Bool) {
         let messageLabel = UILabel()
-        messageLabel.font = UIFont.systemFont(ofSize: 11.0, weight: UIFontWeightRegular)
+        messageLabel.font = UIFont.systemFont(ofSize: 11.0, weight: UIFont.Weight.regular)
         messageLabel.numberOfLines = 2
         messageLabel.textAlignment = .center
         messageLabel.text = text
@@ -295,7 +290,7 @@ class MapViewController: UIViewController {
     }
     
     // MARK: - Actions
-    func searchButtonPressed() {
+    @objc func searchButtonPressed() {
         guard NetworkUtility.internetReachable() else { return }
         guard !currentlySearching else { return }
         
@@ -338,13 +333,11 @@ class MapViewController: UIViewController {
         }
     }
     
-    func filterSliderChanged(_ sender: UISlider) {
+    @objc func filterSliderChanged(_ sender: UISlider) {
         refreshFilterLabel()
     }
     
-    func filterSliderEnded(_ sender: UISlider) {
-        TelemetryController.sharedController.logQuakeMapFiltered()
-        
+    @objc func filterSliderEnded(_ sender: UISlider) {
         if let quakes = quakesToDisplay {
             mapView.removeAnnotations(mapView.annotations)
             mapView.addAnnotations(quakes.filter{ Date().daysSince($0.timestamp) < Int(sender.value) })
@@ -400,7 +393,7 @@ class MapViewController: UIViewController {
             return
         }
         
-        if SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue && nearbyCitiesToDisplay == nil {
+        if SettingsController.sharedController.lastLocationOption == LocationOption.nearby.rawValue && nearbyCitiesToDisplay == nil {
             mapView.showAnnotations(mapView.annotations, animated: animated)
         }
         else if SettingsController.sharedController.isLocationOptionWorldOrMajor() && nearbyCitiesToDisplay == nil {

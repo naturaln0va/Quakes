@@ -14,7 +14,7 @@ extension CLPlacemark {
             wholeString += state
         }
         
-        if wholeString.characters.count > 0 {
+        if wholeString.count > 0 {
             return wholeString
         }
         else {

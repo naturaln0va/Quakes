@@ -71,13 +71,7 @@ class NetworkClient {
                     DispatchQueue.main.async {
                         completion(success)
                     }
-                }
-                
-                guard error == nil else { return }
-                guard let data = data else { return }
-                guard let receiptInfo = try? JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as? [String: Any] else { return }
-                
-                print("information of recipt: \(receiptInfo)")
+                }                
             }).resume()
         }
     }

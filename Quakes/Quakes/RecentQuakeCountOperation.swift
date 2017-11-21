@@ -9,10 +9,10 @@ class RecentQuakeCountOperation: NetworkOperation {
         if let lastSearchedLocation = SettingsController.sharedController.lastSearchedPlace?.location {
             return "\(baseURLString)count?format=geojson&latitude=\(lastSearchedLocation.coordinate.latitude)&longitude=\(lastSearchedLocation.coordinate.longitude)&maxradiuskm=\(SettingsController.sharedController.searchRadius.rawValue)&limit=\(SettingsController.sharedController.fetchLimit.rawValue)"
         }
-        else if SettingsController.sharedController.lastLocationOption == LocationOption.Major.rawValue {
+        else if SettingsController.sharedController.lastLocationOption == LocationOption.major.rawValue {
             return "\(baseURLString)count?format=geojson&minmagnitude=3.8&limit=\(SettingsController.sharedController.fetchLimit.rawValue)"
         }
-        else if SettingsController.sharedController.lastLocationOption == LocationOption.World.rawValue {
+        else if SettingsController.sharedController.lastLocationOption == LocationOption.world.rawValue {
             return "\(baseURLString)count?format=geojson&limit=\(SettingsController.sharedController.fetchLimit.rawValue)"
         }
         else {
@@ -32,9 +32,9 @@ class RecentQuakeCountOperation: NetworkOperation {
     }
     
     override func handleData() {
-        let stringFromResponseData = String(data: resultData as Data, encoding: String.Encoding.utf8)
-        
-        print("string from data :\(stringFromResponseData)")
+        if let stringFromResponseData = String(data: resultData as Data, encoding: String.Encoding.utf8) {
+            print("string from data :\(stringFromResponseData)")
+        }
     }
     
 }

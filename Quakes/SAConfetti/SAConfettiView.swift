@@ -36,7 +36,8 @@ open class SAConfettiView: UIView {
             UIColor(red:1.00, green:0.78, blue:0.36, alpha:1.0),
             UIColor(red:0.48, green:0.78, blue:0.64, alpha:1.0),
             UIColor(red:0.30, green:0.76, blue:0.85, alpha:1.0),
-            UIColor(red:0.58, green:0.39, blue:0.55, alpha:1.0)]
+            UIColor(red:0.58, green:0.39, blue:0.55, alpha:1.0)
+        ]
         intensity = 0.5
         type = .confetti
     }
@@ -82,8 +83,8 @@ open class SAConfettiView: UIView {
         confetti.color = color.cgColor
         confetti.velocity = CGFloat(350.0 * intensity)
         confetti.velocityRange = CGFloat(80.0 * intensity)
-        confetti.emissionLongitude = CGFloat(M_PI)
-        confetti.emissionRange = CGFloat(M_PI_4)
+        confetti.emissionLongitude = .pi
+        confetti.emissionRange = .pi / 4
         confetti.spin = CGFloat(3.5 * intensity)
         confetti.spinRange = CGFloat(4.0 * intensity)
         confetti.scaleRange = CGFloat(intensity)

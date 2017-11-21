@@ -98,12 +98,12 @@ class SettingsController {
     
     lazy fileprivate var baseDefaults:[String: Any] = {
         return [
-            kSearchRadiusKey: SearchRadiusSize.medium.rawValue,
-            kFetchSizeLimitKey: APIFetchSize.medium.rawValue,
-            kLastPushKey: Date.distantPast,
-            kHasAttemptedNotificationKey: false,
-            kPaidToRemoveKey: false,
-            kUnitStyleKey: true
+            SettingsController.kSearchRadiusKey: SearchRadiusSize.medium.rawValue,
+            SettingsController.kFetchSizeLimitKey: APIFetchSize.medium.rawValue,
+            SettingsController.kLastPushKey: Date.distantPast,
+            SettingsController.kHasAttemptedNotificationKey: false,
+            SettingsController.kPaidToRemoveKey: false,
+            SettingsController.kUnitStyleKey: true
         ]
     }()
     
@@ -123,7 +123,7 @@ class SettingsController {
     }
     
     func isLocationOptionWorldOrMajor() -> Bool {
-        return lastLocationOption == LocationOption.World.rawValue || lastLocationOption == LocationOption.Major.rawValue
+        return lastLocationOption == LocationOption.world.rawValue || lastLocationOption == LocationOption.major.rawValue
     }
     
     func locationEligableForNotifications() -> CLLocation? {
@@ -212,9 +212,6 @@ class SettingsController {
             return defaults.bool(forKey: SettingsController.kPaidToRemoveKey)
         }
         set {
-            if hasSupported {
-                TelemetryController.sharedController.logSupportedApp()
-            }
             defaults.set(newValue, forKey: SettingsController.kPaidToRemoveKey)
             defaults.synchronize()
             NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).kSettingsControllerDidChangePurchaseAdRemovalNotification), object: nil)

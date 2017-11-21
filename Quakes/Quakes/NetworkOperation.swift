@@ -79,8 +79,12 @@ extension NetworkOperation {
             request.setValue("\(jsonPostData.count)", forHTTPHeaderField: "Content-Length")
             request.httpBody = jsonPostData
             
-            if debug { print("Headers: \(request.allHTTPHeaderFields)") }
-            if debug { print("Post Body: \(postParams)") }
+            if debug {
+                if let httpHeaders = request.allHTTPHeaderFields {
+                    print("Headers: \(httpHeaders)")
+                }
+                print("Post Body: \(postParams)")
+            }
         }
         
         sessionTask = internalURLSession.dataTask(with: request)

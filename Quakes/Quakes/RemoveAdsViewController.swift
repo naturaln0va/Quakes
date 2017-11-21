@@ -26,17 +26,23 @@ class RemoveAdsViewController: UIViewController {
         else {
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(RemoveAdsViewController.adRemovalPurchased),
-                name: NSNotification.Name(rawValue: IAPUtility.IAPHelperPurchaseNotification),
+                selector: #selector(adRemovalPurchased),
+                name: .didPurchaseProduct,
                 object: nil
             )
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(RemoveAdsViewController.adRemovalFailed),
-                name: NSNotification.Name(rawValue: IAPUtility.IAPHelperFailedNotification),
+                selector: #selector(adRemovalFailed),
+                name: .didFailToPurchaseProduct,
                 object: nil
             )
-            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(adRemovalCanceled),
+                name: .didCancelPurchaseProduct,
+                object: nil
+            )
+
             removeAdsButton.setTitle("", for: UIControlState())
             navigationItem.rightBarButtonItem = UIBarButtonItem(
                 barButtonSystemItem: .refresh,
@@ -83,7 +89,7 @@ class RemoveAdsViewController: UIViewController {
     }
     
     // MARK: Notifications
-    func adRemovalPurchased() {
+    @objc private func adRemovalPurchased() {
         headerLabel.text = "Thanks for your support ♥️"
         removeAdsButton.isHidden = true
         navigationItem.rightBarButtonItem = nil
@@ -91,7 +97,7 @@ class RemoveAdsViewController: UIViewController {
         confetti.startConfetti()
     }
     
-    func adRemovalFailed() {
+    @objc private func adRemovalFailed() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .refresh,
             target: self,
@@ -108,12 +114,29 @@ class RemoveAdsViewController: UIViewController {
         }
     }
     
+    @objc private func adRemovalCanceled() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .refresh,
+            target: self,
+            action: #selector(RemoveAdsViewController.refreshButtonPressed)
+        )
+        
+        messageLabel.alpha = 1.0
+        messageLabel.text = "Ad removal canceled."
+        
+        UIView.animate(withDuration: 0.3, delay: 4.0, options: [], animations: {
+            self.messageLabel.alpha = 0.0
+        }) { _ in
+            self.messageLabel.text = ""
+        }
+    }
+    
     // MARK: Actions
     @IBAction func removeAdsButtonPressed(_ sender: UIButton) {
         helper.purchaseRemoveAds()
     }
     
-    func refreshButtonPressed() {
+    @objc private func refreshButtonPressed() {
         let activityView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityView)
         activityView.startAnimating()

@@ -67,7 +67,7 @@ class PickerViewController: UITableViewController {
             
             let descriptionLabel = UILabel()
             descriptionLabel.numberOfLines = 0
-            descriptionLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightLight)
+            descriptionLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFont.Weight.light)
             descriptionLabel.text = data.footerDescription!
             descriptionLabel.bounds = footerView.bounds
             descriptionLabel.center = footerView.center

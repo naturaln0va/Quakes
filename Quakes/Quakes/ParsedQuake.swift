@@ -61,7 +61,7 @@ struct ParsedQuake {
         }
         
         let origionalNameString = properties["place"] as? String ?? ""
-        if origionalNameString.characters.count > 0 && origionalNameString.contains("km ") {
+        if origionalNameString.count > 0 && origionalNameString.contains("km ") {
             let comps = origionalNameString.components(separatedBy: "km ")
             name = comps.last ?? ""
             distance = (Double(comps.first ?? "0") ?? 0) * 1000

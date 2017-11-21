@@ -3,7 +3,7 @@ import UIKit
 import CoreLocation
 
 @UIApplicationMain
-class WindowController: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private enum ShortcutItem: String {
         case search
@@ -33,10 +33,6 @@ class WindowController: UIResponder, UIApplicationDelegate {
     }
     
     func performSecondaryInitializationsWithOptions(_ launchOptions: [AnyHashable: Any]?) {
-        Flurry.setDebugLogEnabled(false)
-        Flurry.setShowErrorInLogEnabled(false)
-        Flurry.startSession(TelemetryController.sharedController.apiKey, withOptions: launchOptions)
-        
         if !SettingsController.sharedController.hasSupported && SettingsController.sharedController.fisrtLaunchDate == nil {
             NetworkClient.sharedClient.verifyInAppRecipt { sucess in
                 if sucess {
@@ -49,8 +45,7 @@ class WindowController: UIResponder, UIApplicationDelegate {
             SettingsController.sharedController.fisrtLaunchDate = Date()
         }
         
-        RateMyApp.sharedInstance.trackAppUsage()
-        
+        RatingHelper.incrementAppLaunch()
         updateShortcutItems()
     }
     
@@ -78,14 +73,14 @@ class WindowController: UIResponder, UIApplicationDelegate {
             
         case ShortcutItem.nearby.rawValue:
             delay(0.5) {
-                self.rootListViewController.show(.Nearby)
+                self.rootListViewController.show(.nearby)
             }
             handled = true
             break
             
         case ShortcutItem.major.rawValue:
             delay(0.5) {
-                self.rootListViewController.show(.Major)
+                self.rootListViewController.show(.major)
             }
             handled = true
             break

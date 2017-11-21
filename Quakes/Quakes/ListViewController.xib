@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ListViewController" customModule="Quakes" customModuleProvider="target">
             <connections>
-                <outlet property="adContainerView" destination="7dP-Ri-1cq" id="PQr-Wa-cIl"/>
-                <outlet property="adContainerViewBottomConstraint" destination="TXM-Lz-BZg" id="jp4-8L-A8o"/>
                 <outlet property="noQuakesBodyLabel" destination="IUX-8G-qhk" id="fd5-hn-Kvh"/>
                 <outlet property="noQuakesTitleLabel" destination="hd1-GH-awI" id="cf5-IL-THE"/>
                 <outlet property="tableView" destination="SaX-2C-0rt" id="efX-C3-Woa"/>
@@ -24,13 +22,6 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7dP-Ri-1cq">
-                    <rect key="frame" x="0.0" y="667" width="375" height="85"/>
-                    <color key="backgroundColor" red="1" green="0.094447544642857137" blue="0.22145647321428572" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="85" id="bDf-Sv-YmF"/>
-                    </constraints>
-                </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Quakes to Display" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hd1-GH-awI">
                     <rect key="frame" x="20" y="120" width="335" height="21"/>
                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
@@ -53,14 +44,11 @@
                 <constraint firstItem="hd1-GH-awI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="01f-Je-Z8c"/>
                 <constraint firstItem="SaX-2C-0rt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9JH-J1-8mb"/>
                 <constraint firstAttribute="trailing" secondItem="IUX-8G-qhk" secondAttribute="trailing" constant="20" id="9ZB-9W-6YS"/>
-                <constraint firstItem="7dP-Ri-1cq" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="HV8-4z-3MP"/>
-                <constraint firstItem="7dP-Ri-1cq" firstAttribute="top" secondItem="SaX-2C-0rt" secondAttribute="bottom" id="L6T-uf-Xg3"/>
                 <constraint firstItem="SaX-2C-0rt" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="LJ1-9G-8mE"/>
+                <constraint firstAttribute="bottom" secondItem="SaX-2C-0rt" secondAttribute="bottom" id="Lkb-rW-J4l"/>
                 <constraint firstAttribute="trailing" secondItem="SaX-2C-0rt" secondAttribute="trailing" id="Lkk-fm-lrb"/>
-                <constraint firstAttribute="bottom" secondItem="7dP-Ri-1cq" secondAttribute="bottom" constant="-85" id="TXM-Lz-BZg"/>
                 <constraint firstItem="hd1-GH-awI" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="120" id="e1u-mU-kT2"/>
                 <constraint firstAttribute="trailing" secondItem="hd1-GH-awI" secondAttribute="trailing" constant="20" id="opG-es-ZlS"/>
-                <constraint firstAttribute="trailing" secondItem="7dP-Ri-1cq" secondAttribute="trailing" id="qwv-pi-gXm"/>
                 <constraint firstItem="IUX-8G-qhk" firstAttribute="top" secondItem="hd1-GH-awI" secondAttribute="bottom" constant="20" id="wmT-WE-SGg"/>
                 <constraint firstItem="IUX-8G-qhk" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="zG2-jQ-pOI"/>
             </constraints>

@@ -12,8 +12,8 @@ class StyledNavigationController: UINavigationController {
         navigationBar.isTranslucent = false
         
         navigationBar.titleTextAttributes = [
-            NSForegroundColorAttributeName: StyleController.darkerMainAppColor,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
+            NSAttributedStringKey.foregroundColor: StyleController.darkerMainAppColor,
+            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 17.0, weight: UIFont.Weight.medium)
         ]
     }
     

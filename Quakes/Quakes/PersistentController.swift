@@ -10,7 +10,7 @@ class PersistentController {
     
     // MARK: - Managed Object Context
     lazy var moc: NSManagedObjectContext = {
-        guard let modelURL = Bundle.main.url(forResource: contextName, withExtension: "momd") else {
+        guard let modelURL = Bundle.main.url(forResource: PersistentController.contextName, withExtension: "momd") else {
             fatalError("Could not find the data model in the bundle")
         }
         
@@ -20,7 +20,7 @@ class PersistentController {
         
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentsDirectory = urls[0]
-        let storeURL = documentsDirectory.appendingPathComponent("\(contextName).sqlite")
+        let storeURL = documentsDirectory.appendingPathComponent("\(PersistentController.contextName).sqlite")
         
         do {
             let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
@@ -82,7 +82,7 @@ class PersistentController {
             }
             
             var locationOption: CLLocation?
-            if let nearbyLocation = SettingsController.sharedController.cachedAddress?.location, SettingsController.sharedController.lastLocationOption == LocationOption.Nearby.rawValue {
+            if let nearbyLocation = SettingsController.sharedController.cachedAddress?.location, SettingsController.sharedController.lastLocationOption == LocationOption.nearby.rawValue {
                 locationOption = nearbyLocation
             }
             else if let searchedLocation = SettingsController.sharedController.lastSearchedPlace?.location {
